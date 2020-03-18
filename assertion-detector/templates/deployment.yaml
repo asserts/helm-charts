@@ -31,14 +31,14 @@ spec:
             - name: http
               containerPort: 8040
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /ping
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /ping
-              port: http
+#          livenessProbe:
+#            httpGet:
+#              path: /ping
+#              port: http
+#          readinessProbe:
+#            httpGet:
+#              path: /ping
+#              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
