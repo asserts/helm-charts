@@ -36,6 +36,18 @@ service:
   type: ClusterIP
   port: 8040
 
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx-external
+  hosts:
+    - host: assertion-detector.dev.asserts.ai
+      paths:
+        - /
+  tls:
+    - hosts:
+      - assertion-detector.dev.asserts.ai
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
