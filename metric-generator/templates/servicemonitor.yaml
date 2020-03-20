@@ -12,6 +12,7 @@ spec:
   endpoints:
   - path: /metrics
     port: http
+    honorLabels: true
 {{- if .Values.serviceMonitor.interval }}
     interval: {{ .Values.serviceMonitor.interval }}
 {{- end }}
@@ -29,7 +30,6 @@ spec:
     metricRelabelings: 
 {{ toYaml .Values.serviceMonitor.metricRelabelings | indent 6 }}
 {{- end }}
-  honorLabels: true
   jobLabel: {{ template "metric-generator.fullname" . }}
   namespaceSelector:
     matchNames:
