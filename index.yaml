@@ -3,7 +3,7 @@ entries:
   assertion-detector:
   - apiVersion: v2
     appVersion: latest
-    created: "2020-03-19T13:14:33.024622-07:00"
+    created: "2020-03-20T15:25:50.046003-07:00"
     description: Asserts assertion-detector Helm Chart
     digest: 7ab4e992f742f829f2ea3ec92c06834e0b15f24f723a2eee7469443de45abbac
     name: assertion-detector
@@ -14,9 +14,9 @@ entries:
   metric-generator:
   - apiVersion: v2
     appVersion: latest
-    created: "2020-03-19T13:14:33.025076-07:00"
+    created: "2020-03-20T15:25:50.04646-07:00"
     description: A Helm chart for Kubernetes
-    digest: e02e2a2b0d8b550811055859dafd304dc91c66bc34f780c0ee898db4a8c9987b
+    digest: b840120701c9ab5ce80cc44c940be547af693cdbbfd4342fb782b5505da8a6cb
     name: metric-generator
     type: application
     urls:
@@ -25,7 +25,7 @@ entries:
   model-builder:
   - apiVersion: v2
     appVersion: latest
-    created: "2020-03-19T13:14:33.025439-07:00"
+    created: "2020-03-20T15:25:50.046823-07:00"
     description: A Helm chart for Kubernetes
     digest: 66cf29bf8310722bbbd805ede08b747dfe5e58033384d96459dbbe7ee3864ffd
     name: model-builder
@@ -33,4 +33,4 @@ entries:
     urls:
     - model-builder-0.1.0.tgz
     version: 0.1.0
-generated: "2020-03-19T13:14:33.023572-07:00"
+generated: "2020-03-20T15:25:50.044501-07:00"

@@ -32,6 +32,9 @@ service:
   type: ClusterIP
   port: 8020
 
+serviceMonitor:
+  enabled: true
+
 ingress:
   enabled: true
   annotations:
