@@ -3,6 +3,7 @@ replicaCount: 1
 image:
   repository: 105716418883.dkr.ecr.us-west-2.amazonaws.com/ai.asserts.metric-generator
   pullPolicy: IfNotPresent
+  tag: latest # override with --set image.tag=$TAG
 
 imagePullSecrets: []
 nameOverride: ""

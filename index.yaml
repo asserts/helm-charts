@@ -2,8 +2,18 @@ apiVersion: v1
 entries:
   assertion-detector:
   - apiVersion: v2
+    appVersion: 0.2.0
+    created: "2020-03-30T12:57:18.04155-07:00"
+    description: Asserts assertion-detector Helm Chart
+    digest: 87774b949b0c03b9fc1ffb340a777f4ef56bcc971a930623445d2d790ef0ad75
+    name: assertion-detector
+    type: application
+    urls:
+    - assertion-detector-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: latest
-    created: "2020-03-20T15:25:50.046003-07:00"
+    created: "2020-03-30T12:57:18.041089-07:00"
     description: Asserts assertion-detector Helm Chart
     digest: 7ab4e992f742f829f2ea3ec92c06834e0b15f24f723a2eee7469443de45abbac
     name: assertion-detector
@@ -13,8 +23,18 @@ entries:
     version: 0.1.0
   metric-generator:
   - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2020-03-30T12:57:18.042931-07:00"
+    description: A Helm chart for Kubernetes
+    digest: 411db646778347b722a83b889a9d83766e780a1ed80cf33e220580896fed0e03
+    name: metric-generator
+    type: application
+    urls:
+    - metric-generator-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: latest
-    created: "2020-03-20T15:25:50.04646-07:00"
+    created: "2020-03-30T12:57:18.041981-07:00"
     description: A Helm chart for Kubernetes
     digest: b840120701c9ab5ce80cc44c940be547af693cdbbfd4342fb782b5505da8a6cb
     name: metric-generator
@@ -24,8 +44,18 @@ entries:
     version: 0.1.0
   model-builder:
   - apiVersion: v2
+    appVersion: 0.2.0
+    created: "2020-03-30T12:57:18.04406-07:00"
+    description: A Helm chart for Kubernetes
+    digest: c570f3a1104c3adae9d7a93b1c3200c5545ea9fc2f5834c12e70d2950be25659
+    name: model-builder
+    type: application
+    urls:
+    - model-builder-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: latest
-    created: "2020-03-20T15:25:50.046823-07:00"
+    created: "2020-03-30T12:57:18.043641-07:00"
     description: A Helm chart for Kubernetes
     digest: 66cf29bf8310722bbbd805ede08b747dfe5e58033384d96459dbbe7ee3864ffd
     name: model-builder
@@ -33,4 +63,4 @@ entries:
     urls:
     - model-builder-0.1.0.tgz
     version: 0.1.0
-generated: "2020-03-20T15:25:50.044501-07:00"
+generated: "2020-03-30T12:57:18.039951-07:00"
