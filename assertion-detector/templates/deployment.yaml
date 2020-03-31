@@ -41,6 +41,18 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
+          volumeMounts:
+            - name: app-config
+              mountPath: "{{ .Values.volume.baseDir }}/application.yml"
+              subPath: application.yml
+              readOnly: true
+
+    volumes:
+      - name: app-config
+        configMap:
+          name: {{ include "assertion-detector.fullname" . }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -4,33 +4,33 @@ entities:
   - when: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
     create:
       type: "Service"
+      labelForName: "service"
       properties:
-        name: "service"
   - when: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
     create:
       type: "Jvm"
+      labelForName: "instance"
       properties:
-        name: "instance"
         pod: "pod"
         service: "service"
   - when: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
     create:
       type: "ServiceEndPoint"
+      labelForName: "endpoint"
       properties:
-        name: "endpoint"
         service: "service"
   - when: "{__name__=\"container_cpu_cfs_periods_total\",namespace=\"petclinic\",container!=\"POD\"}"
     create:
       type: "Container"
+      labelForName: "container"
       properties:
-        name: "container"
         pod: "pod"
         host: "instance"
   - when: "{__name__=\"node_cpu_seconds_total\",namespace=\"petclinic\"}"
     create:
       type: "Node"
+      labelForName: "instance"
       properties:
-        name: "instance"
 relations:
   - type: CALLS
     startEntityType: Service
