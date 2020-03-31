@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         {{- include "model-builder.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include "config-map-contents" . | sha256sum }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
