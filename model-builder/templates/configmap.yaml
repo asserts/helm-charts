@@ -7,8 +7,4 @@ metadata:
   annotations:
     checksum/config: {{ include "config-map-contents" . | sha256sum }}
 data:
-  {{- $glob := . }}
-  {{- range $path, $bytes := .Files.Glob "configmaps/*" }}
-  {{ $path | base | trimSuffix ".tpl" | trimPrefix "_"}}: |-
-{{ tpl ($glob.Files.Get $path) $glob | indent 4 }}
-{{- end -}}
+  {{ include "config-map-contents" . }}
