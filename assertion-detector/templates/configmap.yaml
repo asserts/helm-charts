@@ -4,7 +4,5 @@ metadata:
   name: {{ include "assertion-detector.fullname" . }}
   labels:
     {{- include "assertion-detector.labels" . | nindent 4 }}
-  annotations:
-    checksum/config: {{ include "config-map-contents" . | sha256sum }}
 data:
   {{ include "config-map-contents" . }}
