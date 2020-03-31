@@ -28,9 +28,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
+          - name: http
+            containerPort: 8080
+            protocol: TCP
           livenessProbe:
             httpGet:
               path: /ping
@@ -41,6 +41,24 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        
+          volumeMounts:
+          - name: app-config
+            mountPath: "{{ .Values.volume.baseDir }}/application.yml"
+            subPath: application.yml
+            readOnly: true
+          - name: rules-config
+            mountPath: "{{ .Values.volume.baseDir }}/model_rules.yml"
+            subPath: model_rules.yml
+            readOnly: true
+
+      volumes:
+      - name: app-config
+        configMap:
+          name: {{ include "model-builder.fullname" . }}
+      - name: rules-config
+        configMap:
+          name: {{ include "model-builder.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -61,3 +61,14 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Define configmap contents for use in checksum
+*/}}
+{{- define "config-map-contents" -}}
+  {{- $glob := . }}
+  {{- range $path, $bytes := .Files.Glob "configmaps/*" }}
+  {{ $path | base | trimSuffix ".tpl" | trimPrefix "_"}}: |-
+{{ tpl ($glob.Files.Get $path) $glob | indent 4 }}
+{{- end -}}
+{{- end -}}

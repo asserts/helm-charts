@@ -3,7 +3,7 @@ entries:
   assertion-detector:
   - apiVersion: v2
     appVersion: 20.3.0
-    created: "2020-03-30T13:55:22.781933-07:00"
+    created: "2020-03-30T17:34:01.836815-07:00"
     description: Asserts assertion-detector Helm Chart
     digest: a5f3dd42c83443b305b46b4bc16e266a02613af808004c99a965cf6e20d4ec3e
     name: assertion-detector
@@ -13,7 +13,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: latest
-    created: "2020-03-30T13:55:22.781516-07:00"
+    created: "2020-03-30T17:34:01.836343-07:00"
     description: Asserts assertion-detector Helm Chart
     digest: 7ab4e992f742f829f2ea3ec92c06834e0b15f24f723a2eee7469443de45abbac
     name: assertion-detector
@@ -24,7 +24,7 @@ entries:
   metric-generator:
   - apiVersion: v2
     appVersion: 20.3.0
-    created: "2020-03-30T13:55:22.78311-07:00"
+    created: "2020-03-30T17:34:01.837687-07:00"
     description: A Helm chart for Kubernetes
     digest: 94294e0e27eb8cd9bb9427b7efb096fbe0b9cfa94d2f252433417ca750b0b96d
     name: metric-generator
@@ -34,7 +34,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: latest
-    created: "2020-03-30T13:55:22.782323-07:00"
+    created: "2020-03-30T17:34:01.83727-07:00"
     description: A Helm chart for Kubernetes
     digest: b840120701c9ab5ce80cc44c940be547af693cdbbfd4342fb782b5505da8a6cb
     name: metric-generator
@@ -45,9 +45,9 @@ entries:
   model-builder:
   - apiVersion: v2
     appVersion: 20.3.0
-    created: "2020-03-30T13:55:22.784005-07:00"
+    created: "2020-03-30T17:34:01.838478-07:00"
     description: A Helm chart for Kubernetes
-    digest: c967ce1302eac49039bc488f599858ac01ed1eaeaa93e3f911b61d01987a2d41
+    digest: 30eb37263aaca33ef53305ed19c02605b5afd1a4845bc58309de7f4ee4e641e5
     name: model-builder
     type: application
     urls:
@@ -55,7 +55,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: latest
-    created: "2020-03-30T13:55:22.78366-07:00"
+    created: "2020-03-30T17:34:01.838034-07:00"
     description: A Helm chart for Kubernetes
     digest: 66cf29bf8310722bbbd805ede08b747dfe5e58033384d96459dbbe7ee3864ffd
     name: model-builder
@@ -63,4 +63,4 @@ entries:
     urls:
     - model-builder-0.1.0.tgz
     version: 0.1.0
-generated: "2020-03-30T13:55:22.779861-07:00"
+generated: "2020-03-30T17:34:01.835027-07:00"
