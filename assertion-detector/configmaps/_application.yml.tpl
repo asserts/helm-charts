@@ -1,12 +1,8 @@
 # managed by Helm
-rules:
-  source: FILE
-  path: "conf/model_rules.yml"
-
 server:
-  port: 8060
+  port: 8040
   servlet:
-    context-path: "/model-builder"
+    context-path: "/assertion-detector"
 
 # enable Prometheus metrics
 management:
@@ -17,15 +13,15 @@ management:
       exposure:
         include: "info, health, prometheus"
 
+# Application properties
+prometheus_client:
+  metric:
+    uri: "/assertion-metrics"
+
 neo4j:
   url: "bolt://ec2-52-25-196-133.us-west-2.compute.amazonaws.com:7687"
   user: "neo4j"
   password: "i-05dc073078439197b"
-
-prometheus:
-  url: "http://prometheus.dev.asserts.ai"
-  client:
-    timeout: "30s"
 
 logging:
   level:

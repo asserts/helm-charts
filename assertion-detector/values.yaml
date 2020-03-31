@@ -64,6 +64,9 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+volume:
+  baseDir: /opt/asserts/assertion-detector/conf
+
 nodeSelector: {}
 
 tolerations: []
