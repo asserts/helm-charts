@@ -31,6 +31,18 @@ entities:
       type: "Node"
       labelForName: "instance"
       properties:
+  - when: "{__name__=\"redis_instance_info\", role=\"master\"}"
+    create:
+      type: "RedisMaster"
+      labelForName: "addr"
+      properties:
+        addr: "addr"
+  - when: "label_join(redis_slave_info, \"master_addr\", \":\", \"master_host\", \"master_port\")"
+    create:
+      type: "RedisSlave"
+      labelForName: "addr"
+      properties:
+        master_addr: "master_addr"
 relations:
   - type: CALLS
     startEntityType: Service
@@ -72,4 +84,12 @@ relations:
       matchOp: EQUALS
       startPropertyLabel: name
       endPropertyLabel: service
+  - type: SUPPORTS
+    startEntityType: RedisSlave
+    endEntityType: RedisMaster
+    definedBy:
+      source: ENTITY_MATCH
+      matchOp: EQUALS
+      startPropertyLabel: master_addr
+      endPropertyLabel: addr
 
