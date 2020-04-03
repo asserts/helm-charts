@@ -4,6 +4,8 @@ metadata:
   name: {{ include "model-builder.fullname" . }}
   labels:
     {{- include "model-builder.labels" . | nindent 4 }}
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

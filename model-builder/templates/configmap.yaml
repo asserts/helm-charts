@@ -4,7 +4,5 @@ metadata:
   name: {{ include "model-builder.fullname" . }}
   labels:
     {{- include "model-builder.labels" . | nindent 4 }}
-  annotations:
-    checksum/config: {{ include "config-map-contents" . | sha256sum }}
 data:
   {{ include "config-map-contents" . }}
