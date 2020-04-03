@@ -4,7 +4,7 @@ rules:
   path: "conf/model_rules.yml"
 
 server:
-  port: 8060
+  port: 8080
   servlet:
     context-path: "/model-builder"
 
