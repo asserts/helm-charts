@@ -1,48 +1,54 @@
 # managed by Helm
 version: 1.0
 entities:
-  - when: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
-    create:
-      type: "Service"
+  - type: "Service"
+    definedBy:
+      pattern: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
       labelForName: "service"
       properties:
-  - when: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
-    create:
-      type: "Jvm"
+  - type: "Jvm"
+    definedBy:
+      pattern: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
       labelForName: "instance"
       properties:
         pod: "pod"
         service: "service"
-  - when: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
-    create:
-      type: "ServiceEndPoint"
+  - type: "ServiceEndPoint"
+    definedBy:
+      pattern: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
       labelForName: "endpoint"
       properties:
         service: "service"
-  - when: "{__name__=\"container_cpu_cfs_periods_total\",namespace=\"petclinic\",container!=\"POD\"}"
-    create:
-      type: "Container"
+  - type: "Container"
+    definedBy:
+      pattern: "{__name__=\"container_cpu_cfs_periods_total\",namespace=\"petclinic\",container!=\"POD\"}"
       labelForName: "container"
       properties:
         pod: "pod"
         host: "instance"
-  - when: "{__name__=\"node_cpu_seconds_total\",namespace=\"petclinic\"}"
-    create:
-      type: "Node"
+  - type: "Node"
+    definedBy:
+      pattern: "{__name__=\"node_cpu_seconds_total\",namespace=\"petclinic\"}"
       labelForName: "instance"
       properties:
-  - when: "{__name__=\"redis_instance_info\", role=\"master\"}"
-    create:
-      type: "RedisMaster"
-      labelForName: "addr"
+# Redis service for standalone & cluster
+  - type: "RedisService"
+    definedBy:
+      pattern: "label_join(redis_instance_info, \"asserts_group\", \":\", \"namespace\", \"service\")"
+      labelForName: "asserts_group"
       properties:
-        addr: "addr"
-  - when: "label_join(redis_slave_info, \"master_addr\", \":\", \"master_host\", \"master_port\")"
-    create:
-      type: "RedisSlave"
-      labelForName: "addr"
+        service: "service"
+        redis_mode: "redis_mode"
+        asserts_group: "asserts_group"
+  - type: "RedisInstance"
+    definedBy:
+      pattern: "label_join(redis_instance_info, \"asserts_group\", \":\", \"namespace\", \"service\")"
+      labelForName: "pod"
       properties:
-        master_addr: "master_addr"
+        role: "role"
+        redis_mode: "redis_mode"
+        asserts_group: "asserts_group"
+
 relations:
   - type: CALLS
     startEntityType: Service
@@ -84,12 +90,11 @@ relations:
       matchOp: EQUALS
       startPropertyLabel: name
       endPropertyLabel: service
-  - type: SUPPORTS
-    startEntityType: RedisSlave
-    endEntityType: RedisMaster
+  - type: CONTAINS
+    startEntityType: RedisService
+    endEntityType: RedisInstance
     definedBy:
       source: ENTITY_MATCH
       matchOp: EQUALS
-      startPropertyLabel: master_addr
-      endPropertyLabel: addr
-
+      startPropertyLabel: asserts_group
+      endPropertyLabel: asserts_group
