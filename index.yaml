@@ -2,9 +2,9 @@ apiVersion: v1
 entries:
   assertion-detector:
   - apiVersion: v2
-    created: "2020-04-03T10:53:07.102824-07:00"
+    created: "2020-04-04T14:52:52.354826-07:00"
     description: Asserts assertion-detector Helm Chart
-    digest: 4a95077077304b76ecf011a975537ac8cb74ccfb862488d60e98add5a77b2f96
+    digest: 30fb0442d03cf08ba8db40bf94fc484738e042d41a99cf7c894ab32804ac2ef6
     name: assertion-detector
     type: application
     urls:
@@ -12,9 +12,9 @@ entries:
     version: 0.1.0
   metric-generator:
   - apiVersion: v2
-    created: "2020-04-03T10:53:07.103298-07:00"
+    created: "2020-04-04T14:52:52.355256-07:00"
     description: Asserts metric-generator Helm Chart
-    digest: f66e62ab9eba127e996dd9cde166ccd6a7533a1b277f32801ce77a27835571b1
+    digest: 0a929c3ec51d2c2af2a54db1b06247bbddb2af0059941140e457bac246909468
     name: metric-generator
     type: application
     urls:
@@ -22,12 +22,12 @@ entries:
     version: 0.1.0
   model-builder:
   - apiVersion: v2
-    created: "2020-04-03T10:53:07.103755-07:00"
+    created: "2020-04-04T14:52:52.355724-07:00"
     description: Asserts model-builder Helm Chart
-    digest: f75343a0c2001d577c2b0c652fa2341aad1cf635a17fbeed775e0a9302003b54
+    digest: f45f29d827991f91e8cf93ed025e1f085ecf6023dbc8871fa7d73be172e447b3
     name: model-builder
     type: application
     urls:
     - model-builder-0.1.0.tgz
     version: 0.1.0
-generated: "2020-04-03T10:53:07.101556-07:00"
+generated: "2020-04-04T14:52:52.353616-07:00"
