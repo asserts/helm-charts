@@ -51,6 +51,10 @@ resources: {}
 volume:
   baseDir: /opt/asserts/model-builder/conf
 
+configMap:
+  rules:
+    enabled: false
+
 nodeSelector: {}
 
 tolerations: []
