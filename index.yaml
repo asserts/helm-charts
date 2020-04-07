@@ -22,12 +22,12 @@ entries:
     version: 0.1.0
   model-builder:
   - apiVersion: v2
-    created: "2020-04-04T14:52:52.355724-07:00"
+    created: "2020-04-07T13:32:27.731473-07:00"
     description: Asserts model-builder Helm Chart
-    digest: f45f29d827991f91e8cf93ed025e1f085ecf6023dbc8871fa7d73be172e447b3
+    digest: e11d11845b3e96d1bed658a5fe6eee3a9669b2849a65ab17386f82ef2bbc20c7
     name: model-builder
     type: application
     urls:
     - model-builder-0.1.0.tgz
     version: 0.1.0
-generated: "2020-04-04T14:52:52.353616-07:00"
+generated: "2020-04-07T13:32:27.730881-07:00"

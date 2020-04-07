@@ -49,18 +49,21 @@ spec:
             mountPath: "{{ .Values.volume.baseDir }}/application.yml"
             subPath: application.yml
             readOnly: true
+          {{- if .Values.configMap.rules.enabled }}
           - name: rules-config
             mountPath: "{{ .Values.volume.baseDir }}/model_rules.yml"
             subPath: model_rules.yml
             readOnly: true
-
+          {{- end }}
       volumes:
       - name: app-config
         configMap:
           name: {{ include "model-builder.fullname" . }}
+      {{- if .Values.configMap.rules.enabled }}
       - name: rules-config
         configMap:
           name: {{ include "model-builder.fullname" . }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
