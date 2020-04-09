@@ -1,53 +1,54 @@
 # managed by Helm
 version: 1.0
 entities:
+  # Service from service label
   - type: "Service"
     definedBy:
-      pattern: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
-      labelForName: "service"
+      pattern: "count by (namespace, job) (up)"
+      labelsForName: ["namespace", "job"]
       properties:
+        namespace: "namespace"
+        service: "job"
+  # Jvm from springboot
   - type: "Jvm"
     definedBy:
-      pattern: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
-      labelForName: "instance"
+      pattern: "{__name__=\"jvm_gc_live_data_size_bytes\"}"
+      labelsForName: ["instance"]
       properties:
-        pod: "pod"
-        service: "service"
-  - type: "ServiceEndPoint"
-    definedBy:
-      pattern: "{__name__=\"jvm_gc_pause_seconds_count\",namespace=\"petclinic\"}"
-      labelForName: "endpoint"
-      properties:
-        service: "service"
-  - type: "Container"
-    definedBy:
-      pattern: "{__name__=\"container_cpu_cfs_periods_total\",namespace=\"petclinic\",container!=\"POD\"}"
-      labelForName: "container"
-      properties:
-        pod: "pod"
-        host: "instance"
+        namespace: "namespace"
+        instance: "instance"
+        service: ["namespace", "job"]
+  # Node from Springboot
   - type: "Node"
     definedBy:
-      pattern: "{__name__=\"node_cpu_seconds_total\",namespace=\"petclinic\"}"
-      labelForName: "instance"
+      pattern: "{__name__=\"jvm_gc_live_data_size_bytes\"}"
+      labelsForName: ["instance"]
       properties:
-# Redis service for standalone & cluster
+        namespace: "namespace"
+  # Node from node exporter
+  - type: "Node"
+    definedBy:
+      pattern: "{__name__=\"node_cpu_seconds_total\"}"
+      labelsForName: ["instance"]
+      properties:
+        namespace: "namespace"
+  # Redis service for standalone & cluster
   - type: "RedisService"
     definedBy:
-      pattern: "label_join(redis_instance_info, \"asserts_group\", \":\", \"namespace\", \"service\")"
-      labelForName: "asserts_group"
+      pattern: "{__name__=\"redis_instance_info\"}"
+      labelsForName: ["namespace", "service"]
       properties:
-        service: "service"
+        namespace: "namespace"
         redis_mode: "redis_mode"
-        asserts_group: "asserts_group"
   - type: "RedisInstance"
     definedBy:
-      pattern: "label_join(redis_instance_info, \"asserts_group\", \":\", \"namespace\", \"service\")"
-      labelForName: "pod"
+      pattern: "{__name__=\"redis_instance_info\"}"
+      labelsForName: ["pod"]
       properties:
+        namespace: "namespace"
         role: "role"
         redis_mode: "redis_mode"
-        asserts_group: "asserts_group"
+        service: ["namespace", "service"]
 
 relations:
   - type: CALLS
@@ -68,23 +69,15 @@ relations:
       endEntityNameLabel: "key"
   - type: HOSTS
     startEntityType: Node
-    endEntityType: Container
-    definedBy:
-      source: ENTITY_MATCH
-      matchOp: EQUALS
-      startPropertyLabel: name
-      endPropertyLabel: host
-  - type: RUNS_ON
-    startEntityType: Service
     endEntityType: Jvm
     definedBy:
       source: ENTITY_MATCH
       matchOp: EQUALS
       startPropertyLabel: name
-      endPropertyLabel: service
-  - type: HAS_SEP
+      endPropertyLabel: instance
+  - type: RUNS_ON
     startEntityType: Service
-    endEntityType: ServiceEndPoint
+    endEntityType: Jvm
     definedBy:
       source: ENTITY_MATCH
       matchOp: EQUALS
@@ -96,5 +89,6 @@ relations:
     definedBy:
       source: ENTITY_MATCH
       matchOp: EQUALS
-      startPropertyLabel: asserts_group
-      endPropertyLabel: asserts_group
+      startPropertyLabel: name
+      endPropertyLabel: service
+
