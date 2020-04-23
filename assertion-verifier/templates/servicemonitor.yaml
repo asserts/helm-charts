@@ -3,14 +3,14 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-{{- include "model-builder.labels" . | nindent 4 }}
-  name: {{ template "model-builder.fullname" . }}
+{{- include "assertion-verifier.labels" . | nindent 4 }}
+  name: {{ template "assertion-verifier.fullname" . }}
 {{- if .Values.serviceMonitor.namespace }}
   namespace: {{ .Values.serviceMonitor.namespace }}
 {{- end }}
 spec:
   endpoints:
-  - path: /model-builder/actuator/prometheus
+  - path: /assertion-verifier/actuator/prometheus
     port: http
 {{- if .Values.serviceMonitor.interval }}
     interval: {{ .Values.serviceMonitor.interval }}
@@ -29,11 +29,11 @@ spec:
     metricRelabelings: 
 {{ toYaml .Values.serviceMonitor.metricRelabelings | indent 6 }}
 {{- end }}
-  jobLabel: {{ template "model-builder.fullname" . }}
+  jobLabel: {{ template "assertion-verifier.fullname" . }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-{{- include "model-builder.selectorLabels" . | nindent 8 }}
+{{- include "assertion-verifier.selectorLabels" . | nindent 8 }}
 {{- end }}

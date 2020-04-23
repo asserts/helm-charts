@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "model-builder.fullname" . }}
+  name: {{ include "assertion-verifier.fullname" . }}
   labels:
-    {{- include "model-builder.labels" . | nindent 4 }}
+    {{- include "assertion-verifier.labels" . | nindent 4 }}
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "model-builder.selectorLabels" . | nindent 6 }}
+      {{- include "assertion-verifier.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "model-builder.selectorLabels" . | nindent 8 }}
+        {{- include "assertion-verifier.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "model-builder.serviceAccountName" . }}
+      serviceAccountName: {{ include "assertion-verifier.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -30,12 +30,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - name: http
-            containerPort: {{ .Values.service.port }}
-            protocol: TCP
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
           livenessProbe:
             httpGet:
-              path: /model-builder/ping
+              path: /assertion-verifier/ping
               port: http
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -43,7 +43,7 @@ spec:
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /model-builder/ping
+              path: /assertion-verifier/ping
               port: http
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -51,7 +51,7 @@ spec:
             failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        
+
           volumeMounts:
           {{- if .Values.configMap.app.enabled }}
           - name: app-config
@@ -59,22 +59,12 @@ spec:
             subPath: application.yml
             readOnly: true
           {{- end }}
-          {{- if .Values.configMap.rules.enabled }}
-          - name: rules-config
-            mountPath: "{{ .Values.volume.baseDir }}/model_rules.yml"
-            subPath: model_rules.yml
-            readOnly: true
-          {{- end }}
+
       volumes:
       {{- if .Values.configMap.app.enabled }}
       - name: app-config
         configMap:
-          name: {{ include "model-builder.fullname" . }}
-      {{- end }}
-      {{- if .Values.configMap.rules.enabled }}
-      - name: rules-config
-        configMap:
-          name: {{ include "model-builder.fullname" . }}
+          name: {{ include "assertion-verifier.fullname" . }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

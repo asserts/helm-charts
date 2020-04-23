@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: 105716418883.dkr.ecr.us-west-2.amazonaws.com/ai.asserts.assertion-detector
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: latest # override with --set image.tag=$TAG
 
 imagePullSecrets: []
@@ -66,6 +66,10 @@ resources: {}
 
 volume:
   baseDir: /opt/asserts/assertion-detector/conf
+
+configMap:
+  app:
+    enabled: true
 
 nodeSelector: {}
 
