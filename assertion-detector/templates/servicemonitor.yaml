@@ -12,8 +12,6 @@ spec:
   endpoints:
   - path: /assertion-detector/actuator/prometheus
     port: http
-  - path: /assertion-detector/assertion-metrics
-    port: http
 {{- if .Values.serviceMonitor.interval }}
     interval: {{ .Values.serviceMonitor.interval }}
 {{- end }}

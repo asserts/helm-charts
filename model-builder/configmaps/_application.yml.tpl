@@ -4,7 +4,7 @@ rules:
   path: "conf/model_rules.yml"
 
 server:
-  port: 8080
+  port: 8060
   servlet:
     context-path: "/model-builder"
 
@@ -13,6 +13,9 @@ management:
   endpoint:
     prometheus:
       enabled: true
+    info:
+      enabled: true
+  endpoints:
     web:
       exposure:
         include: "info, health, prometheus"

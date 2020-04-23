@@ -1,8 +1,8 @@
 # managed by Helm
 server:
-  port: 8040
+  port: 8030
   servlet:
-    context-path: "/assertion-detector"
+    context-path: "/assertion-verifier"
 
 # enable Prometheus metrics
 management:
