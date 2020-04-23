@@ -12,9 +12,9 @@ entries:
     version: 0.1.0
   assertion-verifier:
   - apiVersion: v2
-    created: "2020-04-23T12:46:56.289634-07:00"
+    created: "2020-04-23T13:04:48.244254-07:00"
     description: Asserts assertion-verifier Helm Chart
-    digest: 169767f4c4c48d04e528b391a62083c314c33dbe06ceecbd73620ed3f5523f89
+    digest: e9801a201f926aa599bd59fec9e08a116c04511c534ba1120384fce49902c5bc
     name: assertion-verifier
     type: application
     urls:

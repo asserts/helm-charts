@@ -16,11 +16,6 @@ management:
       exposure:
         include: "info, health, prometheus"
 
-# Application properties
-prometheus_client:
-  metric:
-    uri: "/assertion-metrics"
-
 neo4j:
   url: "bolt://ec2-52-25-196-133.us-west-2.compute.amazonaws.com:7687"
   user: "neo4j"
