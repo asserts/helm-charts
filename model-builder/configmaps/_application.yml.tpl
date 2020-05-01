@@ -1,7 +1,6 @@
 # managed by Helm
 rules:
-  source: FILE
-  path: "conf/model_rules.yml"
+  path: "file:///opt/asserts/model-builder/conf/model_rules/**/*.yml"
 
 server:
   port: 8060
