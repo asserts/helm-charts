@@ -21,6 +21,11 @@ neo4j:
   user: "neo4j"
   password: "i-05dc073078439197b"
 
+# exclude nulls from api responses
+spring:
+  jackson:
+    default-property-inclusion: NON_NULL
+
 logging:
   level:
     # Enable debug logging for all Asserts classes
