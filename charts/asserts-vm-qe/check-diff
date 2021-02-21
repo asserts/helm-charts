@@ -1,0 +1,5 @@
+#!/bin/bash
+
+helm diff upgrade asserts-vm-qe . \
+  --namespace qe \
+  $*

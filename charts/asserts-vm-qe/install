@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cluster=$(kubectl config view -o jsonpath='{.users[*].user.exec.args[5]}')
+
+if [[ "asserts-dev" =~ ${cluster} ]]; then
+  helm dep up .
+  helm upgrade --install asserts-vm-qe . \
+    --namespace qe \
+    --history-max 10 \
+    --debug \
+    --atomic \
+    --wait \
+    --timeout 5m \
+    $*
+else
+ echo "asserts-vm-qe can only be installed on asserts-dev cluster!"
+ exit 1
+fi 

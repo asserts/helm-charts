@@ -1,0 +1,54 @@
+vmctl:
+  name: vmctl
+  image:
+    repository: victoriametrics/vmctl
+    tag: v1.54.1
+    pullPolicy: IfNotPresent
+
+  resources: {}
+
+  sourceUrl: "http://vmselect.tsdb.svc:8481/select/0/prometheus"
+  destUrl: "http://victoria-metrics-0.victoria-metrics.qe.svc:8428"
+
+victoria-metrics-single:
+  server:
+    nameOverride: "victoria-metrics"
+    fullnameOverride: "victoria-metrics"
+
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: failure-domain.beta.kubernetes.io/zone
+                  operator: In
+                  values:
+                    - us-west-2b
+
+    retentionPeriod: 8d
+
+    persistentVolume:
+      size: 16Gi
+
+    resources:
+      limits:
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+
+      hosts:
+      - host: vm-qe.dev.asserts.ai
+        paths:
+        - /
+      tls:
+      - hosts:
+        - vm-qe.dev.asserts.ai
+    
+    serviceMonitor:
+      enabled: true
