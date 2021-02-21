@@ -8,35 +8,29 @@ The repository for Asserts Helm Charts packages and code.
 
 ## Deploying Charts
 
-There is a helm wrapper script in the root of the repository called `deploy-chart.sh` which can
-be run with:
-
 ```
-./deploy-chart.sh -c <chart_name> [-dir <directory>] [-n <namespace>] [-o <override>] [--force] [--debug] [--dry-run]
+helm upgrade [RELEASE] [CHART] [flags]
 ```
-
-This script will deploy a helm chart and roll back the deployment if unsuccessful by default. Can override with `-f, --force`.
-
-Run `./deploy-chart.sh -h` for a full description of arguments.
 
 ### Examples
 
 Deploy chart `model-builder` located in the current working dir to the `asserts` namespace:
 
 ```
-./deploy-chart.sh -c model-builder -n asserts
+helm upgrade --install model-builder path/to/model-builder --namespace asserts
 ```
 
 Deploy chart `assertion-detector` in directory `charts` to namespace `asserts` with `--force` in debug mode:
 
 ```
-./deploy-chart.sh -c assertion-detector -dir charts -n asserts --force --debug
+helm upgrade --install assertion-detector path/to/assertion-detector --namespace asserts --force --debug
 ```
 
-Deploy chart `fluentd` to namespace `monitoring` while providing an override for the `image.tag` value as well
+Deploy chart `fluent-bit` to namespace `monitoring` while providing an override for the `image.tag` value as well
 as providing a helm values file to process.
+
 ```
-./deploy-chart.sh -c fluentd -n monitoring -o "--set image.tag=v1.0" -o "-f myvalues.yaml"
+helm upgrade --install fluent-bit path/to/fluent-bit --namespace monitoring --set image.tag=v1.0 -f override-values.yaml
 ```
 
 ## Deleting Charts
