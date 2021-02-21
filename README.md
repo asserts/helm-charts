@@ -49,27 +49,7 @@ helm delete CHART_NAME
 
 ## Packaging Charts
 
-First run:
-
-```
-helm package CHART_NAME
-```
-
-This will generate a .tgz file named `CHART_NAME-VERSION.tgz`.
-
-Next update the index.yaml. This is used to point to the helm package in the remote repository:
-
-```
-$ helm repo index .
-```
-
-Add the new index and packages to git:
-
-```
-$ git add index.yaml CHART_NAME-VERSION.tgz
-$ git commit -m MESSAGE
-$ git push origin BRANCH
-```
+Charts automatically packaged and index updated by .github/workflows/release.yaml
 
 ## Adding Remote Repos
 
