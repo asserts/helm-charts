@@ -43,12 +43,12 @@ victoria-metrics-single:
         kubernetes.io/ingress.class: nginx
 
       hosts:
-      - host: vm-qe.dev.asserts.ai
+      - host: vm-qe.tsdb.dev.asserts.ai
         paths:
         - /
       tls:
       - hosts:
-        - vm-qe.dev.asserts.ai
+        - vm-qe.tsdb.dev.asserts.ai
     
     serviceMonitor:
       enabled: true
