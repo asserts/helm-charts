@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  asserts-vm-qe:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2021-02-22T04:44:33.47434937Z"
+    dependencies:
+    - name: victoria-metrics-single
+      repository: https://victoriametrics.github.io/helm-charts
+      version: 0.6.15
+    description: Asserts VictoriaMetrics QE Chart
+    digest: 57e8d1ea69b4fa1888e8c20415203c66fe6e8a0b606e884dedc3f7ced9c2fe26
+    name: asserts-vm-qe
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/asserts-vm-qe-0.1.0/asserts-vm-qe-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-02-22T04:44:32.99654519Z"
