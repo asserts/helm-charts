@@ -45,7 +45,7 @@ check_repo() {
   repo=$(helm repo list | grep "${repo_url}" | awk '{print $1}')
 
   if [ -z "${repo}" ]; then
-    repo="asserts-public"
+    repo="asserts"
     helm repo add ${repo} ${repo_url}
   fi
 
