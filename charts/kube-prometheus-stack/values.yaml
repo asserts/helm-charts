@@ -1,7 +1,8 @@
 tenant:
-  name: asserts
+  name: example
   createSecret: false
-  password:
+  password: ""
+
 
 kube-prometheus-stack:
   defaultRules:
@@ -36,6 +37,16 @@ kube-prometheus-stack:
       serviceMonitorSelectorNilUsesHelmValues: false
       retention: 30d
       walCompression: true
+      # tenant.createSecret must be true to use remoteWrite config
+      # remoteWrite:
+      #   - url: http://localhost:8428/api/v1/write
+      #     basicAuth:
+      #       password:
+      #         name: example-tsdb
+      #         key: password
+      #       username:
+      #         name: example-tsdb
+      #         key: username
       requests:
         resources:
           memory: "2.0Gi"

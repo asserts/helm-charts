@@ -1,0 +1,141 @@
+#!/bin/bash
+
+set -o nounset
+
+filename="$(basename "$0")"
+repo=""
+
+usage() {
+cat << USAGE
+  Usage:
+    ${filename} -t <tenant> [-p <password>] [-n <namespace>] [--dry-run]
+
+  Required Args:
+    -t <tenant>, --tenant <tenant>
+	The tenant name.
+
+  Optional Args:
+    -p <password>, --password <password>
+        The remote-write password. Will create the k8s secret
+        to authenticate with Asserts.
+
+    -n <namespace>, --namespace <namespace> (default "default")
+        The kubernetes namespace in which to deploy the chart.
+
+    --dry-run
+        Performs a dry run.
+
+  Example:
+    ${filename} -t bootstrap -p 'wi6y4@[;deR7xu]p' -n asserts --dry-run
+USAGE
+  exit
+}
+
+die() {
+    echo "ERROR: ${1}" >&2
+    usage
+    exit 1
+}
+
+# check asserts helm repo exists
+# else add it
+check_repo() {
+  local command
+  repo_url="https://asserts.github.io/helm-charts"
+  repo=$(helm repo list | grep "${repo_url}" | awk '{print $1}')
+
+  if [ -z "${repo}" ]; then
+    repo="asserts-public"
+    helm repo add ${repo} ${repo_url}
+  fi
+
+  helm repo update
+}
+
+# upgrade chart, else install if it does not exist.
+# set revision history limit to 10 in order to limit the number of objects kubernetes manages for the chart
+# atomic flag will roll back the deployment if it fails
+# wait will wait until the deployment is up and running healthy
+deploy_chart() {
+  local command
+  command="helm upgrade --install kube-prometheus-stack ${repo}/kube-prometheus-stack --namespace ${namespace} --history-max 10 --atomic --wait ${dry_run}"
+
+  if [ -z "${password}" ]; then
+    echo "Installing without remote-write password k8s secret"
+    echo
+  else
+    remote_write_field="kube-prometheus-stack.prometheus.prometheusSpec.remoteWrite[0]"
+    command="${command} --set \"tenant.createSecret=true\""
+    command="${command} --set \"tenant.name=${tenant}\""
+    command="${command} --set \"tenant.password=${password}\""
+    command="${command} --set \"${remote_write_field}.url=https://${tenant}.tsdb.dev.asserts.ai/api/v1/write\""
+    command="${command} --set \"${remote_write_field}.basicAuth.password.name=${tenant}-tsdb\""
+    command="${command} --set \"${remote_write_field}.basicAuth.password.key=password\""
+    command="${command} --set \"${remote_write_field}.basicAuth.password.name=${tenant}-tsdb\""
+    command="${command} --set \"${remote_write_field}.basicAuth.username.name=${tenant}-tsdb\""
+    command="${command} --set \"${remote_write_field}.basicAuth.username.key=username\""
+    echo "Installing with remote-write password k8s secret"
+    echo
+  fi
+
+  echo "Running: ${command}"
+  echo ${command} | /bin/bash
+}
+
+# initialize/defaults
+tenant=""
+password=""
+namespace="default"
+dry_run=""
+repo=""
+
+while [ $# -gt 0 ];
+do
+  case $1 in
+    -h|-\?|--help)
+      usage
+      ;;
+
+    # tenant name
+    -t|--tenant)
+      tenant="${2}"
+      shift
+      ;;
+
+    # the remote-write password
+    -p|--password)
+      password="${2}"
+      shift
+      ;;
+
+    # namespace to run in, context will be set here (default to default namespace)
+    -n|--namespace)
+      namespace="${2}"
+      kubectl config set-context --current --namespace=${namespace}
+      shift
+      ;;
+
+    # dry-run
+    --dry-run)
+      dry_run="--dry-run"
+      ;;
+
+    # Invalid option
+    \?)
+      die "invalid option ${2}"
+      ;;
+
+    # default case, break
+    *)
+      break
+  esac
+  shift
+done
+
+if [ -z "${tenant}" ]; then
+  die "-t tenant required."
+fi
+
+check_repo
+deploy_chart
+
