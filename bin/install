@@ -22,6 +22,9 @@ cat << USAGE
     -n <namespace>, --namespace <namespace> (default "default")
         The kubernetes namespace in which to deploy the chart.
 
+    -d <domain>, --domain <domain> (default "example.com")
+        The asserts domain to remote-write to.
+
     --dry-run
         Performs a dry run.
 
@@ -68,7 +71,7 @@ deploy_chart() {
     command="${command} --set \"tenant.createSecret=true\""
     command="${command} --set \"tenant.name=${tenant}\""
     command="${command} --set \"tenant.password=${password}\""
-    command="${command} --set \"${remote_write_field}.url=https://${tenant}.tsdb.dev.asserts.ai/api/v1/write\""
+    command="${command} --set \"${remote_write_field}.url=https://${tenant}.tsdb.${domain}/api/v1/write\""
     command="${command} --set \"${remote_write_field}.basicAuth.password.name=${tenant}-tsdb\""
     command="${command} --set \"${remote_write_field}.basicAuth.password.key=password\""
     command="${command} --set \"${remote_write_field}.basicAuth.password.name=${tenant}-tsdb\""
@@ -86,6 +89,7 @@ deploy_chart() {
 tenant=""
 password=""
 namespace="default"
+domain="example.com"
 dry_run=""
 repo=""
 
@@ -112,6 +116,12 @@ do
     -n|--namespace)
       namespace="${2}"
       kubectl config set-context --current --namespace=${namespace}
+      shift
+      ;;
+
+    # the domain to remote-write to
+    -d|--domain)
+      domain="${2}"
       shift
       ;;
 
