@@ -115,7 +115,6 @@ do
     # namespace to run in, context will be set here (default to default namespace)
     -n|--namespace)
       namespace="${2}"
-      kubectl config set-context --current --namespace=${namespace}
       shift
       ;;
 
