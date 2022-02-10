@@ -4,13 +4,13 @@ description: Asserts Helm Chart to configure kube-prometheus-stack
 
 type: application
 
-version: 0.2.0
+version: 0.1.0
 appVersion: 0.54.0
 
 dependencies:
-- name: kube-prometheus-stack
-  repository: https://prometheus-community.github.io/helm-charts
-  version: 32.2.0
+  - name: kube-prometheus-stack
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 32.2.0
 
 maintainers:
   - name: Asserts
