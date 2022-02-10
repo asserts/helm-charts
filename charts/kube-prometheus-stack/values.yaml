@@ -1,0 +1,44 @@
+tenant:
+  name: asserts
+  createSecret: false
+  password:
+
+kube-prometheus-stack:
+  defaultRules:
+    create: false
+  alertmanager:
+    enabled: false
+  grafana:
+    enabled: false
+  kubeApiServer:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kube-state-metrics:
+    metricLabelsAllowlist:
+      - nodes=[*]
+      - services=[app, app.kubernetes.io/name, k8s-app,
+                  component, app.kubernetes.io/component,
+                  eks.amazonaws.com/component, app.kubernetes.io/managed-by]
+      - pods=[app, app.kubernetes.io/name, k8s-app,
+              component, app.kubernetes.io/component,
+              eks.amazonaws.com/component, app.kubernetes.io/managed-by]
+  prometheusOperator:
+    admissionWebhooks:
+      failurePolicy: Ignore
+  prometheus:
+    prometheusSpec:
+      enableAdminAPI: true
+      serviceMonitorSelectorNilUsesHelmValues: false
+      retention: 30d
+      walCompression: true
+      requests:
+        resources:
+          memory: "2.0Gi"
+          cpu: "300m"
+        limits:
+          memory: "2.0Gi"
