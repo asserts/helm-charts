@@ -29,4 +29,22 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/asserts-vm-qe-0.1.0/asserts-vm-qe-0.1.0.tgz
     version: 0.1.0
-generated: "2021-02-22T04:44:32.99654519Z"
+  kube-prometheus-stack:
+  - apiVersion: v2
+    appVersion: 0.54.0
+    created: "2022-02-10T18:32:50.463455782Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 32.2.0
+    description: Asserts Helm Chart to configure kube-prometheus-stack
+    digest: 18e2673b26c413e6952eb8cda9ea886f49c4cc7a2c2d8f22f46eb8a98309cecd
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: kube-prometheus-stack
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.1.0/kube-prometheus-stack-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-02-10T18:32:50.463473082Z"
