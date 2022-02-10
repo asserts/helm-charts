@@ -32,6 +32,23 @@ entries:
   kube-prometheus-stack:
   - apiVersion: v2
     appVersion: 0.54.0
+    created: "2022-02-10T20:12:37.206993062Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 32.2.0
+    description: Asserts Helm Chart to configure kube-prometheus-stack
+    digest: 9ac409220a6c804b619515890a764196327d709d4c0cd468f96f5d9e1522f950
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: kube-prometheus-stack
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.2.0/kube-prometheus-stack-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 0.54.0
     created: "2022-02-10T18:32:50.463455782Z"
     dependencies:
     - name: kube-prometheus-stack
@@ -47,4 +64,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.1.0/kube-prometheus-stack-0.1.0.tgz
     version: 0.1.0
-generated: "2022-02-10T18:32:50.463473082Z"
+generated: "2022-02-10T20:12:37.207008863Z"
