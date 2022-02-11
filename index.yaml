@@ -32,6 +32,23 @@ entries:
   kube-prometheus-stack:
   - apiVersion: v2
     appVersion: 0.54.0
+    created: "2022-02-11T19:00:40.623190838Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 32.2.0
+    description: Asserts Helm Chart to configure kube-prometheus-stack
+    digest: 1c535f3f48009b0cdb9a611325bc6dde72f3f84c71c66858b6b0e959c633bd61
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: kube-prometheus-stack
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.7.0/kube-prometheus-stack-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v2
+    appVersion: 0.54.0
     created: "2022-02-11T18:39:54.158704454Z"
     dependencies:
     - name: kube-prometheus-stack
@@ -140,4 +157,24 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.1.0/kube-prometheus-stack-0.1.0.tgz
     version: 0.1.0
-generated: "2022-02-11T18:39:54.158734054Z"
+  spot-termination-exporter:
+  - apiVersion: v1
+    created: "2022-02-11T19:00:40.831464975Z"
+    description: Spot Termination exporter Helm chart for Kubernetes
+    digest: ba131ab1cebdc93505bdcce0b774d5ab28dd68ceac974abe3fc5bfd0a6efc54b
+    home: https://banzaicloud.com
+    keywords:
+    - spot
+    - aws
+    - lifecycle
+    - hollowtrees
+    maintainers:
+    - email: info@banzaicloud.com
+      name: Banzai Cloud
+    name: spot-termination-exporter
+    sources:
+    - https://github.com/banzaicloud/banzai-charts
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
+    version: 0.0.11
+generated: "2022-02-11T19:00:40.831509475Z"
