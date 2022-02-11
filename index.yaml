@@ -32,6 +32,27 @@ entries:
   kube-prometheus-stack:
   - apiVersion: v2
     appVersion: 0.54.0
+    created: "2022-02-11T18:23:40.263546015Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 32.2.0
+    - condition: spot-termination-exporter.enabled
+      name: spot-termination-exporter
+      repository: https://kubernetes-charts.banzaicloud.com
+      version: 0.0.11
+    description: Asserts Helm Chart to configure kube-prometheus-stack
+    digest: 21311dd43e0ffb5fa649252e9da0214ec4b1c9667dacb268a26b82c23a93ce97
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: kube-prometheus-stack
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.5.0/kube-prometheus-stack-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 0.54.0
     created: "2022-02-11T02:36:48.047531523Z"
     dependencies:
     - name: kube-prometheus-stack
@@ -98,4 +119,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.1.0/kube-prometheus-stack-0.1.0.tgz
     version: 0.1.0
-generated: "2022-02-11T02:36:48.04779152Z"
+generated: "2022-02-11T18:23:40.263598515Z"
