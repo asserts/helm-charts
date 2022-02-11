@@ -8,7 +8,7 @@ repo=""
 usage() {
 cat << USAGE
   Usage:
-    ${filename} -t <tenant> [-p <password>] [-n <namespace>] [--dry-run]
+    ./${filename} -t <tenant> [-p <password>] [-n <namespace>] [--spot-termination] [--dry-run]
 
   Required Args:
     -t <tenant>, --tenant <tenant>
@@ -25,11 +25,14 @@ cat << USAGE
     -d <domain>, --domain <domain> (default "example.com")
         The asserts domain to remote-write to.
 
+    --spot-termination
+        Enabled spot instance termination detection.
+
     --dry-run
         Performs a dry run.
 
   Example:
-    ${filename} -t bootstrap -p 'wi6y4@[;deR7xu]p' -n asserts --dry-run
+    ./${filename} -t bootstrap -p 'wi6y4@[;deR7xu]p' -n asserts --dry-run
 USAGE
   exit
 }
@@ -67,6 +70,10 @@ deploy_chart() {
     echo "Installing without remote-write password k8s secret"
     echo
   else
+    if [ -n "${spot_termination}" ]; then
+      command="${command} --set \"${spot_termination}\""
+    fi
+
     remote_write_field="kube-prometheus-stack.prometheus.prometheusSpec.remoteWrite[0]"
     command="${command} --set \"tenant.createSecret=true\""
     command="${command} --set \"tenant.name=${tenant}\""
@@ -91,6 +98,7 @@ password=""
 namespace="default"
 domain="example.com"
 dry_run=""
+spot_termination=""
 repo=""
 
 while [ $# -gt 0 ];
@@ -122,6 +130,11 @@ do
     -d|--domain)
       domain="${2}"
       shift
+      ;;
+
+    # spot-termination
+    --spot-termination)
+      spot_termination="spot-termination-exporter.enabled=true"
       ;;
 
     # dry-run

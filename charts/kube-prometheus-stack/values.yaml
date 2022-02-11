@@ -53,3 +53,6 @@ kube-prometheus-stack:
           cpu: "300m"
         limits:
           memory: "2.0Gi"
+
+spot-termination-exporter:
+  enabled: false
