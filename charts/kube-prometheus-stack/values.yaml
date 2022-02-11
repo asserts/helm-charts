@@ -58,5 +58,5 @@ spot-termination-exporter:
   enabled: false
   nameOverride: spot-termination-exporter
   spotTerminationexporter:
-    serviceMontor:
+    serviceMonitor:
       enabled: true
