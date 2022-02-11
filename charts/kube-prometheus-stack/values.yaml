@@ -54,6 +54,6 @@ kube-prometheus-stack:
         limits:
           memory: "2.0Gi"
 
-# spot-termination-exporter:
-#   enabled: false
-#   nameOverride: spot-termination-exporter
+spot-termination-exporter:
+  enabled: false
+  nameOverride: spot-termination-exporter
