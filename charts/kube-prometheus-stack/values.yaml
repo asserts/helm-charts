@@ -57,3 +57,5 @@ kube-prometheus-stack:
 spot-termination-exporter:
   enabled: false
   nameOverride: spot-termination-exporter
+  serviceMontor:
+    enabled: true
