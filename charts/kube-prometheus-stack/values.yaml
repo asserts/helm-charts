@@ -35,7 +35,7 @@ kube-prometheus-stack:
     prometheusSpec:
       enableAdminAPI: true
       serviceMonitorSelectorNilUsesHelmValues: false
-      retention: 30d
+      retention: 2h
       walCompression: true
       # tenant.createSecret must be true to use remoteWrite config
       # remoteWrite:
