@@ -1,0 +1,12 @@
+apiVersion: v2
+name: aws-autoscalinggroup-activity-exporter
+description: Asserts Helm Chart to configure aws-autoscalinggroup-activity-exporter
+
+type: application
+
+version: 0.1.0
+appVersion: v0.1.0
+
+maintainers:
+  - name: Asserts
+    url: https://github.com/asserts
