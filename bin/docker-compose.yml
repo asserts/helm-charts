@@ -1,0 +1,278 @@
+version: "3.9"
+
+volumes:
+  config:
+  prom-rules:
+  relabel-rules:
+  alertmanager:
+  tsdb:
+  rdb:
+  graph:
+  search:
+  fluentd:
+
+services:
+  jarvis:
+    image: asserts/jarvis.dev:v0.1.887
+    container_name: jarvis
+    restart: on-failure
+    depends_on:
+      - "authorization"
+      - "api-server"
+      - "fluentd"
+    ports:
+      - 80:80
+    environment:
+      - INTERCOM_ENABLED=false
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: jarvis
+
+  api-server:
+    image: asserts/api-server.dev:v0.2.18
+    container_name: api-server
+    restart: on-failure
+    depends_on:
+      - "authorization"
+      - "postgres"
+      - "redisearch"
+      - "redisgraph"
+      - "fluentd"
+    ports:
+      - 8030:8030
+    volumes:
+      - config:/opt/asserts/config
+      - prom-rules:/opt/asserts/prom-rules
+      - relabel-rules:/opt/asserts/relabel-rules
+    environment:
+      - ASSERTS_LICENSE_AUTH_TOKEN=$ASSERTS_LICENSE_AUTH_TOKEN
+      - ASSERTS_LICENSE_PRODUCT_ID=$ASSERTS_LICENSE_PRODUCT_ID
+      - ASSERTS_LICENSE_KEY=$ASSERTS_LICENSE_KEY
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: api-server
+
+  assertion-detector:
+    image: asserts/assertion-detector.dev:v0.2.18
+    container_name: assertion-detector
+    restart: on-failure
+    depends_on:
+      - "postgres"
+      - "redisgraph"
+      - "fluentd"
+    ports:
+      - 8040:8040
+    volumes:
+      - config:/opt/asserts/config
+    environment:
+      - ASSERTS_LICENSE_AUTH_TOKEN=$ASSERTS_LICENSE_AUTH_TOKEN
+      - ASSERTS_LICENSE_PRODUCT_ID=$ASSERTS_LICENSE_PRODUCT_ID
+      - ASSERTS_LICENSE_KEY=$ASSERTS_LICENSE_KEY
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: assertion-detector
+
+  model-builder:
+    image: asserts/model-builder.dev:v0.2.18
+    container_name: model-builder
+    restart: on-failure
+    depends_on:
+      - "postgres"
+      - "redisearch"
+      - "redisgraph"
+      - "fluentd"
+    ports:
+      - 8060:8060
+    volumes:
+      - config:/opt/asserts/config
+    environment:
+      - ASSERTS_LICENSE_AUTH_TOKEN=$ASSERTS_LICENSE_AUTH_TOKEN
+      - ASSERTS_LICENSE_PRODUCT_ID=$ASSERTS_LICENSE_PRODUCT_ID
+      - ASSERTS_LICENSE_KEY=$ASSERTS_LICENSE_KEY
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: model-builder
+
+  authorization:
+    image: asserts/authorization.dev:v0.2.18
+    container_name: authorization
+    restart: on-failure
+    depends_on:
+      - "postgres"
+      - "fluentd"
+    ports:
+      - 8070:8070
+    volumes:
+      - config:/opt/asserts/config
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: authorization
+    environment:
+      - ASSERTS_LICENSE_AUTH_TOKEN=$ASSERTS_LICENSE_AUTH_TOKEN
+      - ASSERTS_LICENSE_PRODUCT_ID=$ASSERTS_LICENSE_PRODUCT_ID
+      - ASSERTS_LICENSE_KEY=$ASSERTS_LICENSE_KEY
+
+  registration:
+    image: asserts/registration.dev:v0.2.18
+    container_name: registration
+    restart: on-failure
+    depends_on:
+      - "postgres"
+      - "fluentd"
+    ports:
+      - 8050:8050
+    volumes:
+      - config:/opt/asserts/config
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: registration
+    environment:
+      - ASSERTS_LICENSE_AUTH_TOKEN=$ASSERTS_LICENSE_AUTH_TOKEN
+      - ASSERTS_LICENSE_PRODUCT_ID=$ASSERTS_LICENSE_PRODUCT_ID
+      - ASSERTS_LICENSE_KEY=$ASSERTS_LICENSE_KEY
+
+  redisearch-exporter:
+    image: asserts/redisearch-exporter.dev:v1.0.1
+    container_name: redisearch-exporter
+    restart: on-failure
+    ports:
+      - 9121
+
+  redisgraph-exporter:
+    image: asserts/redisgraph-exporter.dev:v1.0.1
+    container_name: redisgraph-exporter
+    restart: on-failure
+    ports:
+      - 9121
+
+  postgres-exporter:
+    image: asserts/postgres-exporter.dev:v1.0.0
+    container_name: postgres-exporter
+    restart: on-failure
+    ports:
+      - 9187
+
+  grafana:
+    image: asserts/grafana.dev:v1.0.58
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: always
+    depends_on:
+      - "fluentd"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: grafana
+
+  alertmanager:
+    image:  asserts/alertmanager.dev:v1.0.0
+    container_name: alertmanager
+    restart: always
+    depends_on:
+      - "assertion-detector"
+      - "fluentd"
+    ports:
+      - 9093:9093
+    volumes:
+      - alertmanager:/alertmanager:rw
+
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: alertmanager
+
+  vmalert:
+    image: asserts/vmalert.dev:v1.0.2
+    container_name: vmalert
+    restart: always
+    depends_on:
+      - "victoriametrics"
+      - "alertmanager"
+      - "fluentd"
+    ports:
+      - 8880:8880
+    volumes:
+      - prom-rules:/etc/asserts:ro
+
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: vmalert
+
+  victoriametrics:
+    image: asserts/victoria-metrics.dev:v1.0.5
+    container_name: victoriametrics
+    restart: always
+    depends_on:
+      - "fluentd"
+    ports:
+      - 8428:8428
+    volumes:
+      - tsdb:/storage:rw
+      - relabel-rules:/etc/asserts:ro
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        tag: victoria-metrics
+
+  postgres:
+    image: asserts/postgres.dev:v1.0.0
+    container_name: postgres
+    restart: on-failure
+    ports:
+      - 5432
+    volumes:
+      - rdb:/var/lib/postgresql/data:rw
+
+  redisearch:
+    image: asserts/redisearch.dev:v1.0.1
+    container_name: redisearch
+    restart: on-failure
+    volumes:
+      - search:/data:rw
+    ports:
+      - 6379
+
+  redisgraph:
+    image: asserts/redisgraph.dev:v1.0.1
+    container_name: redisgraph
+    restart: on-failure
+    volumes:
+      - graph:/data:rw
+    ports:
+      - 6379
+
+  fluentd:
+    image: asserts/fluentd.dev:v1.0.3
+    container_name: fluentd
+    restart: on-failure
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - fluentd:/fluentd/log
+
+  collect-logs:
+    image: asserts/collect-logs.dev:v1.0.3
+    volumes:
+      - fluentd:/fluentd/log
+      - ./:/logs
+    profiles:
+      - tools

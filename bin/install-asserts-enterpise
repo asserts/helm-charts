@@ -1,0 +1,145 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+filename="$(basename "$0")"
+
+usage() {
+cat << USAGE
+  Usage:
+    ./${filename} -t <tenant> --docker-user <docker_user> --docker-password <docker_password>
+
+  Required Args:
+    -t <tenant>, --tenant <tenant>
+        The tenant name.
+
+    --docker-user <docker_user>
+        The docker username to authenticate to Asserts Docker Hub.
+
+    --docker-password <docker_password>
+        The docker username to authenticate to Asserts Docker Hub.
+
+  Example:
+    ./${filename} -t bootstrap --docker-user docker --docker-password secret-password
+USAGE
+  exit
+}
+
+die() {
+    echo "ERROR: ${1}" >&2
+    usage
+    exit 1
+}
+
+# check and create symlink if does not exist
+check_and_create_link() {
+  new=${1}
+  old=${2}
+
+  if [ ! -L ${new} ]; then
+    sudo ln -s ${old} ${new}
+  else
+    echo "Link ${new} exists"
+  fi
+}
+
+# install docker
+install_docker() {
+  sudo amazon-linux-extras install docker -y
+  sudo service docker start
+  sudo usermod -a -G docker ec2-user
+}
+
+# install docker-compose
+install_docker_compose() {
+  sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+  check_and_create_link /usr/bin/docker-compose /usr/local/bin/docker-compose
+}
+
+# setup env for docker
+setup_env() {
+  # TODO: Check if .env file exists first ?
+  #       Updates won't need this set
+  #       COMPOSE_PROJECT_NAME always Asserts?
+  #       Also if set -o nounset is left at the top, no need to check
+  if [ -z ${ASSERTS_LICENSE_AUTH_TOKEN} ]; then
+    die "ASSERTS_LICENSE_AUTH_TOKEN unset!"
+  elif [ -z ${ASSERTS_LICENSE_PRODUCT_ID} ]; then
+    die "ASSERTS_LICENSE_PRODUCT_ID unset!"
+  elif [ -z ${ASSERTS_LICENSE_KEY} ]; then
+    die "ASSERTS_LICENSE_KEY unset!"
+  else
+cat << ENV_VARS > .env
+COMPOSE_PROJECT_NAME=Asserts
+ASSERTS_LICENSE_AUTH_TOKEN=${ASSERTS_LICENSE_AUTH_TOKEN}
+ASSERTS_LICENSE_PRODUCT_ID=${ASSERTS_LICENSE_PRODUCT_ID}
+ASSERTS_LICENSE_KEY=${ASSERTS_LICENSE_KEY}
+ENV_VARS
+  fi
+}
+
+download_and_run_app() {
+  curl -o https://raw.githubusercontent.com/asserts/helm-charts/master/bin/docker-compose.yml
+  docker-compose up -d
+}
+
+# initialize/defaults
+tenant=""
+docker_user=""
+docker_password=""
+
+while [ $# -gt 0 ];
+do
+  case $1 in
+    -h|-\?|--help)
+      usage
+      ;;
+
+    # tenant name
+    -t|--tenant)
+      tenant="${2}"
+      shift
+      ;;
+
+    # docker user
+    --docker-user)
+      docker_user="${2}"
+      shift
+      ;;
+
+    # docker password
+    --docker-password)
+      docker_password="${2}"
+      shift
+      ;;
+
+    # Invalid option
+    \?)
+      die "invalid option ${2}"
+      ;;
+
+    # default case, break
+    *)
+      break
+  esac
+  shift
+done
+
+if [ -z "${tenant}" ]; then
+  die "-t <tenant> required."
+elif [ -z "${docker_user}" ]; then
+  die "--docker-user <docker_user> required."
+elif [ -z "${docker_password}" ]; then
+  die "--docker-password <docker_password> required."
+fi
+
+# update package-manager
+sudo yum update -y
+
+install_docker
+install_docker_compose
+docker login -u ${docker_user} -p ${docker_password}
+setup_env
+download_and_run_app
