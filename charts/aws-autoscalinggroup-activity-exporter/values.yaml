@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: asserts/aws-autoscalinggroup-activity-exporter.dev
+  repository: asserts/aws-autoscalinggroup-activity-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag:
@@ -90,7 +90,7 @@ config: |
   #     value: "owned"
   #   - key: "eks:nodegroup-name"
   #     value: "my-spot-nodegroup"
-  # causes can be customized, reason become prometheus metric label
+  # causes can be customized, reason becomes prometheus metric label
   causes:
     - pattern: ".*Spot Instance interruption notice.*"
       reason: "interrupt"

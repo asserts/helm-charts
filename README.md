@@ -1,118 +1,26 @@
-# Asserts Helm Charts
+# Asserts Kubernetes Helm Charts
 
-The repository for Asserts Helm Charts packages and code.
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Release Charts](https://github.com/asserts/helm-charts/workflows/Release%20Charts/badge.svg?branch=master)
 
-## Requirements
 
-* `helm` version >= 3.0 (`brew install helm`)
+## Usage
 
-## Deploying Charts
+[Helm](https://helm.sh) must be installed to use the charts.
+Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
-```
-helm upgrade [RELEASE] [CHART] [flags]
-```
+Once Helm is set up properly, add the repo as follows:
 
-### Examples
-
-Deploy chart `model-builder` located in the current working dir to the `asserts` namespace:
-
-```
-helm upgrade --install model-builder path/to/model-builder --namespace asserts
+```console
+helm repo add asserts https://asserts.github.io/helm-charts
 ```
 
-Deploy chart `assertion-detector` in directory `charts` to namespace `asserts` with `--force` in debug mode:
+You can then run `helm search repo asserts` to see the charts.
 
-```
-helm upgrade --install assertion-detector path/to/assertion-detector --namespace asserts --force --debug
-```
+## License
 
-Deploy chart `fluent-bit` to namespace `monitoring` while providing an override for the `image.tag` value as well
-as providing a helm values file to process.
+<!-- Keep full URL links to repo files because this README syncs from master to gh-pages.  -->
+[Apache 2.0 License](https://github.com/asserts/helm-charts/blob/master/LICENSE).
 
-```
-helm upgrade --install fluent-bit path/to/fluent-bit --namespace monitoring --set image.tag=v1.0 -f override-values.yaml
-```
+## Helm charts build status
 
-## Deleting Charts
-
-```
-helm uninstall CHART_NAME
-```
-
-or
-
-```
-helm delete CHART_NAME
-```
-
-`helm uninstall --help` for more options.
-
-## Packaging Charts
-
-Charts automatically packaged and index updated by .github/workflows/release.yaml
-
-## Adding Remote Repos
-
-This shows how to add:
-
-* The Asserts Helm Chart Repository
-* Public Repositories
-
-### Asserts Helm Charts Repo
-
-You will need to create a personal github access token by going to https://github.com/settings/tokens
-and selecting "Generate new token".
-
-Give it the name `helm-charts` or other identifier you may want to use.
-
-Assign the following permissions:
-
-```
-read:org, read:packages, read:repo_hook, read:user, repo, write:packages
-```
-
-To add the Asserts Helm Charts repo for your local client, run:
-
-```
-$ helm repo add asserts-helm-charts "https://$TOKEN@raw.githubusercontent.com/asserts/helm-charts/master/"
-"asserts-helm-charts" has been added to your repositories
-```
-
-Test with:
-
-```
-$ helm repo list
-NAME               	URL
-asserts-helm-charts	https://REDACTED-TOKEN@raw.githubusercontent.com/asserts/helm-charts/master/
-```
-
-or
-
-```
-$ helm search repo asserts
-NAME                                  	CHART VERSION	APP VERSION	DESCRIPTION
-asserts-helm-charts/assertion-detector	0.2.0        	20.3.0     	Asserts assertion-detector Helm Chart
-asserts-helm-charts/metric-generator  	0.2.0        	20.3.0     	A Helm chart for Kubernetes
-asserts-helm-charts/model-builder     	0.2.0        	20.3.0     	A Helm chart for Kubernetes
-```
-
-### Public Stable Helm Charts Repo
-
-```
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
-"stable" has been added to your repositories
-```
-
-```
-$ helm repo list
-NAME               	URL
-stable             	https://kubernetes-charts.storage.googleapis.com/
-asserts-helm-charts	https://REDACTED-TOKEN@raw.githubusercontent.com/asserts/helm-charts/master/
-```
-
-```
-$ helm search repo stable/fluentd
-NAME                        	CHART VERSION	APP VERSION	DESCRIPTION
-stable/fluentd              	2.4.0        	v2.4.0     	A Fluentd Elasticsearch Helm chart for Kubernetes.
-stable/fluentd-elasticsearch	2.0.7        	2.3.2      	DEPRECATED! - A Fluentd Helm chart for Kubernet...
-```
+![Release Charts](https://github.com/asserts/helm-charts/workflows/Release%20Charts/badge.svg?branch=master)
