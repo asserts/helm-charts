@@ -24,7 +24,7 @@ Ex: Running in AWS Region `us-west-2` while only looking at AutoScalingGroups wi
 
 using values file `dev-values.yaml`:
 
-```
+```console
 region: us-west-2
 config: |
   # autoscaling groups to discover by tag
@@ -49,5 +49,5 @@ helm upgrade --install [RELEASE_NAME] asserts/aws-autoscalinggroup-activity-expo
 To see all configurable options with detailed comments, visit the chart's [values.yaml](./values.yaml), or run these configuration commands:
 
 ```console
-$ helm show values asserts/aws-autoscalinggroup-activity-exporter
+helm show values asserts/aws-autoscalinggroup-activity-exporter
 ```
