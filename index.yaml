@@ -281,6 +281,20 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.1.0/kube-prometheus-stack-0.1.0.tgz
     version: 0.1.0
+  promxy:
+  - apiVersion: v2
+    appVersion: v0.0.75
+    created: "2022-02-25T05:22:21.872935206Z"
+    description: Helm Chart for Prometheus proxy to combine multiple prometheuses
+    digest: 8ebcb5c8964b6bf7b3ae7a916894f444db1432648cbae8ccd31295a603c9a8c1
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: promxy
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/promxy-0.1.0/promxy-0.1.0.tgz
+    version: 0.1.0
   spot-termination-exporter:
   - apiVersion: v1
     created: "2022-02-11T19:00:40.831464975Z"
@@ -301,4 +315,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-02-25T00:16:42.041420053Z"
+generated: "2022-02-25T05:22:21.872969706Z"
