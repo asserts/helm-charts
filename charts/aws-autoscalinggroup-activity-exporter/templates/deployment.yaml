@@ -27,6 +27,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
+          args:
+            - "--region {{ .Values.region }}"
           env:
           {{- range $key, $val := .Values.env }}
             - name: {{ $key }}
