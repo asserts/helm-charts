@@ -72,6 +72,9 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+extraVolumeMounts: {}
+extraVolumes: {}
+
 extraArgs:
   log-level: "info"
 
