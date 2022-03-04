@@ -75,11 +75,9 @@ check_repo() {
 
 # upgrade chart, else install if it does not exist.
 # set revision history limit to 10 in order to limit the number of objects kubernetes manages for the chart
-# atomic flag will roll back the deployment if it fails
-# wait will wait until the deployment is up and running healthy
 deploy_chart() {
   local command
-  command="helm upgrade --install kube-prometheus-stack ${repo}/kube-prometheus-stack --namespace ${namespace} --history-max 10 --atomic --wait ${dry_run}"
+  command="helm upgrade --install kube-prometheus-stack ${repo}/kube-prometheus-stack --namespace ${namespace} --history-max 10 ${dry_run}"
 
   if [ -z "${password}" ]; then
     echo "Installing without remote-write password k8s secret"
