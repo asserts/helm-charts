@@ -88,7 +88,7 @@ deploy_chart() {
     if [ -n "${autoscaling_activity_exporter}" ]; then
       command="${command} --set \"${autoscaling_activity_exporter}.enabled=true\""
       if [ -n "${region}" ]; then
-        command="${command} --set \"${autoscaling_activity_exporter}.regions=${region}\""
+        command="${command} --set \"${autoscaling_activity_exporter}.region=${region}\""
       fi
     fi
 
