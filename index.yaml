@@ -85,6 +85,27 @@ entries:
   kube-prometheus-stack:
   - apiVersion: v2
     appVersion: 0.54.0
+    created: "2022-03-04T01:39:14.307236906Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 32.2.0
+    - condition: aws-autoscalinggroup-activity-exporter.enabled
+      name: aws-autoscalinggroup-activity-exporter
+      repository: https://asserts.github.io/helm-charts
+      version: 0.4.0
+    description: Asserts Helm Chart to configure kube-prometheus-stack
+    digest: da442661939824dcf084787ac00f8ff6b014c14ce6972825f7460165537ea732
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: kube-prometheus-stack
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.13.0/kube-prometheus-stack-0.13.0.tgz
+    version: 0.13.0
+  - apiVersion: v2
+    appVersion: 0.54.0
     created: "2022-03-04T01:36:33.231474906Z"
     dependencies:
     - name: kube-prometheus-stack
@@ -362,4 +383,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-03-04T01:36:33.23175291Z"
+generated: "2022-03-04T01:39:14.307355706Z"
