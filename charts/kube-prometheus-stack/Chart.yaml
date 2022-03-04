@@ -4,17 +4,17 @@ description: Asserts Helm Chart to configure kube-prometheus-stack
 
 type: application
 
-version: 0.11.0
+version: 0.12.0
 appVersion: 0.54.0
 
 dependencies:
   - name: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
     version: 32.2.0
-  - name: spot-termination-exporter
+  - name: aws-autoscalinggroup-activity-exporter
     repository: https://asserts.github.io/helm-charts
-    version: 0.0.11
-    condition: spot-termination-exporter.enabled
+    version: 0.1.0
+    condition: aws-autoscalinggroup-activity-exporter.enabled
 
 maintainers:
   - name: Asserts

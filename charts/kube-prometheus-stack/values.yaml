@@ -54,9 +54,7 @@ kube-prometheus-stack:
         limits:
           memory: "2.0Gi"
 
-spot-termination-exporter:
+aws-autoscalinggroup-activity-exporter:
   enabled: false
-  nameOverride: spot-termination-exporter
-  spotTerminationexporter:
-    serviceMonitor:
-      enabled: true
+  nameOverride: aws-autoscalinggroup-activity-exporter
+  fullnameOverride: aws-autoscalinggroup-activity-exporter
