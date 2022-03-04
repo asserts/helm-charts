@@ -2,13 +2,21 @@
 
 set -o nounset
 
+# initialize/defaults
 filename="$(basename "$0")"
 repo=""
+tenant=""
+password=""
+namespace="default"
+domain="example.com"
+dry_run=""
+autoscaling_activity_exporter=""
+region=""
 
 usage() {
 cat << USAGE
   Usage:
-    ./${filename} -t <tenant> [-p <password>] [-n <namespace>] [--spot-termination] [--dry-run]
+    ./${filename} -t <tenant> [-p <password>] [-n <namespace>] [-d <domain>] [-r <region>] [--autoscaling-activity-exporter] [--dry-run]
 
   Required Args:
     -t <tenant>, --tenant <tenant>
@@ -25,14 +33,21 @@ cat << USAGE
     -d <domain>, --domain <domain> (default "example.com")
         The asserts domain to remote-write to.
 
-    --spot-termination
-        Enabled spot instance termination detection.
+    -r <region>, --region <region>
+        The AWS region. Needed if installing AWS related components.
+
+    --autoscaling-activity-exporter
+        Enabled AWS autoscalinggroup activity exporter.
 
     --dry-run
         Performs a dry run.
 
   Example:
+    # install with authentication and dry-run
     ./${filename} -t bootstrap -p 'wi6y4@[;deR7xu]p' -n asserts --dry-run
+
+    # install with authentication and aws-autoscalinggroup-exporter running in us-west-2
+    ./${filename} -t bootstrap -p 'wi6y4@[;deR7xu]p' -n asserts -r us-west-2 --autoscaling-activity-exporter
 USAGE
   exit
 }
@@ -70,8 +85,11 @@ deploy_chart() {
     echo "Installing without remote-write password k8s secret"
     echo
   else
-    if [ -n "${spot_termination}" ]; then
-      command="${command} --set \"${spot_termination}\""
+    if [ -n "${autoscaling_activity_exporter}" ]; then
+      command="${command} --set \"${autoscaling_activity_exporter}.enabled=true\""
+      if [ -n "${region}" ]; then
+        command="${command} --set \"${autoscaling_activity_exporter}.region=${region}\""
+      fi
     fi
 
     remote_write_field="kube-prometheus-stack.prometheus.prometheusSpec.remoteWrite[0]"
@@ -91,15 +109,6 @@ deploy_chart() {
   echo "Running: ${command}"
   echo ${command} | /bin/bash
 }
-
-# initialize/defaults
-tenant=""
-password=""
-namespace="default"
-domain="example.com"
-dry_run=""
-spot_termination=""
-repo=""
 
 while [ $# -gt 0 ];
 do
@@ -132,9 +141,15 @@ do
       shift
       ;;
 
-    # spot-termination
-    --spot-termination)
-      spot_termination="spot-termination-exporter.enabled=true"
+    # the AWS region
+    -r|--region)
+      region="${2}"
+      shift
+      ;;
+
+    # AWS autoscaling-activity-exporter
+    --autoscaling-activity-exporter)
+      autoscaling_activity_exporter="aws-autoscalinggroup-activity-exporter"
       ;;
 
     # dry-run
@@ -143,13 +158,9 @@ do
       ;;
 
     # Invalid option
-    \?)
-      die "invalid option ${2}"
+    *|\?)
+      die "invalid option ${1}"
       ;;
-
-    # default case, break
-    *)
-      break
   esac
   shift
 done

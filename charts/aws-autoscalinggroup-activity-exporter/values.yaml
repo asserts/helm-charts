@@ -80,7 +80,7 @@ affinity: {}
 # https://github.com/asserts/aws-autoscalinggroup-activity-exporter/blob/main/README.md
 
 # AWS Region (required)
-region: default-region
+region:
 
 config: |
   # tags optional, else will discover ALL AutoScalingGroups in region
