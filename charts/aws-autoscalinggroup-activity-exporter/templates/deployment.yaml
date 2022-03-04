@@ -28,7 +28,8 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           args:
-            - "--region {{ .Values.region }}"
+            - "--region={{ .Values.region }}"
+            - "--port={{ .Values.service.port }}"
           env:
           {{- range $key, $val := .Values.env }}
             - name: {{ $key }}
@@ -40,7 +41,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: config
-              mountPath: '/app/conf/config.yaml'
+              mountPath: "{{ .Values.confPath }}/config.yaml"
               subPath: config.yaml
               readOnly: true
           ports:
