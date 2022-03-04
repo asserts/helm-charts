@@ -82,7 +82,7 @@ affinity: {}
 # AWS Region (required)
 region:
 
-confPath: /opt/aws-autoscalinggroup-activity-exporter/aws_autoscalinggroup_activity_exporter
+confPath: /opt/aws-autoscalinggroup-activity-exporter/aws_autoscalinggroup_activity_exporter/conf
 
 config: |
   # tags optional, else will discover ALL AutoScalingGroups in region
