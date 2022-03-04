@@ -31,6 +31,19 @@ entries:
     version: 0.1.0
   aws-autoscalinggroup-activity-exporter:
   - apiVersion: v2
+    appVersion: v0.1.8
+    created: "2022-03-04T01:36:33.027623693Z"
+    description: Asserts Helm Chart to configure aws-autoscalinggroup-activity-exporter
+    digest: 5a17c16096bb4b201198fc2384de6f1a75d525b71c475d28467e578290085c27
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: aws-autoscalinggroup-activity-exporter
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/aws-autoscalinggroup-activity-exporter-0.4.0/aws-autoscalinggroup-activity-exporter-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
     appVersion: v0.1.3
     created: "2022-02-25T00:16:42.041359853Z"
     description: Asserts Helm Chart to configure aws-autoscalinggroup-activity-exporter
@@ -70,6 +83,27 @@ entries:
     - https://github.com/asserts/helm-charts/releases/download/aws-autoscalinggroup-activity-exporter-0.1.0/aws-autoscalinggroup-activity-exporter-0.1.0.tgz
     version: 0.1.0
   kube-prometheus-stack:
+  - apiVersion: v2
+    appVersion: 0.54.0
+    created: "2022-03-04T01:36:33.231474906Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 32.2.0
+    - condition: aws-autoscalinggroup-activity-exporter.enabled
+      name: aws-autoscalinggroup-activity-exporter
+      repository: https://asserts.github.io/helm-charts
+      version: 0.3.0
+    description: Asserts Helm Chart to configure kube-prometheus-stack
+    digest: 0872a780ec609052221eead94373ad716a02795fd15558c7ccbefec60d4ef866
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: kube-prometheus-stack
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.12.0/kube-prometheus-stack-0.12.0.tgz
+    version: 0.12.0
   - apiVersion: v2
     appVersion: 0.54.0
     created: "2022-02-11T19:41:36.098374888Z"
@@ -328,4 +362,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-03-01T19:06:07.173401316Z"
+generated: "2022-03-04T01:36:33.23175291Z"
