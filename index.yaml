@@ -32,6 +32,19 @@ entries:
   aws-autoscalinggroup-activity-exporter:
   - apiVersion: v2
     appVersion: v0.1.8
+    created: "2022-03-04T01:56:04.549395612Z"
+    description: Asserts Helm Chart to configure aws-autoscalinggroup-activity-exporter
+    digest: 812b63684f473501d5de461fb79b6db8b1268b5bfb523ba1456f832ed2cf0a4b
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: aws-autoscalinggroup-activity-exporter
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/aws-autoscalinggroup-activity-exporter-0.5.0/aws-autoscalinggroup-activity-exporter-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: v0.1.8
     created: "2022-03-04T01:36:33.027623693Z"
     description: Asserts Helm Chart to configure aws-autoscalinggroup-activity-exporter
     digest: 5a17c16096bb4b201198fc2384de6f1a75d525b71c475d28467e578290085c27
@@ -383,4 +396,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-03-04T01:39:14.307355706Z"
+generated: "2022-03-04T01:56:04.549548613Z"
