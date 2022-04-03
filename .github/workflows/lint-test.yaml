@@ -8,9 +8,11 @@ jobs:
 
     strategy:
       matrix:
+        # These are the kind node images representing the
+        # k8s versions to be tested in the "Create kind cluster" step
         k8s-version:
-          - k8s-versions/v1.18.19.yaml
-          - k8s-versions/v1.21.1.yaml
+          - kindest/node:v1.18.19@sha256:7af1492e19b3192a79f606e43c35fb741e520d195f96399284515f077b3b622c
+          - kindest/node:v1.21.1@sha256:69860bda5563ac81e3c0057d654b5253219618a22ec3a346306239bba8cfa1a6
 
     steps:
       - name: Checkout
@@ -51,9 +53,9 @@ jobs:
         with:
           # https://github.com/kubernetes-sigs/kind/releases/tag/v0.11.1
           version: v0.11.1
-          # Versions in k8s-versions directory and setup in strategy.matrix
+          # node_image of the k8s-versions in strategy.matrix
           # block at the top of this file
-          config: ${{ matrix.k8s-version }}
+          node_image: ${{ matrix.k8s-version }}
         if: steps.list-changed.outputs.changed == 'true'
 
       - name: Run chart-testing (install)
