@@ -5,6 +5,13 @@ on: pull_request
 jobs:
   lint-test:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        k8s-version:
+          - k8s-versions/v1.18.19.yaml
+          - k8s-versions/v1.21.1.yaml
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -41,6 +48,12 @@ jobs:
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
+        with:
+          # https://github.com/kubernetes-sigs/kind/releases/tag/v0.11.1
+          version: v0.11.1
+          # Versions in k8s-versions directory and setup in strategy.matrix
+          # block at the top of this file
+          config: ${{ matrix.k8s-version }}
         if: steps.list-changed.outputs.changed == 'true'
 
       - name: Run chart-testing (install)
