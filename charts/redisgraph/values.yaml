@@ -92,7 +92,7 @@ master:
   extraVolumeMounts: {}
 
   persistence:
-    enabled: false
+    enabled: true
     path: /data
 
     ## Persistent Volume storage class

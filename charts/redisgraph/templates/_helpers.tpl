@@ -67,7 +67,7 @@ Return  the proper Storage Class
 */}}
 {{- define "redisgraph.storageClass" -}}
 
-{{- $storageClass := .Values.persistence.storageClass -}}
+{{- $storageClass := .Values.master.persistence.storageClass -}}
 {{- if $storageClass -}}
   {{- if (eq "-" $storageClass) -}}
       {{- printf "storageClassName: \"\"" -}}
