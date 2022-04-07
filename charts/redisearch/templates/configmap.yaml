@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "redisearch.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "redisearch.labels" . | nindent 4 }}
+    {{- with .Values.extraLabels }}
+    {{- toYaml . | nindent 4 -}}
+    {{- end }}
+  {{- if .Values.annotations }}
+  annotations:
+  {{- toYaml .Values.annotations | nindent 4 -}}
+  {{- end }}
+data:
+  redis.conf: |-
+    dir /data
+    # Enable AOF https://redis.io/topics/persistence#append-only-file
+    appendonly yes
+    # Disable RDB persistence, AOF persistence already enabled.
+    save ""
+    # Enable Slowlog
+    slowlog-log-slower-than 10000
+    slowlog-max-len 1000
+    {{- if .Values.disableCommands }}
+    {{- range .Values.disableCommands }}
+    rename-command {{ . }} ""
+    {{- end }}
+    {{- end }}
+

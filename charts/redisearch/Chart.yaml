@@ -1,0 +1,10 @@
+apiVersion: v2
+type: application
+name: redisearch
+description: Helm Chart for redisearch
+icon: https://www.asserts.ai/favicon.png
+version: 0.1.0
+appVersion: 2.0.6
+maintainers:
+  - name: Asserts
+    url: https://github.com/asserts

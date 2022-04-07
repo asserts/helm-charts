@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "redisgraph.fullname" . }}
+  labels: {{- include "redisgraph.labels" . | nindent 4 }}
+    {{- with .Values.extraLabels }}
+    {{- toYaml . | nindent 4 -}}
+    {{- end }}
+  {{- if .Values.annotations }}
+  annotations:
+  {{- toYaml .Values.annotations | nindent 4 -}}
+  {{- end }}
+spec:
+  type: {{ .Values.master.service.type }}
+  ports:
+    - port: {{ .Values.master.service.port }}
+      targetPort: {{ .Values.master.containerPort }}
+      protocol: TCP
+      name: redis
+    - port: {{ .Values.metrics.service.port }}
+      targetPort: {{ .Values.metrics.containerPort }}
+      protocol: TCP
+      name: metrics
+  selector: {{- include "redisgraph.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,137 @@
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+rbac:
+  create: true
+
+podSecurityContext:
+  fsGroup: 1001
+
+serviceAccount:
+  create: true
+  ## The name of the service account to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+  # Secrets for the service accout
+  imagePullSecrets: []
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate: {}
+
+# common annotations for all resources
+annotations: {}
+
+# extra labels for all resources
+extraLabels: {}
+
+# extra labels for the pod deployed
+extraPodLabels: {}
+
+# extra annotations for the pod deployed
+extraPodAnnotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+## wait 30 seconds before pod termination
+## to allow application shut down
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle
+#
+terminationGracePeriodSeconds: 30
+
+
+### init containers ###
+initContainers:
+  disableTHP: false
+  containerSecurityContext:
+    runAsUser: 0
+
+### redis master container ###
+master:
+  image:
+    repository: redislabs/redisgraph
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  containerSecurityContext:
+    runAsUser: 1001
+
+  service:
+    type: ClusterIP
+    port: 6379
+
+  resources: {}
+
+  ## disableCommands
+  ## Commands will be completely disabled by renaming each to an empty string.
+  ## ref: https://redis.io/topics/security#disabling-of-specific-commands
+  ##
+  ## Disable FLUSHDB and FLUSHALL by default as these can be dangerous
+  ## These commands empty the data and never fail
+  #
+  disableCommands:
+    - FLUSHDB
+    - FLUSHALL
+
+  command:
+    - redis-server
+    - /redis-master/redis.conf
+    - --loadmodule
+    - /usr/lib/redis/modules/redisgraph.so
+
+  args: []
+
+  containerPort: 6379
+
+  extraVolumeMounts: {}
+
+  persistence:
+    enabled: true
+    path: /data
+
+    ## Persistent Volume storage class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+    #
+    storageClass: ""
+
+    # Persistent Volume access modes
+    accessModes:
+      - ReadWriteOnce
+
+    # Persistent Volume size
+    size: 8Gi
+
+    # When set, will use the existing PVC for persistence
+    existingClaim: ""
+
+### redis metrics container ###
+metrics:
+  enabled: true
+  image:
+    repository: oliver006/redis_exporter
+    pullPolicy: IfNotPresent
+    tag: v1.35.1
+
+  resources: {}
+
+  service:
+    port: 9121
+
+  containerPort: 9121
+
+  serviceMonitor:
+    enabled: false
+    namespace: ""
+    interval: 30s
+    scrapeTimeout: ""
+    relabelings: []
+    metricRelabelings: []
+    honorLabels: false

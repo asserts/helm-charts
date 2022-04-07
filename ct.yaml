@@ -1,0 +1,11 @@
+# See https://github.com/helm/chart-testing#configuration
+remote: origin
+target-branch: master
+chart-dirs:
+  - charts
+chart-repos:
+  - asserts=https://asserts.github.io/helm-charts
+  - vm=https://victoriametrics.github.io/helm-charts
+  - prometheus-community=https://prometheus-community.github.io/helm-charts
+  - banzaicloud-stable=https://kubernetes-charts.banzaicloud.com
+helm-extra-args: --timeout 600s
