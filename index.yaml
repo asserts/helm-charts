@@ -431,6 +431,36 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/promxy-0.1.0/promxy-0.1.0.tgz
     version: 0.1.0
+  redisearch:
+  - apiVersion: v2
+    appVersion: 2.0.6
+    created: "2022-04-07T22:56:06.192556675Z"
+    description: Helm Chart for redisearch
+    digest: 4f75b6505d5fe13622f61cd5f2b11c5f0d8ea1d63e5f63dc8859022a37e69b51
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: redisearch
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/redisearch-0.1.0/redisearch-0.1.0.tgz
+    version: 0.1.0
+  redisgraph:
+  - apiVersion: v2
+    appVersion: 2.4.12
+    created: "2022-04-07T22:56:06.398502338Z"
+    description: Helm Chart for redisgraph
+    digest: a230e3bbe57065af67def7c1f09467e6d4525625e7ef7b7a227e8ee663724a4e
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: redisgraph
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/redisgraph-0.1.0/redisgraph-0.1.0.tgz
+    version: 0.1.0
   spot-termination-exporter:
   - apiVersion: v1
     created: "2022-02-11T19:00:40.831464975Z"
@@ -451,4 +481,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-03-04T05:00:46.343714598Z"
+generated: "2022-04-07T22:56:06.398720241Z"
