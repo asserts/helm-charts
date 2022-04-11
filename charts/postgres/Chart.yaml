@@ -1,10 +1,10 @@
 apiVersion: v2
 type: application
-name: redisearch
+name: postgres
 description: Helm Chart for redisearch
 icon: https://www.asserts.ai/favicon.png
-version: 0.2.0
-appVersion: 2.0.6
+version: 0.1.0
+appVersion: 12.7
 maintainers:
   - name: Asserts
     url: https://github.com/asserts

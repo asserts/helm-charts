@@ -2,13 +2,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "redisgraph.fullname" . }}
+  name: {{ template "postgres.fullname" . }}
   {{- if .Values.metrics.serviceMonitor.namespace }}
   namespace: {{ .Values.metrics.serviceMonitor.namespace }}
   {{- else }}
   namespace: {{ .Release.Namespace | quote }}
   {{- end }}
-  labels: {{- include "redisgraph.labels" . | nindent 4 }}
+  labels: {{- include "postgres.labels" . | nindent 4 }}
     {{- with .Values.extraLabels }}
     {{- toYaml . | nindent 4 -}}
     {{- end }}
@@ -38,6 +38,6 @@ spec:
     matchNames:
       - {{ .Release.Namespace }}
   selector:
-    matchLabels: {{- include "redisgraph.selectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "postgres.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: metrics
 {{- end }}
