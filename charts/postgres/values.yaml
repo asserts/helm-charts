@@ -67,9 +67,10 @@ auth:
   database: "asserts"
   existingSecret: ""
 
-## @param postgresqlSharedPreloadLibraries Shared preload libraries (comma-separated list)
+## TODO: see if we need this or if we will use the asserts image
+## postgresqlSharedPreloadLibraries Shared preload libraries (comma-separated list)
 ##
-postgresSharedPreloadLibraries: "pgaudit,pg_stat_statements"
+# postgresSharedPreloadLibraries: "pgaudit,pg_stat_statements"
 
 ### init containers ###
 initContainers:

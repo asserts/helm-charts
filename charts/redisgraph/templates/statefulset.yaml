@@ -60,7 +60,7 @@ spec:
       containers:
         - name: redis
           image:  "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.master.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           command: {{- toYaml .Values.master.command | nindent 12 }}
           args: {{- toYaml .Values.master.args | nindent 12 }}
           securityContext:

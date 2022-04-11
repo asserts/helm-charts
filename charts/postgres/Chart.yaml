@@ -4,7 +4,7 @@ name: postgres
 description: Helm Chart for redisearch
 icon: https://www.asserts.ai/favicon.png
 version: 0.1.0
-appVersion: 12.7
+appVersion: "12.7"
 maintainers:
   - name: Asserts
     url: https://github.com/asserts
