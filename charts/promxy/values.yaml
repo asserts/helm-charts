@@ -10,9 +10,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-rbac:
-  create: true
-
 serviceAccount:
   create: true
   ## The name of the service account to use.
@@ -22,9 +19,10 @@ serviceAccount:
   imagePullSecrets: []
   annotations: {}
 
-updateStrategy:
-  type: RollingUpdate
-  rollingUpdate: {}
+strategy: {}
+  # rollingUpdate:
+  #   maxSurge: 25%
+  #   maxUnavailable: 25%
 
 service:
   type: ClusterIP
@@ -134,10 +132,11 @@ config:
   ##
   ### Promxy configuration
   ##
-  promxy:
-    server_groups:
-      - kubernetes_sd_configs:
-          - role: pod
+  # promxy:
+  #   server_groups:
+  #     - static_configs:
+  #         - targets:
+  #             - localhost:9090
 
 # alerts defined here are set in
 # templates/configmap.yaml they
