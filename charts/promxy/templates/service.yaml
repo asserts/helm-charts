@@ -1,18 +1,16 @@
-{{- if and .Values.service.enabled -}}
+
 apiVersion: v1
 kind: Service
 metadata:
-{{- with .Values.service.annotations }}
+  name: {{ include "promxy.fullname" . }}
+  labels: {{- include "promxy.labels" . | nindent 4 }}
+    {{- with .Values.extraLabels }}
+    {{- toYaml . | nindent 4 -}}
+    {{- end }}
+  {{- if .Values.service.annotations }}
   annotations:
-{{ toYaml . | indent 4}}
-{{- end }}
-  labels:
-    {{- include "chart.labels" . | nindent 4 }}
-    {{- if .Values.extraLabels}}
-    {{ toYaml .Values.extraLabels | nindent 4 }}
-    {{- end}}
-  name: {{ template "chart.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  {{- toYaml .Values.service.annotations | nindent 4 -}}
+  {{- end }}
 spec:
 {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
@@ -32,10 +30,8 @@ spec:
 {{- end }}
   ports:
     - name: http
-      port: {{ .Values.service.servicePort }}
+      port: {{ .Values.service.port }}
       protocol: TCP
       targetPort: http
-  selector:
-    {{- include "chart.selectorLabels" . | nindent 4 }}
-  type: "{{ .Values.service.type }}"
-{{- end }}
+  selector: {{- include "promxy.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.service.type }}
