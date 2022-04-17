@@ -1,20 +1,19 @@
-{{- if eq .Values.configMap "" }}
+{{- if not .Values.existingConfigMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "chart.configname" .}}
-  namespace: {{ .Release.Namespace }}
-  labels: {{- include "chart.labels" . | nindent 4 }}
-  {{- if .Values.extraLabels}}
-  {{ toYaml .Values.extraLabels | nindent 4 }}
-  {{- end}}
+  name: {{ include "promxy.fullname" . }}
+  labels: {{- include "promxy.labels" . | nindent 4 }}
+    {{- with .Values.extraLabels }}
+    {{- toYaml . | nindent 4 -}}
+    {{- end }}
 data:
   config.yaml: |
     {{- with .Values.config }}
-    {{ . | toYaml | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
-  alerts.yaml: |
     {{- with .Values.alerts }}
-    {{ . | toYaml | nindent 4 }}
+  alerts.yaml: |
+    {{- toYaml . | nindent 4 }}
     {{- end }}
 {{- end }}
