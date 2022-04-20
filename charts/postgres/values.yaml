@@ -1,5 +1,7 @@
 image:
-  repository: redislabs/redisgraph
+  # TODO: change image, this is a local one for use with kind cluster
+  # https://github.com/docker-library/postgres/pull/804/files
+  repository: asserts/postgres
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -50,44 +52,68 @@ affinity: {}
 #
 terminationGracePeriodSeconds: 30
 
+## auth.postgresPassword Password for the "postgres" admin user
+## auth.username Name for a custom user to create
+## auth.password Password for the custom user to create
+## auth.database Name for a custom database to create
+## auth.existingSecret Name of existing secret to use for PostgreSQL credentials
+#
+auth:
+  # TODO: do we need the postgre user/password ??
+  # enablePostgresUser: false
+  # postgresPassword: ""
+  username: "asserts"
+  password: "super-secret"
+  database: "asserts"
+  existingSecret: ""
+
+## TODO: see if we need this or if we will use the asserts image
+## postgresqlSharedPreloadLibraries Shared preload libraries (comma-separated list)
+##
+# postgresSharedPreloadLibraries: "pgaudit,pg_stat_statements"
 
 ### init containers ###
 initContainers:
-  disableTHP: false
+  initChmodData: true
   containerSecurityContext:
     runAsUser: 0
 
-### redis master container ###
-master:
+### postgres primary container ###
+primary:
   containerSecurityContext:
     runAsUser: 1001
 
   service:
     type: ClusterIP
-    port: 6379
+    port: 5432
 
   resources: {}
 
-  ## disableCommands
-  ## Commands will be completely disabled by renaming each to an empty string.
-  ## ref: https://redis.io/topics/security#disabling-of-specific-commands
+  ## postgres Primary main configuration to be injected as ConfigMap
+  ## ref: https://www.postgres.org/docs/current/static/runtime-config.html
   ##
-  ## Disable FLUSHDB and FLUSHALL by default as these can be dangerous
-  ## These commands empty the data and never fail
-  #
-  disableCommands:
-    - FLUSHDB
-    - FLUSHALL
+  configuration: ""
 
-  command:
-    - redis-server
-    - /redis-master/redis.conf
-    - --loadmodule
-    - /usr/lib/redis/modules/redisgraph.so
+  ## postgres Primary client authentication configuration
+  ## ref: https://www.postgres.org/docs/current/static/auth-pg-hba-conf.html
+  ## e.g:#
+  ## pgHbaConfiguration: |-
+  ##   local all all trust
+  ##   host all all localhost trust
+  ##   host mydatabase mysuser 192.168.0.0/24 md5
+  ##
+  pgHbaConfiguration: ""
+
+  ## Name of an existing ConfigMap with postgres Primary configuration
+  ## NOTE: `primary.configuration` and `primary.pgHbaConfiguration` will be ignored
+  ##
+  existingConfigmap: ""
+
+  command: []
 
   args: []
 
-  containerPort: 6379
+  containerPort: 5432
 
   extraVolumeMounts: {}
 
@@ -112,20 +138,21 @@ master:
     # When set, will use the existing PVC for persistence
     existingClaim: ""
 
-### redis metrics container ###
+### postgres metrics container ###
 metrics:
   enabled: true
   image:
-    repository: oliver006/redis_exporter
+    # TODO: switch to bitnami since this repo is no longer active?
+    repository: wrouesnel/postgres_exporter
     pullPolicy: IfNotPresent
-    tag: v1.35.1
+    tag: v0.8.0
 
   resources: {}
 
   service:
-    port: 9121
+    port: 9187
 
-  containerPort: 9121
+  containerPort: 9187
 
   serviceMonitor:
     enabled: false
