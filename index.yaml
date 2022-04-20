@@ -404,6 +404,21 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.1.0/kube-prometheus-stack-0.1.0.tgz
     version: 0.1.0
+  postgres:
+  - apiVersion: v2
+    appVersion: v0.1.6
+    created: "2022-04-20T16:53:40.389993839Z"
+    description: Helm Chart for postgres
+    digest: 7b88c0073d2e72d0b21a8c264137006f8b30d72e367f1102cd79f855c18b640e
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: postgres
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/postgres-0.1.0/postgres-0.1.0.tgz
+    version: 0.1.0
   promxy:
   - apiVersion: v2
     appVersion: v0.0.75
@@ -447,6 +462,20 @@ entries:
   redisearch:
   - apiVersion: v2
     appVersion: 2.0.6
+    created: "2022-04-20T16:53:40.523976498Z"
+    description: Helm Chart for redisearch
+    digest: 9ff0424dfb11daf44debf07bf79c301ab9a99f647de450d1a0792da289003d64
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: redisearch
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/redisearch-0.2.0/redisearch-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 2.0.6
     created: "2022-04-07T22:56:06.192556675Z"
     description: Helm Chart for redisearch
     digest: 4f75b6505d5fe13622f61cd5f2b11c5f0d8ea1d63e5f63dc8859022a37e69b51
@@ -460,6 +489,20 @@ entries:
     - https://github.com/asserts/helm-charts/releases/download/redisearch-0.1.0/redisearch-0.1.0.tgz
     version: 0.1.0
   redisgraph:
+  - apiVersion: v2
+    appVersion: 2.4.12
+    created: "2022-04-20T16:53:40.660187614Z"
+    description: Helm Chart for redisgraph
+    digest: 0d60ff2ad8d6bebab6f30af1874f35b6c6b5c888d92c26d9b5ccb6c7da91c6f1
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: redisgraph
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/redisgraph-0.2.0/redisgraph-0.2.0.tgz
+    version: 0.2.0
   - apiVersion: v2
     appVersion: 2.4.12
     created: "2022-04-07T22:56:06.398502338Z"
@@ -494,4 +537,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-04-17T01:53:52.133263079Z"
+generated: "2022-04-20T16:53:40.660281817Z"
