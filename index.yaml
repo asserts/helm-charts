@@ -462,6 +462,20 @@ entries:
   redisearch:
   - apiVersion: v2
     appVersion: 2.0.6
+    created: "2022-04-20T21:54:20.088270187Z"
+    description: Helm Chart for redisearch
+    digest: 3382175d4b18ce5fef3faf7eb68bd2df83562f60d7aac8bd9c094bb2e7227283
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: redisearch
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/redisearch-0.3.0/redisearch-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 2.0.6
     created: "2022-04-20T16:53:40.523976498Z"
     description: Helm Chart for redisearch
     digest: 9ff0424dfb11daf44debf07bf79c301ab9a99f647de450d1a0792da289003d64
@@ -489,6 +503,20 @@ entries:
     - https://github.com/asserts/helm-charts/releases/download/redisearch-0.1.0/redisearch-0.1.0.tgz
     version: 0.1.0
   redisgraph:
+  - apiVersion: v2
+    appVersion: 2.4.12
+    created: "2022-04-20T21:54:20.299400969Z"
+    description: Helm Chart for redisgraph
+    digest: fee62be9be314909e66e10507090b45d9ee074d8345561ef618e2a082804bf7c
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: redisgraph
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/redisgraph-0.3.0/redisgraph-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 2.4.12
     created: "2022-04-20T16:53:40.660187614Z"
@@ -537,4 +565,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-04-20T16:53:40.660281817Z"
+generated: "2022-04-20T21:54:20.2999181Z"
