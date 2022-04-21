@@ -60,7 +60,7 @@ ingress:
   #     servicePort: use-annotation
 
   tls: []
-  #   - secretName: knowledge-sensor-tls
+  #   - secretName: promxy-tls
   #     hosts:
   #       - promxy.domain.com
 
