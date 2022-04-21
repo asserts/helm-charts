@@ -422,6 +422,19 @@ entries:
   promxy:
   - apiVersion: v2
     appVersion: v0.0.75
+    created: "2022-04-21T14:42:39.990345533Z"
+    description: Helm Chart for Prometheus proxy to combine multiple prometheuses
+    digest: ca2482fdae1133465c387efb24b40044229e6681cc4e6e01bd9b7561dda0ec97
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: promxy
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/promxy-0.4.0/promxy-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: v0.0.75
     created: "2022-04-17T01:53:52.133020572Z"
     description: Helm Chart for Prometheus proxy to combine multiple prometheuses
     digest: e6810fcd170f0ca3191da30e0dbf5a48bee78b636d275c6554b3f90fe72928db
@@ -565,4 +578,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-04-20T21:54:20.2999181Z"
+generated: "2022-04-21T14:42:39.990419835Z"
