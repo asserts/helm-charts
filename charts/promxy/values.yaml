@@ -122,8 +122,7 @@ config:
   ##
   global:
     evaluation_interval: 5s
-    external_labels:
-      source: promxy
+    # external_labels:
   # remote_write configuration is used by promxy as its local Appender, meaning all
   # metrics promxy would "write" (not export) would be sent to this. Examples
   # of this include: recording rules, metrics on alerting rules, etc.
