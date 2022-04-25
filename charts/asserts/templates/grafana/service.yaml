@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "asserts.grafanaFullname" . }}
+  labels: {{- include "asserts.grafanaLabels" . | nindent 4 }}
+    {{- with .Values.grafana.extraLabels }}
+    {{- toYaml . | nindent 4 -}}
+    {{- end }}
+  {{- if .Values.grafana.annotations }}
+  annotations:
+  {{- toYaml .Values.grafana.annotations | nindent 4 -}}
+  {{- end }}
+spec:
+  type: {{ .Values.grafana.service.type }}
+  ports:
+    - port: {{ .Values.grafana.service.port }}
+      targetPort: {{ .Values.grafana.service.port }}
+      protocol: TCP
+      name: http
+  selector: {{- include "asserts.grafanaSelectorLabels" . | nindent 4 }}

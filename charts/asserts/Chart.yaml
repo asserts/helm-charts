@@ -1,0 +1,52 @@
+apiVersion: v2
+name: asserts
+description: Asserts Helm Chart to configure entire asserts stack
+icon: https://www.asserts.ai/favicon.png
+type: application
+
+version: 0.1.0
+# TODO: change appVersion to correct one
+appVersion: k8s
+
+dependencies:
+  - name: knowledge-sensor
+    repository: file:///Users/aramos/asserts/knowledge-sensor/chart
+    version: 1.1.1
+    condition: knowledge-sensor.enabled
+  # - name: knowledge-sensor
+  #   repository: https://charts.asserts.ai
+  #   version: 1.1.1
+  #   condition: knowledge-sensor.enabled
+  - name: victoria-metrics-single
+    repository: https://victoriametrics.github.io/helm-charts
+    version: 0.8.12
+    alias: tsdb
+    condition: tsdb.enabled
+  - name: redisgraph
+    repository: https://asserts.github.io/helm-charts
+    version: 0.3.0
+    condition: redisgraph.enabled
+  - name: redisearch
+    repository: https://asserts.github.io/helm-charts
+    version: 0.3.0
+    condition: redisearch.enabled
+  - name: postgres
+    repository: https://asserts.github.io/helm-charts
+    version: 0.1.0
+    condition: postgres.enabled
+  - name: alertmanager
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 0.14.0
+    condition: alertmanager.enabled
+  # - name: promxy
+  #   repository: https://asserts.github.io/helm-charts
+  #   version: 0.3.0
+  #   condition: promxy.enabled
+  - name: promxy
+    repository: file://../promxy
+    version: 0.4.0
+    condition: promxy.enabled
+
+maintainers:
+  - name: Asserts
+    url: https://github.com/asserts

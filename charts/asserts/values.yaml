@@ -1,0 +1,632 @@
+# TODO: figure out default resources for everything...
+
+nameOverride: ""
+fullnameOverride: ""
+
+rbac:
+  create: true
+  annotations: {}
+  extraLabels: {}
+
+serviceAccount:
+  create: true
+  ## The name of the service account to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+  # Secrets for the service account
+  # TODO: change this once we have public repos for everything
+  # imagePullSecrets:
+  #   - name: asserts-docker
+  # imagePullSecrets: []
+  # service account annotations
+  annotations: {}
+  extraLabels: {}
+
+### asserts-server ###
+server:
+  nameOverride: ""
+  fullnameOverride: ""
+
+  image:
+    repository: asserts-server
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: k8s
+
+  initContainers:
+    - name: wait-for-postgres
+      image: asserts/wait-for:v2.2.3
+      imagePullPolicy: IfNotPresent
+      args:
+        - "asserts-postgres.asserts.svc.cluster.local:5432"
+        - "-t"
+        - "120"
+
+  imagePullSecrets: []
+
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate: {}
+
+  service:
+    type: ClusterIP
+    port: 8030
+
+  ingress:
+    enabled: false
+
+    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+    # ingressClassName: nginx
+
+    annotations: {}
+
+    extraLabels: {}
+
+    hosts: []
+    #   - asserts-server.domain.com
+
+    path: /
+
+    # pathType is only for k8s >= 1.18
+    pathType: Prefix
+
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
+    tls: []
+    #   - secretName: asserts-server-tls
+    #     hosts:
+    #       - asserts-server.domain.com
+
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 1
+
+  resources: {}
+
+  ## wait 30 seconds before pod termination
+  ## to allow application shut down
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle
+  #
+  terminationGracePeriodSeconds: 30
+
+  # common annotations for all resources without their own annotations field
+  annotations: {}
+
+  # environment variables to add to the asserts-server pod
+  extraEnv:
+    - name: SPRING_LIQUIDBASE_CHANGELOG
+      value: "classpath:/db/changelog/db.changelog-k8s.yaml"
+  # environment variables from secrets or configmaps to add to the asserts-server pod
+  extraEnvFrom: []
+  #   - secretRef:
+  #       name: license
+
+  annotations: {}
+
+  extraLabels: {}
+
+  extraPodLabels: {}
+
+  extraPodAnnotations: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  extraContainers: []
+
+  extraVolumeMounts: []
+
+  extraVolumes: []
+
+  persistence:
+    enabled: true
+
+    ## Persistent Volume storage class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+    #
+    storageClass: ""
+
+    # Persistent Volume access modes
+    accessModes:
+      - ReadWriteOnce
+
+    # Persistent Volume size
+    size: 8Gi
+
+    # When set, will use the existing PVC for persistence
+    existingClaim: ""
+
+### asserts-ui ###
+ui:
+  nameOverride: ""
+  fullnameOverride: ""
+
+  image:
+    repository: asserts-ui
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: PR-968
+
+  imagePullSecrets: []
+
+  service:
+    type: ClusterIP
+    port: 8090
+
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 1
+
+  resources: {}
+
+  annotations: {}
+
+  # environment variables to add to the asserts-ui pod
+  extraEnv: []
+  # environment variables from secrets or configmaps to add to the asserts-ui pod
+  extraEnvFrom: []
+  #   - secretRef:
+  #       name: license
+
+  extraLabels: {}
+
+  extraPodLabels: {}
+
+  podAnnotations: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  extraContainers: []
+
+  extraVolumeMounts: []
+
+  extraVolumes: []
+
+### grafana ###
+grafana:
+  nameOverride: ""
+  fullnameOverride: ""
+
+  image:
+    repository: asserts-grafana
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: k8s
+
+  imagePullSecrets: []
+
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate: {}
+
+  service:
+    type: ClusterIP
+    port: 3000
+
+  resources: {}
+
+  persistence:
+    enabled: false
+
+    ## Persistent Volume storage class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+    #
+    storageClass: ""
+
+    # Persistent Volume access modes
+    accessModes:
+      - ReadWriteOnce
+
+    # Persistent Volume size
+    size: 8Gi
+
+    # When set, will use the existing PVC for persistence
+    existingClaim: ""
+
+### knowledge-sensor ###
+knowledge-sensor:
+  image:
+    repository: asserts-ks
+    tag: k8s
+
+  serviceAccount:
+    create: false
+    name: asserts
+
+  initContainers:
+    - name: wait-for-rules-api
+      image: asserts/wait-for:v2.2.3
+      imagePullPolicy: IfNotPresent
+      args:
+        - "asserts-server.asserts.svc.cluster.local:8030"
+        - "-t"
+        - "180"
+
+  # TODO: different tenant name? (e.g. asserts)
+  assertsTenant: bootstrap
+  assertsControllerHost: http://asserts-server.asserts.svc.cluster.local:8030
+  syncInterval: "60"
+  prometheusRulesConfigmapName: "asserts-rules"
+  prometheusRulesTargetDir: "/etc/asserts/rules"
+  prometheusRelabelRulesConfigmapName: "asserts-relabel-rules"
+  prometheusRelabelRulesTargetDir: /etc/asserts/relabel
+
+  concurrency:
+    enabled: false
+
+### tsdb ###
+tsdb:
+  enabled: true
+  rbac:
+    create: false
+    pspEnabled: false
+
+  serviceAccount:
+    create: false
+    name: asserts
+
+  server:
+    image:
+      tag: v1.75.1
+
+    nameOverride: "tsdb"
+    fullNameOverride: "tsdb"
+
+    initContainers:
+      - name: wait-for-knowledge-sensor
+        image: asserts/wait-for:v2.2.3
+        imagePullPolicy: IfNotPresent
+        args:
+          - "asserts-knowledge-sensor.asserts.svc.cluster.local:8080"
+          - "-t"
+          - "180"
+      - name: init-add-rule-files
+        # TODO: make custom sidecar public in dockerhub
+        image: asserts-k8s-sidecar:k8s
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: LABEL
+            value: bootstrap-relabel-config
+          - name: FOLDER
+            value: /etc/asserts/relabel
+          - name: METHOD
+            value: LIST
+        volumeMounts:
+          - name: relabel-config
+            mountPath: /etc/asserts/relabel
+
+    extraArgs:
+      loggerFormat: default
+      relabelConfig: /etc/asserts/relabel/bootstrap.yml
+      maxLabelsPerTimeseries: 60
+      retentionPeriod: 14d
+      search.maxStalenessInterval: 60s
+      search.latencyOffset: 15s
+      memory.allowedPercent: 50
+
+    # scrape configuration for the tsdb
+    scrape:
+      enabled: true
+      config:
+        global:
+          scrape_interval: 30s
+
+        # scrape self by default
+        scrape_configs:
+          - job_name: asserts-tsdb-server
+            static_configs:
+              - targets: ["localhost:8428"]
+
+          - job_name: asserts-alerts
+            honor_labels: true
+            honor_timestamps: true
+            scrape_interval: 30s
+            scrape_timeout: 15s
+            metrics_path: /api-server/assertion-metrics
+            scheme: http
+            kubernetes_sd_configs:
+            - role: endpoints
+              namespaces:
+                names:
+                - asserts
+            relabel_configs:
+            - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+              separator: ;
+              regex: asserts
+              replacement: $1
+              action: keep
+            - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
+              separator: ;
+              regex: asserts
+              replacement: $1
+              action: keep
+            - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_component]
+              separator: ;
+              regex: server
+              replacement: $1
+              action: keep
+            - source_labels: [__meta_kubernetes_endpoint_port_name]
+              separator: ;
+              regex: http
+              replacement: $1
+              action: keep
+            # source relabeling
+            - source_labels: [job]
+              separator: ;
+              regex: (.+)
+              replacement: $1
+              target_label: source_job
+              action: replace
+            - source_labels: [__address__]
+              separator: ;
+              regex: (.+)
+              target_label: source_instance
+              replacement: $1
+              action: replace
+            - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+              separator: ;
+              regex: Node;(.*)
+              target_label: source_node
+              replacement: ${1}
+              action: replace
+            - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+              separator: ;
+              regex: Pod;(.*)
+              target_label: source_pod
+              replacement: ${1}
+              action: replace
+            - source_labels: [__meta_kubernetes_namespace]
+              separator: ;
+              regex: (.*)
+              target_label: source_namespace
+              replacement: $1
+              action: replace
+            - source_labels: [__meta_kubernetes_service_name]
+              separator: ;
+              regex: (.*)
+              target_label: source_service
+              replacement: $1
+              action: replace
+            - source_labels: [__meta_kubernetes_pod_name]
+              separator: ;
+              regex: (.*)
+              target_label: source_pod
+              replacement: $1
+              action: replace
+
+            metric_relabel_configs:
+            - source_labels: [job]
+              regex: asserts-alerts
+              target_label: job
+              replacement: ""
+              action: replace
+            - source_labels: [instance]
+              regex: dummy
+              target_label: instance
+              replacement: ""
+              action: replace
+            - source_labels: [tenant]
+              regex: ".+"
+              action: keep
+
+    persistentVolume:
+      size: 8Gi
+
+    # TODO: figure out good default resources
+    resources: {}
+
+    # TODO: decide if we want these set, can be problematic for statefulsets
+    readinessProbe:
+    livenessProbe:
+
+    extraContainers:
+      - name: config-sidecar
+        # TODO: make custom sidecar public in dockerhub
+        image: asserts-k8s-sidecar:k8s
+        imagePullPolicy: IfNotPresent
+        resources: {}
+        env:
+          # TODO: different tenant name?
+          - name: LABEL
+            value: bootstrap-relabel-config
+          - name: FOLDER
+            value: /etc/asserts/relabel
+          - name: REQ_URL
+            value: http://localhost:8428/-/reload
+        volumeMounts:
+          - name: relabel-config
+            mountPath: /etc/asserts/relabel
+
+    extraVolumeMounts:
+      - name: relabel-config
+        mountPath: /etc/asserts/relabel
+
+    extraVolumes:
+      - name: relabel-config
+        emptyDir: {}
+
+### redisgraph ###
+redisgraph:
+  enabled: true
+  serviceAccount:
+    create: false
+    name: asserts
+
+### redisearch ###
+redisearch:
+  enabled: true
+  serviceAccount:
+    create: false
+    name: asserts
+
+### postgres ###
+postgres:
+  enabled: true
+  serviceAccount:
+    create: false
+    name: asserts
+
+### alertmanager ###
+alertmanager:
+  enabled: true
+
+  serviceAccountName: asserts
+  serviceAccount:
+    create: false
+    name: asserts
+
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 100Mi
+
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by:
+        - sg
+        - tenant
+        - alertname
+        - asserts_notification_rule_name
+        - source_alertname
+        - asserts_slo_name
+        - namespace
+      receiver: blackhole
+      repeat_interval: 5m
+      group_wait: 5s
+      group_interval: 5s
+      routes:
+        # chief
+        - receiver: bootstrap-tenant
+          matchers:
+            - tenant="bootstrap"
+          group_wait: 5s
+          group_interval: 5s
+          routes:
+            - receiver: bootstrap-tenant
+              matchers:
+                - tenant="bootstrap"
+              group_wait: 5s
+              group_interval: 5s
+              # TODO: uncomment once we have figured out the whole config
+              # continue: true
+    receivers:
+      - name: blackhole
+      # bootstrap
+      - name: bootstrap-tenant
+        webhook_configs:
+          - send_resolved: true
+            url: http://asserts-server.asserts.svc.cluster.local:8030/api-server/v4/prometheus-alerts?tenant=bootstrap
+
+  configmapReload:
+    enabled: true
+
+### promxy ###
+promxy:
+  enabled: true
+  serviceAccount:
+    create: false
+    name: asserts
+
+  # https://github.com/jacksontj/promxy/blob/master/cmd/promxy/config.yaml
+  config:
+    global:
+      evaluation_interval: 30s
+      external_labels:
+        tenant: bootstrap
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+                - asserts-alertmanager.asserts.svc.cluster.local:9093
+    promxy:
+      server_groups:
+        - anti_affinity: 10s
+          http_client:
+            dial_timeout: 1s
+            tls_config:
+              insecure_skip_verify: true
+          ignore_error: true
+          labels:
+            asserts_env: dev
+            asserts_site: dev
+          query_params:
+            nocache: 1
+          remote_read: false
+          scheme: https
+          static_configs:
+            - targets:
+              - prometheus-secret.dev.asserts.ai
+        - anti_affinity: 10s
+          http_client:
+            dial_timeout: 1s
+            tls_config:
+              insecure_skip_verify: true
+          ignore_error: true
+          query_params:
+            nocache: 1
+          remote_read: false
+          scheme: http
+          static_configs:
+            - targets:
+              - asserts-tsdb-server.asserts.svc.cluster.local:8428
+    remote_write:
+      - url: http://asserts-tsdb-server.asserts.svc.cluster.local:8428/api/v1/write
+    rule_files:
+      - /etc/asserts/rules/*.yml
+
+  extraContainers:
+    - name: config-sidecar
+      # TODO: make custom sidecar public in dockerhub
+      image: asserts-k8s-sidecar:k8s
+      imagePullPolicy: IfNotPresent
+      resources: {}
+      env:
+        # TODO: different tenant name?
+        - name: LABEL
+          value: bootstrap-rules-config
+        - name: FOLDER
+          value: /etc/asserts/rules
+        - name: REQ_URL
+          value: http://localhost:8082/-/reload
+        - name: REQ_METHOD
+          value: POST
+      volumeMounts:
+        - name: rules-config
+          mountPath: /etc/asserts/rules
+
+  extraVolumeMounts:
+    - name: rules-config
+      mountPath: /etc/asserts/rules
+
+  # TODO: figure out race condition where vm reads the relabel config before sidecar
+  #       adds it. Possible options:
+  #
+  #       1. touch a file: hacky and could trigger reload of no rules
+  #       2. use configmap reloader
+  #       3. reorder container startup and add post start sleep of 15 seconds
+  #       4. leave as is and allow pod to crash twice
+  extraVolumes:
+    - name: rules-config
+      emptyDir: {}
