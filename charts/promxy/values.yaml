@@ -1,3 +1,5 @@
+clusterDomain: svc.cluster.local
+
 image:
   repository: quay.io/jacksontj/promxy
   pullPolicy: IfNotPresent
@@ -87,6 +89,8 @@ verticalAutoscaler:
 
 extraArgs:
   log-level: "info"
+
+initContainers: []
 
 # common annotations for all resources without their own annotations field
 annotations: {}
