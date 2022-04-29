@@ -1,0 +1,161 @@
+image:
+  repository: quay.io/jacksontj/promxy
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+replicaCount: 1
+
+imagePullSecrets:
+  - name: asserts-docker
+
+nameOverride: "promxy"
+fullnameOverride: "promxy"
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  ## The name of the service account to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+  # Secrets for the service accout
+  imagePullSecrets:
+    - name: asserts-docker
+  annotations:
+    service-account: annotation
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate: {}
+
+service:
+  type: ClusterIP
+  port: 8082
+  clusterIP: ""
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  annotations:
+    service: annotation
+
+ingress:
+  enabled: true
+
+  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+  # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+  # ingressClassName: nginx
+
+  annotations:
+    ingress: annotation
+
+  extraLabels:
+    ingress: extra-label
+
+  hosts:
+    - promxy.domain.com
+
+  path: /
+
+  # pathType is only for k8s >= 1.18
+  pathType: Prefix
+
+  ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+  extraPaths: []
+  # - path: /*
+  #   backend:
+  #     serviceName: ssl-redirect
+  #     servicePort: use-annotation
+
+  tls:
+    - hosts:
+        - promxy.domain.com
+
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  # maxUnavailable: 1
+  labels: {}
+
+resources: {}
+
+verticalAutoscaler:
+  enabled: false
+  # updateMode: "Auto"
+  # containerPolicies:
+  # - containerName: 'promxy'
+  #   minAllowed:
+  #     cpu: "250m"
+  #     memory: "100Mi"
+  #   maxAllowed:
+  #     cpu: "2000m"
+  #     memory: "2048Mi"
+  # - containerName: "promxy-server-configmap-reload"
+  #   mode: "Off"
+
+extraArgs:
+  log-level: "info"
+
+annotations:
+  common: annotations
+
+# extra labels for all resources without their own extraLabels field
+extraLabels:
+  common: extra-labels
+
+# extra labels for the pods deployed
+extraPodLabels:
+  common: extra-pod-labels
+
+# extra annotations for the pods deployed
+podAnnotations:
+  pod: annotations
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+extraContainers: []
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
+# existing configmap name
+# else config values will be used
+existingConfigMap:
+
+config:
+  ##
+  ## Regular prometheus configuration
+  ##
+  global:
+    evaluation_interval: 5s
+    external_labels:
+      source: promxy
+  # remote_write configuration is used by promxy as its local Appender, meaning all
+  # metrics promxy would "write" (not export) would be sent to this. Examples
+  # of this include: recording rules, metrics on alerting rules, etc.
+  remote_write:
+    - url: http://localhost:8083/receive
+  ##
+  ### Promxy configuration
+  ##
+  promxy:
+    server_groups:
+    - kubernetes_sd_configs:
+      - role: pod
+
+# alerts defined here are set in
+# templates/configmap.yaml they
+# are part of the same ConfigMap as
+# the prometheus/promxy configuration
+alerts: {}
+  # groups:
+  #   - name: alerts
+  #     rules:
+  #       - alert: TestMinData
+  #         expr: absent(metric_no_data)

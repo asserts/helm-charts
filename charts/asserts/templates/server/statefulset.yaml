@@ -32,18 +32,15 @@ spec:
     spec:
       serviceAccountName: {{ template "asserts.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
-      {{- with .Values.server.initContainers }}
-      initContainers: {{- toYaml . | nindent 8 }}
+      {{- if .Values.server.initContainers }}
+      initContainers: {{ include "render-values" ( dict "value" .Values.server.initContainers "context" $) | nindent 8 }}
       {{- end }}
       containers:
         - name: server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
-          env:
-            - name: SPRING_LIQUIBASE_CHANGELOG
-              value: "classpath:/db/changelog/db.changelog-k8s.yaml"
           {{- with .Values.server.extraEnv }}
-          {{- toYaml . | nindent 12 }}
+          env: {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.server.extraEnvFrom }}
           envFrom: {{- toYaml . | nindent 12 }}
@@ -57,6 +54,10 @@ spec:
               mountPath: /opt/asserts/api-server/conf/application.yml
               subPath: application.yml
               readOnly: true
+            - name: changelog
+              mountPath: /opt/asserts/changelog.yml
+              subPath: changelog.yml
+              readOnly: true
           {{- with .Values.server.extraVolumeMounts }}
           {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -67,6 +68,12 @@ spec:
             items:
               - key: application.yml
                 path: application.yml
+        - name: changelog
+          configMap:
+            name: {{ include "asserts.serverFullname" . }}-changelog
+            items:
+              - key: changelog.yml
+                path: changelog.yml
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

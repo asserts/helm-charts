@@ -1,0 +1,62 @@
+rbac:
+  create: false
+  pspEnabled: false
+
+serviceAccount:
+  create: false
+  name: victoria-metrics
+
+server:
+  image:
+    tag: v1.72.0
+
+  nameOverride: "agent-beta"
+  fullNameOverride: "agent-beta"
+
+  extraArgs:
+    loggerFormat: default
+    relabelConfig: /etc/config/relabel/agent-beta.yml
+
+  persistentVolume:
+    size: 30Gi
+
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: "1"
+      memory: 2Gi
+
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 15s
+
+  extraContainers:
+    - name: config-sidecar
+      image: '543343501704.dkr.ecr.us-west-2.amazonaws.com/ai.asserts.k8s-sidecar:1.14.2'
+      imagePullPolicy: IfNotPresent
+      resources:
+        limits:
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      env:
+        - name: LABEL
+          value: agent-beta-relabel-config
+        - name: FOLDER
+          value: /etc/config/relabel
+        - name: REQ_URL
+          value: http://localhost:8428/-/reload
+      volumeMounts:
+        - name: config
+          mountPath: /etc/config/relabel
+
+  extraVolumeMounts:
+    - name: config
+      mountPath: /etc/config/relabel
+
+  extraVolumes:
+    - name: config
+      emptyDir: {}

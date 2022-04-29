@@ -59,7 +59,7 @@ terminationGracePeriodSeconds: 30
 ## auth.existingSecret Name of existing secret to use for PostgreSQL credentials
 #
 auth:
-  # TODO: do we need the postgre user/password ??
+  # TODO: do we need the postgres user/password ??
   # enablePostgresUser: false
   # postgresPassword: ""
   username: "asserts"

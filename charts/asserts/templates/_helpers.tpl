@@ -54,11 +54,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "asserts.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "asserts.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
+asserts
 {{- end }}
 
 {{/*
@@ -76,4 +72,33 @@ Return  the proper Storage Class
   {{- end -}}
 {{- end -}}
 
+{{- end -}}
+
+{{/*
+The asserts tenant name
+{{ include "asserts.tenant"  . }}
+*/}}
+{{- define "asserts.tenant" -}}
+bootstrap
+{{- end }}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "render-values" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "render-values" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Return the domain to use
+{{ include "domain"  . }}
+*/}}
+{{- define "domain" -}}
+{{ .Release.Namespace }}.{{ .Values.clusterDomain }}
 {{- end -}}

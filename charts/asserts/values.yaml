@@ -1,7 +1,7 @@
 # TODO: figure out default resources for everything...
-
 nameOverride: ""
 fullnameOverride: ""
+clusterDomain: svc.cluster.local
 
 rbac:
   create: true
@@ -22,6 +22,19 @@ serviceAccount:
   annotations: {}
   extraLabels: {}
 
+# TODO: link to docs
+# asserts_env label (recommended)
+# env: (dev|stage|prod|qe)
+env:
+# asserts_site label (optional)
+# site: us-west-2
+site:
+# information about prometheus url to query
+#
+prometheus:
+  url: prometheus-server.default.svc.cluster.local:9090
+  scheme: http
+
 ### asserts-server ###
 server:
   nameOverride: ""
@@ -31,14 +44,14 @@ server:
     repository: asserts-server
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: k8s
+    tag: k8s-beta
 
   initContainers:
     - name: wait-for-postgres
       image: asserts/wait-for:v2.2.3
       imagePullPolicy: IfNotPresent
       args:
-        - "asserts-postgres.asserts.svc.cluster.local:5432"
+        - "asserts-postgres.{{.Release.Namespace}}.{{.Values.clusterDomain}}:5432"
         - "-t"
         - "120"
 
@@ -154,16 +167,16 @@ ui:
   fullnameOverride: ""
 
   image:
-    repository: asserts-ui
+    repository: asserts/asserts-ui
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: PR-968
+    tag: k8s-beta
 
   imagePullSecrets: []
 
   service:
     type: ClusterIP
-    port: 8090
+    port: 8080
 
   podDisruptionBudget:
     enabled: false
@@ -205,10 +218,10 @@ grafana:
   fullnameOverride: ""
 
   image:
-    repository: asserts-grafana
+    repository: asserts/grafana
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: k8s
+    tag: k8s-beta
 
   imagePullSecrets: []
 
@@ -243,10 +256,11 @@ grafana:
     existingClaim: ""
 
 ### knowledge-sensor ###
+#
 knowledge-sensor:
   image:
-    repository: asserts-ks
-    tag: k8s
+    repository: asserts/knowledge-sensor
+    tag: k8s-beta
 
   serviceAccount:
     create: false
@@ -257,13 +271,12 @@ knowledge-sensor:
       image: asserts/wait-for:v2.2.3
       imagePullPolicy: IfNotPresent
       args:
-        - "asserts-server.asserts.svc.cluster.local:8030"
+        - "{{.Release.Name}}-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8030"
         - "-t"
         - "180"
 
-  # TODO: different tenant name? (e.g. asserts)
   assertsTenant: bootstrap
-  assertsControllerHost: http://asserts-server.asserts.svc.cluster.local:8030
+  assertsControllerHost: "http://{{.Release.Name}}-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8030"
   syncInterval: "60"
   prometheusRulesConfigmapName: "asserts-rules"
   prometheusRulesTargetDir: "/etc/asserts/rules"
@@ -274,6 +287,7 @@ knowledge-sensor:
     enabled: false
 
 ### tsdb ###
+# ref: https://github.com/VictoriaMetrics/helm-charts/blob/master/charts/victoria-metrics-single/values.yaml
 tsdb:
   enabled: true
   rbac:
@@ -284,6 +298,7 @@ tsdb:
     create: false
     name: asserts
 
+  configMap: asserts-tsdb-scrapeconfig
   server:
     image:
       tag: v1.75.1
@@ -296,7 +311,7 @@ tsdb:
         image: asserts/wait-for:v2.2.3
         imagePullPolicy: IfNotPresent
         args:
-          - "asserts-knowledge-sensor.asserts.svc.cluster.local:8080"
+          - "{{.Release.Name}}-knowledge-sensor.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8080"
           - "-t"
           - "180"
       - name: init-add-rule-files
@@ -316,6 +331,7 @@ tsdb:
 
     extraArgs:
       loggerFormat: default
+      # TODO: look in to generalizing relabel config for single/multi-tenancy
       relabelConfig: /etc/asserts/relabel/bootstrap.yml
       maxLabelsPerTimeseries: 60
       retentionPeriod: 14d
@@ -323,110 +339,10 @@ tsdb:
       search.latencyOffset: 15s
       memory.allowedPercent: 50
 
-    # scrape configuration for the tsdb
+    # scrape configuration for the tsdb in templates/tsdb-scrape-configmap.yaml
     scrape:
       enabled: true
-      config:
-        global:
-          scrape_interval: 30s
-
-        # scrape self by default
-        scrape_configs:
-          - job_name: asserts-tsdb-server
-            static_configs:
-              - targets: ["localhost:8428"]
-
-          - job_name: asserts-alerts
-            honor_labels: true
-            honor_timestamps: true
-            scrape_interval: 30s
-            scrape_timeout: 15s
-            metrics_path: /api-server/assertion-metrics
-            scheme: http
-            kubernetes_sd_configs:
-            - role: endpoints
-              namespaces:
-                names:
-                - asserts
-            relabel_configs:
-            - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-              separator: ;
-              regex: asserts
-              replacement: $1
-              action: keep
-            - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
-              separator: ;
-              regex: asserts
-              replacement: $1
-              action: keep
-            - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_component]
-              separator: ;
-              regex: server
-              replacement: $1
-              action: keep
-            - source_labels: [__meta_kubernetes_endpoint_port_name]
-              separator: ;
-              regex: http
-              replacement: $1
-              action: keep
-            # source relabeling
-            - source_labels: [job]
-              separator: ;
-              regex: (.+)
-              replacement: $1
-              target_label: source_job
-              action: replace
-            - source_labels: [__address__]
-              separator: ;
-              regex: (.+)
-              target_label: source_instance
-              replacement: $1
-              action: replace
-            - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-              separator: ;
-              regex: Node;(.*)
-              target_label: source_node
-              replacement: ${1}
-              action: replace
-            - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-              separator: ;
-              regex: Pod;(.*)
-              target_label: source_pod
-              replacement: ${1}
-              action: replace
-            - source_labels: [__meta_kubernetes_namespace]
-              separator: ;
-              regex: (.*)
-              target_label: source_namespace
-              replacement: $1
-              action: replace
-            - source_labels: [__meta_kubernetes_service_name]
-              separator: ;
-              regex: (.*)
-              target_label: source_service
-              replacement: $1
-              action: replace
-            - source_labels: [__meta_kubernetes_pod_name]
-              separator: ;
-              regex: (.*)
-              target_label: source_pod
-              replacement: $1
-              action: replace
-
-            metric_relabel_configs:
-            - source_labels: [job]
-              regex: asserts-alerts
-              target_label: job
-              replacement: ""
-              action: replace
-            - source_labels: [instance]
-              regex: dummy
-              target_label: instance
-              replacement: ""
-              action: replace
-            - source_labels: [tenant]
-              regex: ".+"
-              action: keep
+      configMap: asserts-tsdb-scrapeconfig
 
     persistentVolume:
       size: 8Gi
@@ -439,6 +355,7 @@ tsdb:
     livenessProbe:
 
     extraContainers:
+      # TODO: reload scrape config if changed
       - name: config-sidecar
         # TODO: make custom sidecar public in dockerhub
         image: asserts-k8s-sidecar:k8s
@@ -464,28 +381,67 @@ tsdb:
       - name: relabel-config
         emptyDir: {}
 
+
 ### redisgraph ###
+# ref: https://github.com/bitnami/charts/blob/master/bitnami/redis/values.yaml
 redisgraph:
   enabled: true
+
+  image:
+    repository: asserts/redismod
+    tag: 6.26
+
+  nameOverride: asserts-redisgraph
+  fullnameOverride: asserts-redisgraph
+
   serviceAccount:
     create: false
     name: asserts
+
+  architecture: standalone
+
+  auth:
+    enabled: false
+
+  master:
+    configuration: |
+      loadmodule /opt/bitnami/redis/modules/redisgraph.so
+
+  metrics:
+    enabled: true
+
 
 ### redisearch ###
+# ref: https://github.com/bitnami/charts/blob/master/bitnami/redis/values.yaml
 redisearch:
   enabled: true
+
+  image:
+    repository: asserts/redismod
+    tag: 6.26
+
+  nameOverride: asserts-redisearch
+  fullnameOverride: asserts-redisearch
+
   serviceAccount:
     create: false
     name: asserts
 
-### postgres ###
-postgres:
-  enabled: true
-  serviceAccount:
-    create: false
-    name: asserts
+  architecture: standalone
+
+  auth:
+    enabled: false
+
+  master:
+    configuration: |
+      loadmodule /opt/bitnami/redis/modules/redisearch.so
+
+  metrics:
+    enabled: true
+
 
 ### alertmanager ###
+# ref: https://github.com/prometheus-community/helm-charts/blob/main/charts/alertmanager/values.yaml
 alertmanager:
   enabled: true
 
@@ -500,101 +456,20 @@ alertmanager:
       - ReadWriteOnce
     size: 100Mi
 
-  config:
-    global:
-      resolve_timeout: 5m
-    route:
-      group_by:
-        - sg
-        - tenant
-        - alertname
-        - asserts_notification_rule_name
-        - source_alertname
-        - asserts_slo_name
-        - namespace
-      receiver: blackhole
-      repeat_interval: 5m
-      group_wait: 5s
-      group_interval: 5s
-      routes:
-        # chief
-        - receiver: bootstrap-tenant
-          matchers:
-            - tenant="bootstrap"
-          group_wait: 5s
-          group_interval: 5s
-          routes:
-            - receiver: bootstrap-tenant
-              matchers:
-                - tenant="bootstrap"
-              group_wait: 5s
-              group_interval: 5s
-              # TODO: uncomment once we have figured out the whole config
-              # continue: true
-    receivers:
-      - name: blackhole
-      # bootstrap
-      - name: bootstrap-tenant
-        webhook_configs:
-          - send_resolved: true
-            url: http://asserts-server.asserts.svc.cluster.local:8030/api-server/v4/prometheus-alerts?tenant=bootstrap
+  existingConfigMap: asserts-alertmanager
 
   configmapReload:
     enabled: true
 
 ### promxy ###
+# ref: https://github.com/asserts/helm-charts/blob/master/charts/promxy/values.yaml
 promxy:
   enabled: true
   serviceAccount:
     create: false
     name: asserts
 
-  # https://github.com/jacksontj/promxy/blob/master/cmd/promxy/config.yaml
-  config:
-    global:
-      evaluation_interval: 30s
-      external_labels:
-        tenant: bootstrap
-    alerting:
-      alertmanagers:
-        - static_configs:
-            - targets:
-                - asserts-alertmanager.asserts.svc.cluster.local:9093
-    promxy:
-      server_groups:
-        - anti_affinity: 10s
-          http_client:
-            dial_timeout: 1s
-            tls_config:
-              insecure_skip_verify: true
-          ignore_error: true
-          labels:
-            asserts_env: dev
-            asserts_site: dev
-          query_params:
-            nocache: 1
-          remote_read: false
-          scheme: https
-          static_configs:
-            - targets:
-              - prometheus-secret.dev.asserts.ai
-        - anti_affinity: 10s
-          http_client:
-            dial_timeout: 1s
-            tls_config:
-              insecure_skip_verify: true
-          ignore_error: true
-          query_params:
-            nocache: 1
-          remote_read: false
-          scheme: http
-          static_configs:
-            - targets:
-              - asserts-tsdb-server.asserts.svc.cluster.local:8428
-    remote_write:
-      - url: http://asserts-tsdb-server.asserts.svc.cluster.local:8428/api/v1/write
-    rule_files:
-      - /etc/asserts/rules/*.yml
+  existingConfigMap: asserts-promxy
 
   extraContainers:
     - name: config-sidecar
@@ -630,3 +505,248 @@ promxy:
   extraVolumes:
     - name: rules-config
       emptyDir: {}
+
+
+### postgres ###
+# ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
+postgres:
+  enabled: true
+
+  defaultPassword: super-secret
+
+  global:
+    postgresql:
+      auth:
+        database: "asserts"
+        existingSecret: "asserts-default"
+
+  image:
+    repository: bitnami/postgresql
+    tag: 12.7.0
+
+  nameOverride: asserts-postgres
+  fullnameOverride: asserts-postgres
+
+  serviceAccount:
+    create: false
+    name: asserts
+
+  primary:
+    initdb:
+      scripts:
+        load-extensions.sh: |
+          #!/bin/sh
+
+          psql --username "postgres" <<EOF
+          create extension IF NOT EXISTS pg_stat_statements;
+          select * FROM pg_extension;
+          EOF
+
+  metrics:
+    enabled: true
+    customMetrics: |
+      pg_replication:
+        query: "SELECT EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp())) as lag"
+        master: true
+        metrics:
+          - lag:
+              usage: "GAUGE"
+              description: "Replication lag behind master in seconds"
+
+      pg_postmaster:
+        query: "SELECT pg_postmaster_start_time as start_time_seconds from pg_postmaster_start_time()"
+        master: true
+        metrics:
+          - start_time_seconds:
+              usage: "GAUGE"
+              description: "Time at which postmaster started"
+
+      pg_stat_user_tables:
+        query: "SELECT current_database() datname, schemaname, relname, seq_scan, seq_tup_read, idx_scan, idx_tup_fetch, n_tup_ins, n_tup_upd, n_tup_del, n_tup_hot_upd, n_live_tup, n_dead_tup, n_mod_since_analyze, COALESCE(last_vacuum, '1970-01-01Z'), COALESCE(last_vacuum, '1970-01-01Z') as last_vacuum, COALESCE(last_autovacuum, '1970-01-01Z') as last_autovacuum, COALESCE(last_analyze, '1970-01-01Z') as last_analyze, COALESCE(last_autoanalyze, '1970-01-01Z') as last_autoanalyze, vacuum_count, autovacuum_count, analyze_count, autoanalyze_count FROM pg_stat_user_tables"
+        metrics:
+          - datname:
+              usage: "LABEL"
+              description: "Name of current database"
+          - schemaname:
+              usage: "LABEL"
+              description: "Name of the schema that this table is in"
+          - relname:
+              usage: "LABEL"
+              description: "Name of this table"
+          - seq_scan:
+              usage: "COUNTER"
+              description: "Number of sequential scans initiated on this table"
+          - seq_tup_read:
+              usage: "COUNTER"
+              description: "Number of live rows fetched by sequential scans"
+          - idx_scan:
+              usage: "COUNTER"
+              description: "Number of index scans initiated on this table"
+          - idx_tup_fetch:
+              usage: "COUNTER"
+              description: "Number of live rows fetched by index scans"
+          - n_tup_ins:
+              usage: "COUNTER"
+              description: "Number of rows inserted"
+          - n_tup_upd:
+              usage: "COUNTER"
+              description: "Number of rows updated"
+          - n_tup_del:
+              usage: "COUNTER"
+              description: "Number of rows deleted"
+          - n_tup_hot_upd:
+              usage: "COUNTER"
+              description: "Number of rows HOT updated (i.e., with no separate index update required)"
+          - n_live_tup:
+              usage: "GAUGE"
+              description: "Estimated number of live rows"
+          - n_dead_tup:
+              usage: "GAUGE"
+              description: "Estimated number of dead rows"
+          - n_mod_since_analyze:
+              usage: "GAUGE"
+              description: "Estimated number of rows changed since last analyze"
+          - last_vacuum:
+              usage: "GAUGE"
+              description: "Last time at which this table was manually vacuumed (not counting VACUUM FULL)"
+          - last_autovacuum:
+              usage: "GAUGE"
+              description: "Last time at which this table was vacuumed by the autovacuum daemon"
+          - last_analyze:
+              usage: "GAUGE"
+              description: "Last time at which this table was manually analyzed"
+          - last_autoanalyze:
+              usage: "GAUGE"
+              description: "Last time at which this table was analyzed by the autovacuum daemon"
+          - vacuum_count:
+              usage: "COUNTER"
+              description: "Number of times this table has been manually vacuumed (not counting VACUUM FULL)"
+          - autovacuum_count:
+              usage: "COUNTER"
+              description: "Number of times this table has been vacuumed by the autovacuum daemon"
+          - analyze_count:
+              usage: "COUNTER"
+              description: "Number of times this table has been manually analyzed"
+          - autoanalyze_count:
+              usage: "COUNTER"
+              description: "Number of times this table has been analyzed by the autovacuum daemon"
+
+      pg_statio_user_tables:
+        query: "SELECT current_database() datname, schemaname, relname, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables"
+        metrics:
+          - datname:
+              usage: "LABEL"
+              description: "Name of current database"
+          - schemaname:
+              usage: "LABEL"
+              description: "Name of the schema that this table is in"
+          - relname:
+              usage: "LABEL"
+              description: "Name of this table"
+          - heap_blks_read:
+              usage: "COUNTER"
+              description: "Number of disk blocks read from this table"
+          - heap_blks_hit:
+              usage: "COUNTER"
+              description: "Number of buffer hits in this table"
+          - idx_blks_read:
+              usage: "COUNTER"
+              description: "Number of disk blocks read from all indexes on this table"
+          - idx_blks_hit:
+              usage: "COUNTER"
+              description: "Number of buffer hits in all indexes on this table"
+          - toast_blks_read:
+              usage: "COUNTER"
+              description: "Number of disk blocks read from this table's TOAST table (if any)"
+          - toast_blks_hit:
+              usage: "COUNTER"
+              description: "Number of buffer hits in this table's TOAST table (if any)"
+          - tidx_blks_read:
+              usage: "COUNTER"
+              description: "Number of disk blocks read from this table's TOAST table indexes (if any)"
+          - tidx_blks_hit:
+              usage: "COUNTER"
+              description: "Number of buffer hits in this table's TOAST table indexes (if any)"
+
+      pg_database:
+        query: "SELECT pg_database.datname, pg_database_size(pg_database.datname) as size FROM pg_database"
+        master: true
+        cache_seconds: 30
+        metrics:
+          - datname:
+              usage: "LABEL"
+              description: "Name of the database"
+          - size_bytes:
+              usage: "GAUGE"
+              description: "Disk space used by the database"
+
+      pg_stat_statements:
+        query: "SELECT t2.rolname, t3.datname, queryid, calls, total_time / 1000 as total_time_seconds, min_time / 1000 as min_time_seconds, max_time / 1000 as max_time_seconds, mean_time / 1000 as mean_time_seconds, stddev_time / 1000 as stddev_time_seconds, rows, shared_blks_hit, shared_blks_read, shared_blks_dirtied, shared_blks_written, local_blks_hit, local_blks_read, local_blks_dirtied, local_blks_written, temp_blks_read, temp_blks_written, blk_read_time / 1000 as blk_read_time_seconds, blk_write_time / 1000 as blk_write_time_seconds FROM pg_stat_statements t1 join pg_roles t2 on (t1.userid=t2.oid) join pg_database t3 on (t1.dbid=t3.oid)"
+        master: true
+        metrics:
+          - rolname:
+              usage: "LABEL"
+              description: "Name of user"
+          - datname:
+              usage: "LABEL"
+              description: "Name of database"
+          - queryid:
+              usage: "LABEL"
+              description: "Query ID"
+          - calls:
+              usage: "COUNTER"
+              description: "Number of times executed"
+          - total_time_seconds:
+              usage: "COUNTER"
+              description: "Total time spent in the statement, in milliseconds"
+          - min_time_seconds:
+              usage: "GAUGE"
+              description: "Minimum time spent in the statement, in milliseconds"
+          - max_time_seconds:
+              usage: "GAUGE"
+              description: "Maximum time spent in the statement, in milliseconds"
+          - mean_time_seconds:
+              usage: "GAUGE"
+              description: "Mean time spent in the statement, in milliseconds"
+          - stddev_time_seconds:
+              usage: "GAUGE"
+              description: "Population standard deviation of time spent in the statement, in milliseconds"
+          - rows:
+              usage: "COUNTER"
+              description: "Total number of rows retrieved or affected by the statement"
+          - shared_blks_hit:
+              usage: "COUNTER"
+              description: "Total number of shared block cache hits by the statement"
+          - shared_blks_read:
+              usage: "COUNTER"
+              description: "Total number of shared blocks read by the statement"
+          - shared_blks_dirtied:
+              usage: "COUNTER"
+              description: "Total number of shared blocks dirtied by the statement"
+          - shared_blks_written:
+              usage: "COUNTER"
+              description: "Total number of shared blocks written by the statement"
+          - local_blks_hit:
+              usage: "COUNTER"
+              description: "Total number of local block cache hits by the statement"
+          - local_blks_read:
+              usage: "COUNTER"
+              description: "Total number of local blocks read by the statement"
+          - local_blks_dirtied:
+              usage: "COUNTER"
+              description: "Total number of local blocks dirtied by the statement"
+          - local_blks_written:
+              usage: "COUNTER"
+              description: "Total number of local blocks written by the statement"
+          - temp_blks_read:
+              usage: "COUNTER"
+              description: "Total number of temp blocks read by the statement"
+          - temp_blks_written:
+              usage: "COUNTER"
+              description: "Total number of temp blocks written by the statement"
+          - blk_read_time_seconds:
+              usage: "COUNTER"
+              description: "Total time the statement spent reading blocks, in milliseconds (if track_io_timing is enabled, otherwise zero)"
+          - blk_write_time_seconds:
+              usage: "COUNTER"
+              description: "Total time the statement spent writing blocks, in milliseconds (if track_io_timing is enabled, otherwise zero)"

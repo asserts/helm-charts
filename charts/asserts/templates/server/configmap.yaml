@@ -13,7 +13,7 @@ metadata:
 data:
   application.yml: |-
     server:
-      port: {{ .Values.server.service.port }}
+      port: {{.Values.server.service.port}}
       servlet:
         context-path: "/api-server"
 
@@ -72,7 +72,7 @@ data:
 
     proxy:
       grafana:
-        prefix: http://localhost:{{ .Values.server.service.port }}/api-server/v1/grafana
+        prefix: http://localhost:{{.Values.server.service.port}}/api-server/v1/grafana
 
     logging:
       level:
@@ -85,11 +85,9 @@ data:
 
     asserts:
       identityprovider:
-        # TODO: different tenant name?
-        tenant: bootstrap
+        tenant: {{ include "asserts.tenant" . }}
       tsdb:
-        # TODO: do we just need the tsdb only or promxy?
-        url: http://asserts-tsdb-server.asserts.svc.cluster.local.:8428
+        url: http://{{.Release.Name}}-tsdb-server.{{include "domain" .}}:8428
       oauth2:
         cookie:
           domain: localhost
@@ -169,18 +167,19 @@ data:
             visibility: INTERNAL
 
     store:
+      # TODO: figure out the username password (currently the same)
       owner:
         datasource:
           hikari:
             maximum-pool-size: 1
-          url: jdbc:postgresql://asserts-postgres.asserts.svc.cluster.local.:5432/asserts
-          username: asserts
+          url: jdbc:postgresql://asserts-postgres.{{include "domain" .}}:5432/asserts
+          username: postgres
           password: super-secret
       user:
         datasource:
           url: ${store.owner.datasource.url}
           username: tenant_user
-          password: secret
+          password: super-secret
 
       keyValue: "local"
       fileSystem:
@@ -203,13 +202,17 @@ data:
             implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
       liquibase:
         enabled: true
-        changeLog: classpath:/db/changelog/db.changelog-enterprise.yaml
+        changeLog: classpath:/db/changelog/db.changelog-k8s.yaml
         parameters:
           database: asserts
           schema: public
           username: ${store.user.datasource.username}
           password: ${store.user.datasource.password}
           bootstrap_enabled: "true"
+          tenant_graph_server: asserts-redisgraph-master.{{include "domain" .}}
+          tenant_search_server: asserts-redisearch-master.{{include "domain" .}}
+          tenant_tsdb_url: http://{{.Release.Name}}-promxy.{{include "domain" .}}:8082
+          tenant_grafana_url: http://{{.Release.Name}}-grafana.{{include "domain" .}}:3000
 
     prometheus:
       client:
