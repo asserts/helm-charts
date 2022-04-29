@@ -1,4 +1,3 @@
-# TODO: figure out default resources for everything...
 nameOverride: ""
 fullnameOverride: ""
 clusterDomain: svc.cluster.local
@@ -8,43 +7,53 @@ rbac:
   annotations: {}
   extraLabels: {}
 
+## ServiceAccount configuration
+##
 serviceAccount:
   create: true
-  ## The name of the service account to use.
-  ## If not set and create is true, a name is generated using the fullname template
-  name:
-  # Secrets for the service account
-  # TODO: change this once we have public repos for everything
-  # imagePullSecrets:
-  #   - name: asserts-docker
-  # imagePullSecrets: []
-  # service account annotations
+  ## name of the service account to use.
+  ## note that the values in this file assume all the service
+  ## accounts for dependent charts are using the "asserts"
+  ## service account. This is here for completness and potential
+  ## future changes.
+  name: ""
+  # TODO: change back
+  #imagePullSecrets: []
+  imagePullSecrets:
+    - name: asserts-docker
   annotations: {}
   extraLabels: {}
 
-# TODO: link to docs
-# asserts_env label (recommended)
-# env: (dev|stage|prod|qe)
-env:
-# asserts_site label (optional)
-# site: us-west-2
-site:
-# information about prometheus url to query
-#
-prometheus:
-  url: prometheus-server.default.svc.cluster.local:9090
-  scheme: http
+## Assert prometheus endpoints configuration
+## This is a list of various prometheus endpoints to query
+## ref:
+##
+prometheusEndpoints: []
+# prometheusEndpoints:
+#   - url: prometheus-server0.default.svc.cluster.local:9090
+#     scheme: http
+#     # optional
+#     env: dev
+#     # recommended
+#     site: us-west-2
+#   - url: prometheus-server1.default.svc.cluster.local:9090
+#     scheme: http
+#     env: stage
+#     site: eu-west-1
 
-### asserts-server ###
+
+## Asserts server configuration
+##
 server:
   nameOverride: ""
   fullnameOverride: ""
 
   image:
-    repository: asserts-server
+    # TODO: update once docker repo is public
+    repository: asserts/platform
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: k8s-beta
+    tag: v0.2.127
 
   initContainers:
     - name: wait-for-postgres
@@ -113,9 +122,7 @@ server:
   annotations: {}
 
   # environment variables to add to the asserts-server pod
-  extraEnv:
-    - name: SPRING_LIQUIDBASE_CHANGELOG
-      value: "classpath:/db/changelog/db.changelog-k8s.yaml"
+  extraEnv: []
   # environment variables from secrets or configmaps to add to the asserts-server pod
   extraEnvFrom: []
   #   - secretRef:
@@ -161,16 +168,19 @@ server:
     # When set, will use the existing PVC for persistence
     existingClaim: ""
 
-### asserts-ui ###
+
+## Asserts ui configuration
+##
 ui:
   nameOverride: ""
   fullnameOverride: ""
 
   image:
+    # TODO: update once docker repo is public
     repository: asserts/asserts-ui
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: k8s-beta
+    tag: v0.1950
 
   imagePullSecrets: []
 
@@ -212,7 +222,9 @@ ui:
 
   extraVolumes: []
 
-### grafana ###
+
+## Asserts grafana configuration
+##
 grafana:
   nameOverride: ""
   fullnameOverride: ""
@@ -221,7 +233,7 @@ grafana:
     repository: asserts/grafana
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: k8s-beta
+    tag: v1.0.85
 
   imagePullSecrets: []
 
@@ -233,10 +245,26 @@ grafana:
     type: ClusterIP
     port: 3000
 
+  securityContext:
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+
   resources: {}
 
+  datasources:
+    datasources:
+      - name: Prometheus
+        url: http://{{.Release.Name}}-promxy.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8082
+        isDefault: true
+        orgId: 1
+        access: proxy
+        type: prometheus
+
+  dataPath: /var/lib/grafana/data
+
   persistence:
-    enabled: false
+    enabled: true
 
     ## Persistent Volume storage class
     ## If defined, storageClassName: <storageClass>
@@ -255,12 +283,26 @@ grafana:
     # When set, will use the existing PVC for persistence
     existingClaim: ""
 
-### knowledge-sensor ###
-#
+  ## 'volumePermissions' init container parameters
+  ## Changes the owner and group of the persistent volume mount point to runAsUser:fsGroup values
+  ##   based on the *podSecurityContext/*containerSecurityContext parameters
+  ##
+  volumePermissions:
+    ## @param volumePermissions.enabled Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup`
+    ##
+    enabled: true
+    image:
+      repository: bitnami/bitnami-shell
+      tag: 10-debian-10-r378
+      pullPolicy: IfNotPresent
+    resources: {}
+
+## Asserts knowledge-sensor configuration
+##
 knowledge-sensor:
   image:
     repository: asserts/knowledge-sensor
-    tag: k8s-beta
+    tag: v1.1.3
 
   serviceAccount:
     create: false
@@ -286,8 +328,9 @@ knowledge-sensor:
   concurrency:
     enabled: false
 
-### tsdb ###
-# ref: https://github.com/VictoriaMetrics/helm-charts/blob/master/charts/victoria-metrics-single/values.yaml
+## Tsdb configuration
+## TODO: update ref
+## ref: https://github.com/VictoriaMetrics/helm-charts/blob/master/charts/victoria-metrics-single/values.yaml
 tsdb:
   enabled: true
   rbac:
@@ -307,6 +350,8 @@ tsdb:
     fullNameOverride: "tsdb"
 
     initContainers:
+      # wait for the knowledge-sensor to be ready to
+      # serve up the rules
       - name: wait-for-knowledge-sensor
         image: asserts/wait-for:v2.2.3
         imagePullPolicy: IfNotPresent
@@ -314,9 +359,13 @@ tsdb:
           - "{{.Release.Name}}-knowledge-sensor.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8080"
           - "-t"
           - "180"
+      # initially add rule files to volume on startup
+      # after the knowledge-sensor is ready. This is a
+      # way to make sure the tsdb doesn't startup with
+      # empty rules as it will crash or run with an empty
+      # set.
       - name: init-add-rule-files
-        # TODO: make custom sidecar public in dockerhub
-        image: asserts-k8s-sidecar:k8s
+        image: asserts/k8s-sidecar:1.14.2
         imagePullPolicy: IfNotPresent
         env:
           - name: LABEL
@@ -331,10 +380,9 @@ tsdb:
 
     extraArgs:
       loggerFormat: default
-      # TODO: look in to generalizing relabel config for single/multi-tenancy
       relabelConfig: /etc/asserts/relabel/bootstrap.yml
       maxLabelsPerTimeseries: 60
-      retentionPeriod: 14d
+      retentionPeriod: 30d
       search.maxStalenessInterval: 60s
       search.latencyOffset: 15s
       memory.allowedPercent: 50
@@ -347,22 +395,15 @@ tsdb:
     persistentVolume:
       size: 8Gi
 
-    # TODO: figure out good default resources
     resources: {}
 
-    # TODO: decide if we want these set, can be problematic for statefulsets
-    readinessProbe:
-    livenessProbe:
-
     extraContainers:
-      # TODO: reload scrape config if changed
+      # TODO: config-sidecar takes care of loading relabeling rules
+      #       at the moment, the scrapeconfig is not currently hot loaded
       - name: config-sidecar
-        # TODO: make custom sidecar public in dockerhub
-        image: asserts-k8s-sidecar:k8s
+        image: asserts/k8s-sidecar:1.14.2
         imagePullPolicy: IfNotPresent
-        resources: {}
         env:
-          # TODO: different tenant name?
           - name: LABEL
             value: bootstrap-relabel-config
           - name: FOLDER
@@ -382,11 +423,13 @@ tsdb:
         emptyDir: {}
 
 
-### redisgraph ###
-# ref: https://github.com/bitnami/charts/blob/master/bitnami/redis/values.yaml
+## RedisGraph configuration
+## ref: https://github.com/bitnami/charts/blob/master/bitnami/redis/values.yaml
 redisgraph:
   enabled: true
 
+  # custom Redis multi module image
+  # ref: https://hub.docker.com/repository/docker/asserts/redismod
   image:
     repository: asserts/redismod
     tag: 6.26
@@ -407,15 +450,20 @@ redisgraph:
     configuration: |
       loadmodule /opt/bitnami/redis/modules/redisgraph.so
 
+  # TODO: since we are scraping from the tsdb, may want to disable
+  #       the annotation -> prometheus.io/scrape: true
+  #       so that there isn't a double scrape from another prom
   metrics:
     enabled: true
 
 
-### redisearch ###
-# ref: https://github.com/bitnami/charts/blob/master/bitnami/redis/values.yaml
+## RedisSearch configuration
+## ref: https://github.com/bitnami/charts/blob/master/bitnami/redis/values.yaml
 redisearch:
   enabled: true
 
+  # custom Redis multi module image
+  # ref: https://hub.docker.com/repository/docker/asserts/redismod
   image:
     repository: asserts/redismod
     tag: 6.26
@@ -436,12 +484,16 @@ redisearch:
     configuration: |
       loadmodule /opt/bitnami/redis/modules/redisearch.so
 
+  # TODO: since we are scraping from the tsdb, may want to disable
+  #       the annotation -> prometheus.io/scrape: true
+  #       so that there isn't a double scrape from another prom
   metrics:
     enabled: true
 
 
-### alertmanager ###
-# ref: https://github.com/prometheus-community/helm-charts/blob/main/charts/alertmanager/values.yaml
+## Alertmanager configuration
+## TODO: update ref
+## ref: https://github.com/prometheus-community/helm-charts/blob/main/charts/alertmanager/values.yaml
 alertmanager:
   enabled: true
 
@@ -461,8 +513,9 @@ alertmanager:
   configmapReload:
     enabled: true
 
-### promxy ###
-# ref: https://github.com/asserts/helm-charts/blob/master/charts/promxy/values.yaml
+## Promxy configuration
+## TODO: update ref
+## ref: https://github.com/asserts/helm-charts/blob/master/charts/promxy/values.yaml
 promxy:
   enabled: true
   serviceAccount:
@@ -471,14 +524,20 @@ promxy:
 
   existingConfigMap: asserts-promxy
 
+  initContainers:
+    - name: wait-for-tsdb
+      image: asserts/wait-for:v2.2.3
+      imagePullPolicy: IfNotPresent
+      args:
+        - "{{.Release.Name}}-tsdb-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8428"
+        - "-t"
+        - "200"
+
   extraContainers:
     - name: config-sidecar
-      # TODO: make custom sidecar public in dockerhub
-      image: asserts-k8s-sidecar:k8s
+      image: asserts/k8s-sidecar:1.14.2
       imagePullPolicy: IfNotPresent
-      resources: {}
       env:
-        # TODO: different tenant name?
         - name: LABEL
           value: bootstrap-rules-config
         - name: FOLDER
@@ -495,23 +554,18 @@ promxy:
     - name: rules-config
       mountPath: /etc/asserts/rules
 
-  # TODO: figure out race condition where vm reads the relabel config before sidecar
-  #       adds it. Possible options:
-  #
-  #       1. touch a file: hacky and could trigger reload of no rules
-  #       2. use configmap reloader
-  #       3. reorder container startup and add post start sleep of 15 seconds
-  #       4. leave as is and allow pod to crash twice
   extraVolumes:
     - name: rules-config
       emptyDir: {}
 
 
-### postgres ###
-# ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
+## Postgres configuration
+## TODO: update ref
+## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
 postgres:
   enabled: true
 
+  # TODO: store as a secret by default
   defaultPassword: super-secret
 
   global:
@@ -544,6 +598,8 @@ postgres:
 
   metrics:
     enabled: true
+    ## TODO: figure out warning on install of chart:
+    ## "warning: cannot overwrite table with non table for customMetrics (map[])""
     customMetrics: |
       pg_replication:
         query: "SELECT EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp())) as lag"

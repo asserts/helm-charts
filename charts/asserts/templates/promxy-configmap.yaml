@@ -9,9 +9,7 @@ data:
   config.yaml: |
     global:
       evaluation_interval: 30s
-      # TODO: figure out if this external label is needed
-      external_labels:
-        tenant: {{ include "asserts.tenant" . }}
+      # TODO: figure out if this external label is needed (e.g. tenant: bootstrap)
     alerting:
       alertmanagers:
         - static_configs:
@@ -19,32 +17,44 @@ data:
                 - {{.Release.Name}}-alertmanager.{{ include "domain" . }}:9093
     promxy:
       server_groups:
+      # server configuration for each prometheus endpoint being queried
+      {{ range $i, $endpoint := .Values.prometheusEndpoints }}
         - anti_affinity: 10s
           http_client:
             dial_timeout: 1s
             tls_config:
               insecure_skip_verify: true
           ignore_error: true
-          {{- if .Values.env }}
+          {{- if $endpoint.env }}
           labels:
-            asserts_env: {{ .Values.env }}
-            {{- if .Values.env }}
-            asserts_site: {{ .Values.site }}
+            asserts_env: {{ $endpoint.env }}
+            {{- if $endpoint.site }}
+            asserts_site: {{ $endpoint.site }}
             {{- end }}
           {{- end }}
           query_params:
             nocache: 1
           remote_read: false
-          scheme: {{ .Values.prometheus.scheme }}
+          {{- if $endpoint.scheme }}
+          scheme: {{ $endpoint.scheme }}
+          {{- else }}
+          scheme: http
+          {{- end }}
           static_configs:
             - targets:
-              - {{ .Values.prometheus.url }}
+              - {{ $endpoint.url }}
+      {{- end }}
+      # server configuration for the Asserts Tsdb
         - anti_affinity: 10s
           http_client:
             dial_timeout: 1s
             tls_config:
               insecure_skip_verify: true
           ignore_error: true
+          labels:
+            # TODO: figure out is this is what we want the env to be
+            asserts_env: dev
+            asserts_site: dev
           query_params:
             nocache: 1
           remote_read: false

@@ -24,19 +24,40 @@ spec:
         {{- with .Values.extraPodLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- with .Values.extraPodAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/grafana-configmap.yaml") . | sha256sum }}
+        {{- with .Values.extraPodAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.grafana.securityContext }}
+      securityContext: {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "asserts.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if and .Values.grafana.persistence.enabled .Values.grafana.volumePermissions.enabled }}
+      initContainers:
+        - name: init-chmod-data
+          image: "{{ .Values.grafana.volumePermissions.image.repository }}:{{ .Values.grafana.volumePermissions.image.tag }}"
+          imagePullPolicy: {{ .Values.grafana.volumePermissions.image.pullPolicy | quote }}
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p {{ .Values.grafana.dataPath }}
+              chown -R "{{ .Values.grafana.securityContext.runAsUser }}:{{ .Values.grafana.securityContext.fsGroup }}" {{ .Values.grafana.dataPath }}
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.grafana.dataPath }}
+      {{- end }}
       containers:
         - name: grafana
-          image:  "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}"
+          image:  "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.grafana.image.pullPolicy | quote }}
           {{- with .Values.grafana.extraEnv }}
-          env: {{- toYaml . | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.grafana.extraEnvFrom }}
           envFrom: {{- toYaml . | nindent 12 }}
@@ -45,11 +66,19 @@ spec:
             - name: http
               containerPort: {{ .Values.grafana.service.port }}
           resources: {{- toYaml .Values.grafana.resources | nindent 12 }}
-          {{- with .Values.grafana.extraVolumeMounts }}
           volumeMounts:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
+            - name: datasource
+              mountPath: /etc/grafana/provisioning/datasources/datasource.yml
+              subPath: datasource.yml
+            - name: data
+              mountPath: {{ .Values.grafana.dataPath }}
       volumes:
+        - name: datasource
+          configMap:
+            name: {{ include "asserts.grafanaFullname" . }}
+            items:
+              - key: datasource.yml
+                path: datasource.yml
   {{- if not .Values.grafana.persistence.enabled }}
         - name: data
           emptyDir: {}

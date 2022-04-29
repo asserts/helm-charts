@@ -54,10 +54,6 @@ spec:
               mountPath: /opt/asserts/api-server/conf/application.yml
               subPath: application.yml
               readOnly: true
-            - name: changelog
-              mountPath: /opt/asserts/changelog.yml
-              subPath: changelog.yml
-              readOnly: true
           {{- with .Values.server.extraVolumeMounts }}
           {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -68,12 +64,6 @@ spec:
             items:
               - key: application.yml
                 path: application.yml
-        - name: changelog
-          configMap:
-            name: {{ include "asserts.serverFullname" . }}-changelog
-            items:
-              - key: changelog.yml
-                path: changelog.yml
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
