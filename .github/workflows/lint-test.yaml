@@ -41,7 +41,12 @@ jobs:
         id: list-changed
         run: |
           changed=$(ct list-changed --config ct.yaml)
-          if [[ -n "$changed" ]]; then
+          # skip knowledge-sensor test due to current service dependency
+          # a rules api endpoint
+          if [[ "${changed}" =~ "knowledge-sensor" ]]; then
+            echo "skipping knowledge-sensor test..."
+            echo "::set-output name=result::skip"
+          elif [[ -n "$changed" ]]; then
             echo "::set-output name=changed::true"
           fi
 
