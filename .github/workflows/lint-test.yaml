@@ -45,7 +45,7 @@ jobs:
           # a rules api endpoint
           if [[ "${changed}" =~ "knowledge-sensor" ]]; then
             echo "skipping knowledge-sensor test..."
-            echo "::set-output name=result::skip"
+            echo "::set-output name=changed::false"
           elif [[ -n "$changed" ]]; then
             echo "::set-output name=changed::true"
           fi
@@ -65,3 +65,4 @@ jobs:
 
       - name: Run chart-testing (install)
         run: ct install --config ct.yaml
+        if: steps.list-changed.outputs.changed == 'true'
