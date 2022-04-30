@@ -40,6 +40,9 @@ spec:
       {{- with .Values.affinity }}
       affinity: {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers: {{ include "render-values" ( dict "value" .Values.initContainers "context" $) | nindent 8 }}
+      {{- end }}
       containers:
         {{- with .Values.extraContainers }}
         {{- toYaml . | nindent 8 }}

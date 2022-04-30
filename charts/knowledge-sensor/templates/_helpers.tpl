@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "promxy.name" -}}
+{{- define "knowledge-sensor.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "promxy.fullname" -}}
+{{- define "knowledge-sensor.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "promxy.chart" -}}
+{{- define "knowledge-sensor.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "promxy.labels" -}}
-helm.sh/chart: {{ include "promxy.chart" . }}
-{{ include "promxy.selectorLabels" . }}
+{{- define "knowledge-sensor.labels" -}}
+helm.sh/chart: {{ include "knowledge-sensor.chart" . }}
+{{ include "knowledge-sensor.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,30 +45,19 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "promxy.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "promxy.name" . }}
+{{- define "knowledge-sensor.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "knowledge-sensor.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "promxy.serviceAccountName" -}}
+{{- define "knowledge-sensor.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "promxy.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "knowledge-sensor.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
-Set the config name
-*/}}
-{{- define "promxy.configName" -}}
-{{- if .Values.existingConfigMap }}
-{{- .Values.existingConfigMap }}
-{{- else }}
-{{- include "promxy.fullname" . }}
 {{- end }}
 {{- end }}
 
