@@ -108,6 +108,21 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/aws-autoscalinggroup-activity-exporter-0.1.0/aws-autoscalinggroup-activity-exporter-0.1.0.tgz
     version: 0.1.0
+  knowledge-sensor:
+  - apiVersion: v2
+    appVersion: v1.1.4
+    created: "2022-04-30T02:02:09.868221599Z"
+    description: Asserts Knowledge Sensor Helm Chart
+    digest: 5ec394c27e14856b348ec9e0bb17794f1140a04fa25b646f62b7e1e92a676f7e
+    maintainers:
+    - email: arramos@asserts.ai
+      name: arramos84
+    - email: rios@asserts.ai
+      name: jeremyrios
+    name: knowledge-sensor
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/knowledge-sensor-0.1.0/knowledge-sensor-0.1.0.tgz
+    version: 0.1.0
   kube-prometheus-stack:
   - apiVersion: v2
     appVersion: 0.54.0
@@ -604,4 +619,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
-generated: "2022-04-30T01:55:49.222988937Z"
+generated: "2022-04-30T02:02:09.868680099Z"
