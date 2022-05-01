@@ -124,19 +124,6 @@ Return if ingress supports pathType.
 {{- end -}}
 
 {{/*
-Renders a value that contains template.
-Usage:
-{{ include "render-values" ( dict "value" .Values.path.to.the.Value "context" $) }}
-*/}}
-{{- define "render-values" -}}
-    {{- if typeIs "string" .value }}
-        {{- tpl .value .context }}
-    {{- else }}
-        {{- tpl (.value | toYaml) .context }}
-    {{- end }}
-{{- end -}}
-
-{{/*
 Return the domain to use
 {{ include "domain"  . }}
 */}}

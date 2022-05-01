@@ -25,7 +25,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/grafana-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/grafana/configmap.yaml") . | sha256sum }}
         {{- with .Values.extraPodAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -56,6 +56,14 @@ spec:
         - name: grafana
           image:  "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.grafana.image.pullPolicy | quote }}
+          env:
+            # set grafana admin password
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "asserts.grafanaFullname" . }}
+                  key: grafana-admin-password
+                  optional: false
           {{- with .Values.grafana.extraEnv }}
           {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -67,12 +75,21 @@ spec:
               containerPort: {{ .Values.grafana.service.port }}
           resources: {{- toYaml .Values.grafana.resources | nindent 12 }}
           volumeMounts:
+            - name: config
+              mountPath: /etc/grafana/grafana.ini
+              subPath: grafana.ini
             - name: datasource
               mountPath: /etc/grafana/provisioning/datasources/datasource.yml
               subPath: datasource.yml
             - name: data
               mountPath: {{ .Values.grafana.dataPath }}
       volumes:
+        - name: config
+          configMap:
+            name: {{ include "asserts.grafanaFullname" . }}
+            items:
+              - key: grafana.ini
+                path: grafana.ini
         - name: datasource
           configMap:
             name: {{ include "asserts.grafanaFullname" . }}

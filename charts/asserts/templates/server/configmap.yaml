@@ -172,14 +172,14 @@ data:
         datasource:
           hikari:
             maximum-pool-size: 1
-          url: jdbc:postgresql://asserts-postgres.{{include "domain" .}}:5432/asserts
+          url: jdbc:postgresql://{{.Values.postgres.fullnameOverride}}.{{include "domain" .}}:5432/asserts
           username: postgres
-          password: super-secret
+          password: ${POSTGRES_RDB_PASSWORD}
       user:
         datasource:
           url: ${store.owner.datasource.url}
           username: tenant_user
-          password: super-secret
+          password: ${POSTGRES_RDB_PASSWORD}
 
       keyValue: "local"
       fileSystem:
@@ -209,10 +209,11 @@ data:
           username: ${store.user.datasource.username}
           password: ${store.user.datasource.password}
           bootstrap_enabled: "true"
-          tenant_graph_server: asserts-redisgraph-master.{{include "domain" .}}
-          tenant_search_server: asserts-redisearch-master.{{include "domain" .}}
+          tenant_graph_server: {{.Values.redisgraph.fullnameOverride}}-master.{{include "domain" .}}
+          tenant_search_server: {{.Values.redisearch.fullnameOverride}}-master.{{include "domain" .}}
           tenant_tsdb_url: http://{{.Release.Name}}-promxy.{{include "domain" .}}:8082
-          tenant_grafana_url: http://{{.Release.Name}}-grafana.{{include "domain" .}}:3000
+          tenant_grafana_url: http://{{.Release.Name}}-grafana.{{include "domain" .}}:{{.Values.grafana.service.port}}
+          tenant_grafana_admin_password: "${GRAFANA_ADMIN_PASSWORD}"
 
     prometheus:
       client:

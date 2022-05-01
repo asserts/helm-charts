@@ -9,7 +9,9 @@ data:
   config.yaml: |
     global:
       evaluation_interval: 30s
-      # TODO: figure out if this external label is needed (e.g. tenant: bootstrap)
+      # need to ensure the tenant label is attached for alerting purposes
+      external_labels:
+        tenant: {{ include "asserts.tenant" . }}
     alerting:
       alertmanagers:
         - static_configs:

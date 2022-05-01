@@ -304,7 +304,7 @@ data:
         replacement: http
         action: replace
 
-    - job_name: asserts-postgres
+    - job_name: {{.Values.postgres.fullnameOverride}}
       kubernetes_sd_configs:
       - namespaces:
           names:
@@ -315,7 +315,7 @@ data:
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
         separator: ;
-        regex: asserts-postgres
+        regex: {{.Values.postgres.fullnameOverride}}
         replacement: $1
         action: keep
       - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
@@ -448,7 +448,7 @@ data:
         replacement: http
         action: replace
 
-    - job_name: asserts-redisgraph
+    - job_name: {{.Values.redisgraph.fullnameOverride}}
       kubernetes_sd_configs:
       - namespaces:
           names:
@@ -459,7 +459,7 @@ data:
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
         separator: ;
-        regex: asserts-redisgraph
+        regex: {{.Values.redisgraph.fullnameOverride}}
         replacement: $1
         action: keep
       - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
@@ -525,7 +525,7 @@ data:
         replacement: http-metrics
         action: replace
 
-    - job_name: asserts-redisearch
+    - job_name: {{.Values.redisearch.fullnameOverride}}
       kubernetes_sd_configs:
       - namespaces:
           names:
@@ -536,7 +536,7 @@ data:
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
         separator: ;
-        regex: asserts-redisearch
+        regex: {{.Values.redisearch.fullnameOverride}}
         replacement: $1
         action: keep
       - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]

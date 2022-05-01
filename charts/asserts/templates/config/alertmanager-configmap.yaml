@@ -1,0 +1,77 @@
+{{- if .Values.alertmanager.existingConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.alertmanager.existingConfigMap }}
+  labels: {{- include "asserts.labels" . | nindent 4 }}
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+    route:
+      # setup for a single Asserts tenant
+      group_by:
+        - alertname
+        - asserts_notification_rule_name
+        - source_alertname
+        - asserts_slo_name
+        - namespace
+      receiver: {{ include "asserts.tenant" . }}-tenant
+      repeat_interval: 5m
+      group_wait: 5s
+      group_interval: 5s
+      routes:
+        - receiver: {{ include "asserts.tenant" . }}-tenant
+          group_wait: 5s
+          group_interval: 5s
+          routes:
+            - receiver: {{ include "asserts.tenant" . }}-tenant
+              group_wait: 5s
+              group_interval: 5s
+            {{- if .Values.alertmanager.slack.enabled }}
+              continue: true
+            - receiver: slack-slo
+              matchers:
+                - asserts_slo_name != ""
+              group_wait: {{ .Values.alertmanager.slack.receiver.group_wait }}
+              group_interval: {{ .Values.alertmanager.slack.receiver.group_interval }}
+              repeat_interval: {{ .Values.alertmanager.slack.receiver.repeat_interval }}
+            - receiver: slack-notification
+              matchers:
+                - alertname="NOTIFICATION_ALERTS"
+              group_wait: {{ .Values.alertmanager.slack.receiver.group_wait }}
+              group_interval: {{ .Values.alertmanager.slack.receiver.group_interval }}
+              repeat_interval: {{ .Values.alertmanager.slack.receiver.repeat_interval }}
+            {{- end }}
+    receivers:
+      - name: {{ include "asserts.tenant" . }}-tenant
+        webhook_configs:
+          - send_resolved: true
+            url: http://{{ .Release.Name }}-server.{{ include "domain" . }}:8030/api-server/v4/prometheus-alerts?tenant={{ include "asserts.tenant"  . }}
+      {{- if .Values.alertmanager.slack.enabled }}
+      - name: slack-notification
+        slack_configs:
+          - api_url: {{ .Values.alertmanager.slack.api_url }}
+            channel: {{ .Values.alertmanager.slack.channel }}
+            icon_url: {{- printf " '{{ template \"slack.notification.icon_url\" . }}'" }}
+            send_resolved: true
+            title_link: ''
+            title: {{- printf " '{{ template \"slack.notification.title\" . }}'" }}
+            text: {{- printf " '{{ template \"slack.notification.text\" . }}'" }}
+      - name: slack-slo
+        slack_configs:
+          - api_url: {{ .Values.alertmanager.slack.api_url }}
+            channel: {{ .Values.alertmanager.slack.channel }}
+            icon_url: {{- printf " '{{ template \"slack.notification.icon_url\" . }}'" }}
+            send_resolved: true
+            title_link: ''
+            title: {{- printf " '{{ template \"slack.slo.title\" . }}'" }}
+            text: {{- printf " '{{ template \"slack.slo.text\" . }}'" }}
+    templates:
+      - '/etc/alertmanager/*.tmpl'
+      {{- end }}
+  {{- if and (.Values.alertmanager.assertsUrl) (.Values.alertmanager.slack.enabled) }}
+  slack.tmpl: |-
+    {{ include "slack.template" . }}
+  {{- end }}
+{{- end }}

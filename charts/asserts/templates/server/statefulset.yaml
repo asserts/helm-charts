@@ -33,14 +33,30 @@ spec:
       serviceAccountName: {{ template "asserts.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       {{- if .Values.server.initContainers }}
-      initContainers: {{ include "render-values" ( dict "value" .Values.server.initContainers "context" $) | nindent 8 }}
+      initContainers: {{ include "common.tplvalues.render" ( dict "value" .Values.server.initContainers "context" $) | nindent 8 }}
       {{- end }}
       containers:
         - name: server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
+          env:
+            # set POSTGRES_RDB_PASSWORD generated from
+            # postgres subchart for consumption by the Asserts server
+            - name: POSTGRES_RDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.fullnameOverride }}
+                  key: postgres-password
+                  optional: false
+            # set grafana admin password
+            - name: GRAFANA_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "asserts.grafanaFullname" . }}
+                  key: grafana-admin-password
+                  optional: false
           {{- with .Values.server.extraEnv }}
-          env: {{- toYaml . | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.server.extraEnvFrom }}
           envFrom: {{- toYaml . | nindent 12 }}

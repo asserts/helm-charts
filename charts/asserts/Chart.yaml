@@ -27,6 +27,9 @@ dependencies:
     version: 0.6.0
     condition: promxy.enabled
   ### external charts ###
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    version: 1.x.x
   - name: redis
     repository: https://charts.bitnami.com/bitnami
     version: 16.8.7
