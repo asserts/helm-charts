@@ -167,7 +167,6 @@ data:
             visibility: INTERNAL
 
     store:
-      # TODO: store passwords as secrets
       owner:
         datasource:
           hikari:

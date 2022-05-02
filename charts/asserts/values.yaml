@@ -3,6 +3,10 @@ fullnameOverride: ""
 clusterDomain: svc.cluster.local
 
 rbac:
+  ## Namespaced role and rolebinding
+  ## to allow for get/list/watch of
+  ## pod, endpoints, and services in the
+  ## installed {{ .Release.Namespace }}
   create: true
   annotations: {}
   extraLabels: {}
@@ -23,21 +27,57 @@ serviceAccount:
 
 ## Assert prometheus endpoints configuration
 ## This is a list of various prometheus endpoints to query
-## ref:
 ##
 prometheusEndpoints: []
 # prometheusEndpoints:
 #   - url: prometheus-server0.default.svc.cluster.local:9090
 #     scheme: http
-#     # optional
-#     env: dev
 #     # recommended
-#     site: us-west-2
-#   - url: prometheus-server1.default.svc.cluster.local:9090
+#     env: dev
+#   - url: prometheus-external.domain.com
 #     scheme: http
 #     env: stage
+#     # optional
 #     site: eu-west-1
 
+## Asserts cluster env and site
+## This should be set to the env and site
+## of the cluster asserts is running in.
+## It should correspond to the env and site of
+## one of the configured prometheusEndpoints
+## in the above configuration. So if one of the
+## endpoints is:
+##
+# prometheusEndpoints:
+#   - url: prometheus-server0.default.svc.cluster.local:9090
+#     scheme: http
+#     env: dev
+#
+## then you should set -> assertsClusterEnv: dev
+assertsClusterEnv: ""
+assertsClusterSite: ""
+
+## Asserts url
+## Used to configure where your notifications
+## will link back to in Asserts (see /config/alertmanager-configmap.yaml )
+## If setting ui.ingress.enabled: true
+## should match the hostname used in addtion to
+## adding the desired scheme (http/https)
+##
+assertsUrl: http://localhost:8080
+
+## Slack configuration
+## template is generated from alertmanager-templates/_slack.tpl
+## config/alertmanager-configmap.yaml when slack is enabled
+##
+slack:
+  enabled: false
+  # api_url: "https://hooks.slack.com/some-url"
+  # channel: "#alerts"
+  # receiver:
+  #   group_wait: 1m
+  #   group_interval: 5m
+  #   repeat_interval: 1h
 
 ## Asserts server configuration
 ##
@@ -46,12 +86,12 @@ server:
   fullnameOverride: ""
 
   image:
-    # TODO: update once docker repo is public
-    #repository: asserts/platform
+    ## TODO: update once docker repo is public
+    # repository: asserts/platform
     repository: asserts-server
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    # TODO: change back after merging grafana password change in server DB
+    ## Overrides the image tag whose default is the chart appVersion.
+    ## TODO: change back after merging grafana password change in server DB
     # tag: v0.2.127
     tag: k8s-grafana-password
 
@@ -74,24 +114,17 @@ server:
     type: ClusterIP
     port: 8030
 
-  # TODO: setup to use a pdb?
-  podDisruptionBudget:
-    enabled: false
-    # minAvailable: 1
-    # maxUnavailable: 1
-
   resources: {}
 
   ## wait 30 seconds before pod termination
   ## to allow application shut down
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle
-  #
   terminationGracePeriodSeconds: 30
 
-  # environment variables to add to the asserts-server pod
+  ## environment variables to add to the asserts-server pod
   extraEnv: []
 
-  # environment variables from secrets or configmaps to add to the asserts-server pod
+  ## environment variables from secrets or configmaps to add to the asserts-server pod
   extraEnvFrom: []
 
   annotations: {}
@@ -121,17 +154,16 @@ server:
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
-    #
     storageClass: ""
 
-    # Persistent Volume access modes
+    ## Persistent Volume access modes
     accessModes:
       - ReadWriteOnce
 
-    # Persistent Volume size
+    ## Persistent Volume size
     size: 8Gi
 
-    # When set, will use the existing PVC for persistence
+    ## When set, will use the existing PVC for persistence
     existingClaim: ""
 
 
@@ -142,10 +174,9 @@ ui:
   fullnameOverride: ""
 
   image:
-    # TODO: update once docker repo is public
     repository: asserts/asserts-ui
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
+    ## Overrides the image tag whose default is the chart appVersion.
     tag: v0.1950
 
   imagePullSecrets: []
@@ -157,8 +188,8 @@ ui:
   ingress:
     enabled: false
 
-    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
-    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+    ## For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+    ## See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
     # ingressClassName: nginx
 
     annotations: {}
@@ -170,7 +201,7 @@ ui:
 
     path: /
 
-    # pathType is only for k8s >= 1.18
+    ## pathType is only for k8s >= 1.18
     pathType: Prefix
 
     ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
@@ -185,18 +216,13 @@ ui:
     #     hosts:
     #       - asserts-ui.domain.com
 
-  podDisruptionBudget:
-    enabled: false
-    # minAvailable: 1
-    # maxUnavailable: 1
-
   resources: {}
 
   annotations: {}
 
-  # environment variables to add to the asserts-ui pod
+  ## environment variables to add to the asserts-ui pod
   extraEnv: []
-  # environment variables from secrets or configmaps to add to the asserts-ui pod
+  ## environment variables from secrets or configmaps to add to the asserts-ui pod
   extraEnvFrom: []
   #   - secretRef:
   #       name: license
@@ -229,7 +255,7 @@ grafana:
   image:
     repository: asserts/grafana
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
+    ## Overrides the image tag whose default is the chart appVersion.
     tag: v1.0.85
 
   imagePullSecrets: []
@@ -250,7 +276,20 @@ grafana:
   resources: {}
 
   ## Grafana admin password configuration
-  ## If password
+  ##
+  ## If left with password: "" and existingSecret: ""
+  ## a random alpha numeric password will be generated.
+  ## Upon upgrading the release, you will need to provide
+  ## the password as a value in subsequent updates.
+  ## e.g.
+  # grafana:
+  #   auth:
+  #     password: <grafana-admin-password>
+  ##
+  ## If an existingSecret is created (recommended for production)
+  ## then that will be used.
+  ##
+  ## ref: https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues/#credential-errors-while-upgrading-chart-releases
   auth:
    password: ""
    existingSecret: ""
@@ -273,26 +312,22 @@ grafana:
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
-    #
     storageClass: ""
 
-    # Persistent Volume access modes
+    ## Persistent Volume access modes
     accessModes:
       - ReadWriteOnce
 
-    # Persistent Volume size
+    ## Persistent Volume size
     size: 8Gi
 
-    # When set, will use the existing PVC for persistence
+    ## When set, will use the existing PVC for persistence
     existingClaim: ""
 
   ## 'volumePermissions' init container parameters
   ## Changes the owner and group of the persistent volume mount point to runAsUser:fsGroup values
   ##   based on the *podSecurityContext/*containerSecurityContext parameters
-  ##
   volumePermissions:
-    ## @param volumePermissions.enabled Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup`
-    ##
     enabled: true
     image:
       repository: bitnami/bitnami-shell
@@ -320,20 +355,24 @@ knowledge-sensor:
         - "-t"
         - "180"
 
+  ## tenant and asserts host knowledge sensor is retrieving rules for
   assertsTenant: bootstrap
   assertsControllerHost: "http://{{.Release.Name}}-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8030"
+
+  ## how often the knowledge sensor will check for new rules
   syncInterval: "60"
+
+  ## The configmap names and target directories for the rules
+  ## and relabel rules the configmaps will contain
+  ## NOTE: these should not need to change
   prometheusRulesConfigmapName: "asserts-rules"
   prometheusRulesTargetDir: "/etc/asserts/rules"
   prometheusRelabelRulesConfigmapName: "asserts-relabel-rules"
   prometheusRelabelRulesTargetDir: /etc/asserts/relabel
 
-  concurrency:
-    enabled: false
 
 ## Tsdb configuration
-## TODO: update ref
-## ref: https://github.com/VictoriaMetrics/helm-charts/blob/master/charts/victoria-metrics-single/values.yaml
+## ref: https://github.com/asserts/helm-charts/blob/master/charts/victoria-metrics-single/values.yaml
 tsdb:
   enabled: true
   rbac:
@@ -353,8 +392,8 @@ tsdb:
     fullNameOverride: "tsdb"
 
     initContainers:
-      # wait for the knowledge-sensor to be ready to
-      # serve up the rules
+      ## wait for the knowledge-sensor to be ready to
+      ## serve up the rules
       - name: wait-for-knowledge-sensor
         image: asserts/wait-for:v2.2.3
         imagePullPolicy: IfNotPresent
@@ -362,11 +401,11 @@ tsdb:
           - "{{.Release.Name}}-knowledge-sensor.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8080"
           - "-t"
           - "180"
-      # initially add rule files to volume on startup
-      # after the knowledge-sensor is ready. This is a
-      # way to make sure the tsdb doesn't startup with
-      # empty rules as it will crash or run with an empty
-      # set.
+      ## initially add rule files to volume on startup
+      ## after the knowledge-sensor is ready. This is a
+      ## way to make sure the tsdb doesn't startup with
+      ## empty rules as it will crash or run with an empty
+      ## set.
       - name: init-add-rule-files
         image: asserts/k8s-sidecar:1.14.2
         imagePullPolicy: IfNotPresent
@@ -390,7 +429,7 @@ tsdb:
       search.latencyOffset: 15s
       memory.allowedPercent: 50
 
-    # scrape configuration for the tsdb in templates/tsdb-scrape-configmap.yaml
+    ## scrape configuration for the tsdb in config/tsdb-scrape-configmap.yaml
     scrape:
       enabled: true
       configMap: asserts-tsdb-scrapeconfig
@@ -401,8 +440,10 @@ tsdb:
     resources: {}
 
     extraContainers:
-      # TODO: config-sidecar takes care of loading relabeling rules
-      #       at the moment, the scrapeconfig is not currently hot loaded
+      ## TODO: config-sidecar takes care of hot loading relabeling rules
+      ##       at the moment, the scrapeconfig is not currently hot loaded.
+      ##       The scrapeconfig shouldn't need to be overridden in the values
+      ##       file but can be reloaded by triggering the the REQ_URL below
       - name: config-sidecar
         image: asserts/k8s-sidecar:1.14.2
         imagePullPolicy: IfNotPresent
@@ -431,8 +472,8 @@ tsdb:
 redisgraph:
   enabled: true
 
-  # custom Redis multi module image
-  # ref: https://hub.docker.com/repository/docker/asserts/redismod
+  ## custom Redis multi module image
+  ## ref: https://hub.docker.com/repository/docker/asserts/redismod
   image:
     repository: asserts/redismod
     tag: 6.26
@@ -453,9 +494,9 @@ redisgraph:
     configuration: |
       loadmodule /opt/bitnami/redis/modules/redisgraph.so
 
-  # TODO: since we are scraping from the tsdb, may want to disable
-  #       the annotation -> prometheus.io/scrape: true
-  #       so that there isn't a double scrape from another prom
+  ## TODO: since we are scraping from the tsdb, may want to disable
+  ##       the annotation -> prometheus.io/scrape: true
+  ##       so that there isn't a double scrape from another prom
   metrics:
     enabled: true
 
@@ -465,8 +506,8 @@ redisgraph:
 redisearch:
   enabled: true
 
-  # custom Redis multi module image
-  # ref: https://hub.docker.com/repository/docker/asserts/redismod
+  ## custom Redis multi module image
+  ## ref: https://hub.docker.com/repository/docker/asserts/redismod
   image:
     repository: asserts/redismod
     tag: 6.26
@@ -495,8 +536,7 @@ redisearch:
 
 
 ## Alertmanager configuration
-## TODO: update ref
-## ref: https://github.com/prometheus-community/helm-charts/blob/main/charts/alertmanager/values.yaml
+## ref: https://github.com/asserts/helm-charts/blob/master/charts/alertmanager/values.yaml
 alertmanager:
   enabled: true
 
@@ -513,31 +553,10 @@ alertmanager:
 
   existingConfigMap: asserts-alertmanager
 
-  # Asserts url
-  # Used to configure where your notifications
-  # will link back to in Asserts (see /config/alertmanager-configmap.yaml )
-  # If setting ui.ingress.enabled: true
-  # should match the hostname used in addtion to
-  # adding the desired scheme (http/https)
-  assertsUrl: http://localhost:8080
-
-  # Slack configuration
-  # template is generated from alertmanager-templates/_slack.tpl
-  # config/alertmanager-configmap.yaml when slack is enabled
-  slack:
-    enabled: false
-    # api_url: "https://hooks.slack.com/some-url"
-    # channel: "#alerts"
-    # receiver:
-    #   group_wait: 1m
-    #   group_interval: 5m
-    #   repeat_interval: 1h
-
   configmapReload:
     enabled: true
 
 ## Promxy configuration
-## TODO: update ref
 ## ref: https://github.com/asserts/helm-charts/blob/master/charts/promxy/values.yaml
 promxy:
   enabled: true
@@ -583,11 +602,27 @@ promxy:
 
 
 ## Postgres configuration
-## TODO: update ref
 ## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
 postgres:
   enabled: true
 
+  ## Postgres password configuration
+  ##
+  ## If left with password: "" and existingSecret: ""
+  ## a random alpha numeric password will be generated.
+  ## Upon upgrading the release, you will need to provide
+  ## the password as a value in subsequent updates.
+  ## e.g.
+  # postgres:
+  #   global:
+  #     postgresql:
+  #       auth:
+  #         postgresPassword: <postgres-password>
+  ##
+  ## If an existingSecret is created (recommended for production)
+  ## then that will be used.
+  ##
+  ## ref: https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues/#credential-errors-while-upgrading-chart-releases
   global:
     postgresql:
       auth:

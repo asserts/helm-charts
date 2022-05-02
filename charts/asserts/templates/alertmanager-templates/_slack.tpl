@@ -2,7 +2,7 @@
 Slack template
 */}}
 {{- define "slack.template" -}}
-{{- $assertsUrl := .Values.alertmanager.assertsUrl }}
+{{- $assertsUrl := .Values.assertsUrl }}
 {{- $plus30min := "%2B30m" }}
 {{- printf "{{/* Slack Notification */}}\n    " -}}
 {{- printf "\n    {{ define \"slack.notification.icon_url\" -}}" -}}

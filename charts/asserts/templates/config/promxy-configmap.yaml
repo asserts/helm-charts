@@ -9,7 +9,11 @@ data:
   config.yaml: |
     global:
       evaluation_interval: 30s
-      # need to ensure the tenant label is attached for alerting purposes
+      ## ensuring the tenant label is attached for alerting purposes
+      ## as it's required to get asserts:alerts metrics generated
+      ##
+      ## TODO: possibly add an external_label if asserts_env and asserts_site
+      ##       is unset?
       external_labels:
         tenant: {{ include "asserts.tenant" . }}
     alerting:
@@ -53,10 +57,13 @@ data:
             tls_config:
               insecure_skip_verify: true
           ignore_error: true
+          {{- if .Values.assertsClusterEnv }}
           labels:
-            # TODO: figure out is this is what we want the env to be
-            asserts_env: dev
-            asserts_site: dev
+            asserts_env: {{ .Values.assertsClusterEnv }}
+            {{- if .Values.assertsClusterSite }}
+            asserts_site: {{ .Values.assertsClusterSite }}
+            {{- end }}
+          {{- end }}
           query_params:
             nocache: 1
           remote_read: false
