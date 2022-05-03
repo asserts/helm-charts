@@ -57,27 +57,45 @@ prometheusEndpoints: []
 assertsClusterEnv: ""
 assertsClusterSite: ""
 
-## Asserts url
+## Asserts Url
+##
 ## Used to configure where your notifications
 ## will link back to in Asserts (see /config/alertmanager-configmap.yaml )
 ## If setting ui.ingress.enabled: true
 ## should match the hostname used in addtion to
 ## adding the desired scheme (http/https)
 ##
+## Leave the url like this as opposed to empty,
+## it will just have a dead link when linking back
+## from a notification alert
 assertsUrl: http://localhost:8080
+
+## Receiver configuration
+## the notification receiver (e.g. slack, pagerduty, etc..)
+## wait times/intervals
+receiver:
+  group_wait: 1m
+  group_interval: 5m
+  repeat_interval: 10m
 
 ## Slack configuration
 ## template is generated from alertmanager-templates/_slack.tpl
-## config/alertmanager-configmap.yaml when slack is enabled
+## when slack is enabled
 ##
 slack:
   enabled: false
-  # api_url: "https://hooks.slack.com/some-url"
+  # api_url: https://hooks.slack.com/some-url
   # channel: "#alerts"
-  # receiver:
-  #   group_wait: 1m
-  #   group_interval: 5m
-  #   repeat_interval: 1h
+
+## PagerDuty configuration
+## template is generated from alertmanager-templates/_pagerduty.tpl
+## when pagerduty is enabled
+##
+## ref: https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+pagerduty:
+  enabled: false
+  # routing_key: <your-events-api-v2-integration-key>
+  # url: https://events.pagerduty.com/v2/enqueue
 
 ## Asserts server configuration
 ##
@@ -86,14 +104,10 @@ server:
   fullnameOverride: ""
 
   image:
-    ## TODO: update once docker repo is public
-    # repository: asserts/platform
-    repository: asserts-server
+    repository: asserts/platform
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    ## TODO: change back after merging grafana password change in server DB
-    # tag: v0.2.127
-    tag: k8s-grafana-password
+    tag: v0.2.129
 
   initContainers:
     - name: wait-for-postgres
@@ -291,8 +305,8 @@ grafana:
   ##
   ## ref: https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues/#credential-errors-while-upgrading-chart-releases
   auth:
-   password: ""
-   existingSecret: ""
+    password: ""
+    existingSecret: ""
 
   datasources:
     datasources:

@@ -19,7 +19,7 @@ Slack template
 {{- printf "\n    {{ define \"slack.notification.text\" -}}" -}}
 {{- printf "\n      {{- if eq .Status \"firing\" }}" -}}
 {{- printf "\n      :warning: *<%s/incidents?start={{(index .Alerts 0).StartsAt.Unix}}000-30m&end={{(index .Alerts 0).StartsAt.Unix}}000%s&search={{ .CommonLabels.asserts_notification_rule_name }}|View Impact>*" $assertsUrl $plus30min -}}
-{{- printf "\n      :fire: *<%s/insights/top?start={{(index .Alerts 0).StartsAt.Unix}}000-30m&end={{(index .Alerts 0).StartsAt.Unix}}000%s&search={{ .CommonLabels.asserts_assertion_name }}|Start Troubleshooting>*" $assertsUrl $plus30min -}}
+{{- printf "\n     :fire: *<%s/insights/top?start={{(index .Alerts 0).StartsAt.Unix}}000-30m&end={{(index .Alerts 0).StartsAt.Unix}}000%s&search={{ .CommonLabels.asserts_assertion_name }}|Start Troubleshooting>*" $assertsUrl $plus30min -}}
 {{- printf "\n      *Alert details*:" -}}
 {{- printf "\n    " -}}
 {{- printf "\n      {{ range .Alerts -}}" -}}
