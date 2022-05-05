@@ -70,6 +70,8 @@ spec:
               mountPath: /opt/asserts/api-server/conf/application.yml
               subPath: application.yml
               readOnly: true
+            - name: data
+              mountPath: {{ .Values.server.dataPath }}
           {{- with .Values.server.extraVolumeMounts }}
           {{- toYaml . | nindent 12 }}
           {{- end }}

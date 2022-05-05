@@ -87,6 +87,32 @@ data:
         target_label: endpoint
         replacement: http
         action: replace
+      - separator: ;
+        regex: (.*)
+        target_label: endpoint
+        replacement: http
+        action: replace
+      # add tenant, asserts_env, & asserts_site
+      # to all remaining values metrics if applicable
+      - separator: ;
+        regex: (.*)
+        target_label: tenant
+        replacement: {{ include "asserts.tenant" . }}
+        action: replace
+      {{- if .Values.assertsClusterEnv }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_env
+        replacement: {{ .Values.assertsClusterEnv }}
+        action: replace
+      {{- end }}
+      {{- if .Values.assertsClusterSite }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_site
+        replacement: {{ .Values.assertsClusterSite }}
+        action: replace
+      {{- end }}
 
     - job_name: {{ .Release.Name }}-tsdb-server
       kubernetes_sd_configs:
@@ -159,6 +185,27 @@ data:
         target_label: endpoint
         replacement: http
         action: replace
+      # add tenant, asserts_env, & asserts_site
+      # to all remaining values metrics if applicable
+      - separator: ;
+        regex: (.*)
+        target_label: tenant
+        replacement: {{ include "asserts.tenant" . }}
+        action: replace
+      {{- if .Values.assertsClusterEnv }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_env
+        replacement: {{ .Values.assertsClusterEnv }}
+        action: replace
+      {{- end }}
+      {{- if .Values.assertsClusterSite }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_site
+        replacement: {{ .Values.assertsClusterSite }}
+        action: replace
+      {{- end }}
 
     - job_name: {{ .Release.Name }}-grafana
       kubernetes_sd_configs:
@@ -231,6 +278,27 @@ data:
         target_label: endpoint
         replacement: http
         action: replace
+      # add tenant, asserts_env, & asserts_site
+      # to all remaining values metrics if applicable
+      - separator: ;
+        regex: (.*)
+        target_label: tenant
+        replacement: {{ include "asserts.tenant" . }}
+        action: replace
+      {{- if .Values.assertsClusterEnv }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_env
+        replacement: {{ .Values.assertsClusterEnv }}
+        action: replace
+      {{- end }}
+      {{- if .Values.assertsClusterSite }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_site
+        replacement: {{ .Values.assertsClusterSite }}
+        action: replace
+      {{- end }}
 
     - job_name: {{ .Release.Name }}-alertmanager
       kubernetes_sd_configs:
@@ -303,6 +371,27 @@ data:
         target_label: endpoint
         replacement: http
         action: replace
+      # add tenant, asserts_env, & asserts_site
+      # to all remaining values metrics if applicable
+      - separator: ;
+        regex: (.*)
+        target_label: tenant
+        replacement: {{ include "asserts.tenant" . }}
+        action: replace
+      {{- if .Values.assertsClusterEnv }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_env
+        replacement: {{ .Values.assertsClusterEnv }}
+        action: replace
+      {{- end }}
+      {{- if .Values.assertsClusterSite }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_site
+        replacement: {{ .Values.assertsClusterSite }}
+        action: replace
+      {{- end }}
 
     - job_name: {{.Values.postgres.fullnameOverride}}
       kubernetes_sd_configs:
@@ -380,6 +469,27 @@ data:
         target_label: endpoint
         replacement: http-metrics
         action: replace
+      # add tenant, asserts_env, & asserts_site
+      # to all remaining values metrics if applicable
+      - separator: ;
+        regex: (.*)
+        target_label: tenant
+        replacement: {{ include "asserts.tenant" . }}
+        action: replace
+      {{- if .Values.assertsClusterEnv }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_env
+        replacement: {{ .Values.assertsClusterEnv }}
+        action: replace
+      {{- end }}
+      {{- if .Values.assertsClusterSite }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_site
+        replacement: {{ .Values.assertsClusterSite }}
+        action: replace
+      {{- end }}
 
     - job_name: {{ .Release.Name }}-promxy
       kubernetes_sd_configs:
@@ -447,6 +557,27 @@ data:
         target_label: endpoint
         replacement: http
         action: replace
+      # add tenant, asserts_env, & asserts_site
+      # to all remaining values metrics if applicable
+      - separator: ;
+        regex: (.*)
+        target_label: tenant
+        replacement: {{ include "asserts.tenant" . }}
+        action: replace
+      {{- if .Values.assertsClusterEnv }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_env
+        replacement: {{ .Values.assertsClusterEnv }}
+        action: replace
+      {{- end }}
+      {{- if .Values.assertsClusterSite }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_site
+        replacement: {{ .Values.assertsClusterSite }}
+        action: replace
+      {{- end }}
 
     - job_name: {{.Values.redisgraph.fullnameOverride}}
       kubernetes_sd_configs:
@@ -524,6 +655,27 @@ data:
         target_label: endpoint
         replacement: http-metrics
         action: replace
+      # add tenant, asserts_env, & asserts_site
+      # to all remaining values metrics if applicable
+      - separator: ;
+        regex: (.*)
+        target_label: tenant
+        replacement: {{ include "asserts.tenant" . }}
+        action: replace
+      {{- if .Values.assertsClusterEnv }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_env
+        replacement: {{ .Values.assertsClusterEnv }}
+        action: replace
+      {{- end }}
+      {{- if .Values.assertsClusterSite }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_site
+        replacement: {{ .Values.assertsClusterSite }}
+        action: replace
+      {{- end }}
 
     - job_name: {{.Values.redisearch.fullnameOverride}}
       kubernetes_sd_configs:
@@ -601,6 +753,27 @@ data:
         target_label: endpoint
         replacement: http-metrics
         action: replace
+      # add tenant, asserts_env, & asserts_site
+      # to all remaining values metrics if applicable
+      - separator: ;
+        regex: (.*)
+        target_label: tenant
+        replacement: {{ include "asserts.tenant" . }}
+        action: replace
+      {{- if .Values.assertsClusterEnv }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_env
+        replacement: {{ .Values.assertsClusterEnv }}
+        action: replace
+      {{- end }}
+      {{- if .Values.assertsClusterSite }}
+      - separator: ;
+        regex: (.*)
+        target_label: asserts_site
+        replacement: {{ .Values.assertsClusterSite }}
+        action: replace
+      {{- end }}
 
     - job_name: asserts-alerts
       kubernetes_sd_configs:

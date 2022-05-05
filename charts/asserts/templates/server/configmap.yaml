@@ -49,7 +49,7 @@ data:
     index:
       searchDefinition:
         refresh:
-          fixedDelay: 1200000 # 20 minutes
+          fixedDelay: 1200000 # 20 minutes, the minimum allowed value
 
     redis:
       search:
@@ -182,7 +182,7 @@ data:
 
       keyValue: "local"
       fileSystem:
-        rootDirectory: /opt/asserts/config
+        rootDirectory: {{ .Values.server.dataPath }}
         mergedPromRulesDir: /opt/asserts/prom-rules
         relabelRulesDir: /opt/asserts/relabel-rules
         relabelRulesFile: relabel.yml

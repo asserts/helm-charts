@@ -61,7 +61,7 @@ assertsClusterSite: ""
 ##
 ## Used to configure where your notifications
 ## will link back to in Asserts (see /config/alertmanager-configmap.yaml )
-## If setting ui.ingress.enabled: true
+## If setting ui.ingress.enabled: true (similarly the ip if using)
 ## should match the hostname used in addtion to
 ## adding the desired scheme (http/https)
 ##
@@ -161,6 +161,8 @@ server:
 
   extraVolumes: []
 
+  dataPath: /opt/asserts/data
+
   persistence:
     enabled: true
 
@@ -191,13 +193,22 @@ ui:
     repository: asserts/asserts-ui
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.1950
+    tag: v0.1954
 
   imagePullSecrets: []
 
   service:
     type: ClusterIP
     port: 8080
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
 
   ingress:
     enabled: false
