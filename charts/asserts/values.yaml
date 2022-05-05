@@ -54,6 +54,23 @@ prometheusEndpoints: []
 #     env: dev
 #
 ## then you should set -> assertsClusterEnv: dev
+##
+## similarly, if connecting to multiple clusters
+## with an endpoints list like so:
+##
+# prometheusEndpoints:
+#   - url: prometheus-server0.default.svc.cluster.local:9090
+#     scheme: http
+#     env: dev
+#     site: us-west-2
+#   - url: prometheus-server1-external.domain.com
+#     scheme: http
+#     env: stage
+#     site: eu-west-1
+#
+## but your asserts installation is in the first cluster in the list
+## then you should set -> assertsClusterEnv: dev
+## and                 -> assertsClusterSite: us-west-2
 assertsClusterEnv: ""
 assertsClusterSite: ""
 
@@ -61,13 +78,12 @@ assertsClusterSite: ""
 ##
 ## Used to configure where your notifications
 ## will link back to in Asserts (see /config/alertmanager-configmap.yaml )
-## If setting ui.ingress.enabled: true (similarly the ip if using)
+## If setting ui.ingress.enabled: true (similarly a node ip if using NodePort)
 ## should match the hostname used in addtion to
 ## adding the desired scheme (http/https)
 ##
-## Leave the url like this as opposed to empty,
-## it will just have a dead link when linking back
-## from a notification alert
+## If unset, leave the url like this as opposed to empty
+## as it will work when using port-forwarding.
 assertsUrl: http://localhost:8080
 
 ## Receiver configuration
@@ -75,8 +91,8 @@ assertsUrl: http://localhost:8080
 ## wait times/intervals
 receiver:
   group_wait: 1m
-  group_interval: 5m
-  repeat_interval: 10m
+  group_interval: 15m
+  repeat_interval: 30m
 
 ## Slack configuration
 ## template is generated from alertmanager-templates/_slack.tpl
