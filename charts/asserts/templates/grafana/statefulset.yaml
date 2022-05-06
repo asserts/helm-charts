@@ -83,6 +83,15 @@ spec:
               subPath: datasource.yml
             - name: data
               mountPath: {{ .Values.grafana.dataPath }}
+      {{- with .Values.grafana.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.grafana.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.grafana.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: config
           configMap:

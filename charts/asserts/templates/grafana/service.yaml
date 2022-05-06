@@ -3,18 +3,33 @@ kind: Service
 metadata:
   name: {{ include "asserts.grafanaFullname" . }}
   labels: {{- include "asserts.grafanaLabels" . | nindent 4 }}
-    {{- with .Values.grafana.extraLabels }}
-    {{- toYaml . | nindent 4 -}}
-    {{- end }}
-  {{- if .Values.grafana.annotations }}
-  annotations:
-  {{- toYaml .Values.grafana.annotations | nindent 4 -}}
+  {{- with .Values.grafana.service.annotations }}
+  annotations: {{- toYaml . | nindent 4 -}}
   {{- end }}
 spec:
-  type: {{ .Values.grafana.service.type }}
+{{- if .Values.grafana.service.clusterIP }}
+  clusterIP: {{ .Values.server.service.clusterIP }}
+{{- end }}
+{{- if .Values.grafana.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.grafana.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.grafana.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.grafana.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.grafana.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.grafana.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
   ports:
-    - port: {{ .Values.grafana.service.port }}
-      targetPort: {{ .Values.grafana.service.port }}
+    - name: http
+      port: {{ .Values.grafana.service.port }}
       protocol: TCP
-      name: http
+      targetPort: http
+    {{- if .Values.grafana.service.nodePort }}
+      nodePort: {{ .Values.grafana.service.nodePort }}
+    {{- end }}
   selector: {{- include "asserts.grafanaSelectorLabels" . | nindent 4 }}
+  type: "{{ .Values.grafana.service.type }}"
