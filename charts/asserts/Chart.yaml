@@ -1,0 +1,51 @@
+apiVersion: v2
+name: asserts
+description: Asserts Helm Chart to configure entire asserts stack
+icon: https://www.asserts.ai/favicon.png
+type: application
+
+version: 0.1.0
+
+dependencies:
+  ## asserts charts ##
+  # local charts in asserts/charts
+  - name: knowledge-sensor
+    repository: https://asserts.github.io/helm-charts
+    version: 0.1.0
+    condition: knowledge-sensor.enabled
+  - name: victoria-metrics-single
+    repository: https://asserts.github.io/helm-charts
+    version: 0.8.12
+    alias: tsdb
+    condition: tsdb.enabled
+  - name: alertmanager
+    repository: https://asserts.github.io/helm-charts
+    version: 0.14.0
+    condition: alertmanager.enabled
+  - name: promxy
+    repository: https://asserts.github.io/helm-charts
+    version: 0.6.0
+    condition: promxy.enabled
+  ### external charts ###
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    version: 1.x.x
+  - name: redis
+    repository: https://charts.bitnami.com/bitnami
+    version: 16.8.7
+    alias: redisgraph
+    condition: redisgraph.enabled
+  - name: redis
+    repository: https://charts.bitnami.com/bitnami
+    version: 16.8.7
+    alias: redisearch
+    condition: redisearch.enabled
+  - name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 11.1.23
+    alias: postgres
+    condition: postgres.enabled
+
+maintainers:
+  - name: Asserts
+    url: https://github.com/asserts

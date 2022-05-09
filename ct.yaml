@@ -8,4 +8,5 @@ chart-repos:
   - vm=https://victoriametrics.github.io/helm-charts
   - prometheus-community=https://prometheus-community.github.io/helm-charts
   - banzaicloud-stable=https://kubernetes-charts.banzaicloud.com
+  - bitnami=https://charts.bitnami.com/bitnami
 helm-extra-args: --timeout 600s
