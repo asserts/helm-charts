@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "asserts.serverFullname" . }}
-  labels: {{- include "asserts.serverLabels" . | nindent 4 }}
+  labels: {{- include "asserts.serverSelectorLabels" . | nindent 4 }}
     {{- with .Values.server.extraLabels }}
     {{- toYaml . | nindent 4 -}}
     {{- end }}
