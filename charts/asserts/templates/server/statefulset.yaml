@@ -105,7 +105,7 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: data
-        labels: {{- include "asserts.serverLabels" . | nindent 10 }}
+        labels: {{- include "asserts.serverSelectorLabels" . | nindent 10 }}
       spec:
         accessModes:
         {{- range .Values.server.persistence.accessModes }}

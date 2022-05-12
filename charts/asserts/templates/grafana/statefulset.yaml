@@ -116,7 +116,7 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: data
-        labels: {{- include "asserts.grafanaLabels" . | nindent 10 }}
+        labels: {{- include "asserts.grafanaSelectorLabels" . | nindent 10 }}
       spec:
         accessModes:
         {{- range .Values.grafana.persistence.accessModes }}
