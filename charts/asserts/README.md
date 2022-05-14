@@ -17,7 +17,7 @@ This chart bootstraps an [Asserts](https://www.asserts.ai) deployment on a [Kube
 
 ## Installing the Chart
 
-To install the chart with the release name `asserts` and Prometheus endpoint behind the service `prometheus-operated` in the `default` namespace:
+To install the chart with the release name `asserts` and Prometheus endpoint behind the service `kube-prometheus-stack-prometheus` in the `default` namespace:
 
 Create a values file, here we will call it `dev-values.yaml`:
 
