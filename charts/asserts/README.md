@@ -23,7 +23,7 @@ Create a values file, here we will call it `dev-values.yaml`:
 
 ```yaml
 prometheusEndpoints:
-  - url: prometheus-operated.default.svc.cluster.local:9090
+  - url: kube-prometheus-stack-prometheus.default.svc.cluster.local:9090
     scheme: http
     env: dev
 
