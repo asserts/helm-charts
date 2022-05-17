@@ -49,6 +49,7 @@ data:
     index:
       searchDefinition:
         refresh:
+          initialDelay: 240000 # 4 minutes
           fixedDelay: 1200000 # 20 minutes, the minimum allowed value
 
     redis:

@@ -123,7 +123,7 @@ server:
     repository: asserts/platform
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.2.129
+    tag: v0.2.151
 
   initContainers:
     - name: wait-for-postgres
@@ -209,7 +209,7 @@ ui:
     repository: asserts/asserts-ui
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.1954
+    tag: v0.1.961
 
   imagePullSecrets: []
 
@@ -453,9 +453,9 @@ knowledge-sensor:
   ## and relabel rules the configmaps will contain
   ## NOTE: these should not need to change
   prometheusRulesConfigmapName: "asserts-rules"
-  prometheusRulesTargetDir: "/etc/asserts/rules"
+  prometheusRulesTargetDir: "/opt/asserts/rules"
   prometheusRelabelRulesConfigmapName: "asserts-relabel-rules"
-  prometheusRelabelRulesTargetDir: /etc/asserts/relabel
+  prometheusRelabelRulesTargetDir: /opt/asserts/relabel
 
 
 ## Tsdb configuration
@@ -500,16 +500,16 @@ tsdb:
           - name: LABEL
             value: bootstrap-relabel-config
           - name: FOLDER
-            value: /etc/asserts/relabel
+            value: /opt/asserts/relabel
           - name: METHOD
             value: LIST
         volumeMounts:
           - name: relabel-config
-            mountPath: /etc/asserts/relabel
+            mountPath: /opt/asserts/relabel
 
     extraArgs:
       loggerFormat: default
-      relabelConfig: /etc/asserts/relabel/bootstrap.yml
+      relabelConfig: /opt/asserts/relabel/bootstrap.yml
       maxLabelsPerTimeseries: 60
       retentionPeriod: 30d
       search.maxStalenessInterval: 60s
@@ -538,16 +538,16 @@ tsdb:
           - name: LABEL
             value: bootstrap-relabel-config
           - name: FOLDER
-            value: /etc/asserts/relabel
+            value: /opt/asserts/relabel
           - name: REQ_URL
             value: http://localhost:8428/-/reload
         volumeMounts:
           - name: relabel-config
-            mountPath: /etc/asserts/relabel
+            mountPath: /opt/asserts/relabel
 
     extraVolumeMounts:
       - name: relabel-config
-        mountPath: /etc/asserts/relabel
+        mountPath: /opt/asserts/relabel
 
     extraVolumes:
       - name: relabel-config
@@ -670,22 +670,31 @@ promxy:
         - name: LABEL
           value: bootstrap-rules-config
         - name: FOLDER
-          value: /etc/asserts/rules
+          value: /opt/asserts/rules
         - name: REQ_URL
           value: http://localhost:8082/-/reload
         - name: REQ_METHOD
           value: POST
       volumeMounts:
         - name: rules-config
-          mountPath: /etc/asserts/rules
+          mountPath: /opt/asserts/rules
 
   extraVolumeMounts:
     - name: rules-config
-      mountPath: /etc/asserts/rules
+      mountPath: /opt/asserts/rules
+    - name: extra-rules
+      mountPath: /opt/asserts/extra-rules/asserts-k8s-calls.yml
+      subPath: asserts-k8s-calls.yml
 
   extraVolumes:
     - name: rules-config
       emptyDir: {}
+    - name: extra-rules
+      configMap:
+        name: asserts-k8s-calls-rules
+        items:
+          - key: asserts-k8s-calls.yml
+            path: asserts-k8s-calls.yml
 
 
 ## Postgres configuration

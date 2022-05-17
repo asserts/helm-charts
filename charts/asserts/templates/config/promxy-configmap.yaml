@@ -63,5 +63,6 @@ data:
     remote_write:
       - url: http://{{.Release.Name}}-tsdb-server.{{ include "domain" . }}:8428/api/v1/write
     rule_files:
-      - /etc/asserts/rules/*.yml
+      - /opt/asserts/rules/*.yml
+      - /opt/asserts/extra-rules/*.yml
 {{- end }}
