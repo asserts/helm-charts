@@ -28,6 +28,17 @@ prometheusEndpoints:
     env: dev
 
 assertsClusterEnv: dev
+
+## OPTIONAL: if not using out of the box community edition
+##           and you have a trial or enterprise license
+server:
+  extraEnv:
+    - name: ASSERTS_LICENSE_AUTH_TOKEN
+      value: "<YOUR-AUTH-TOKEN>"
+    - name: ASSERTS_LICENSE_PRODUCT_ID
+      value: "<YOUR-PRODUCT-ID>"
+    - name: ASSERTS_LICENSE_KEY
+      value: "<YOUR-LICENSE-KEY>"
 ```
 
 ```bash
@@ -47,6 +58,7 @@ You can then login to the asserts-ui by running:
 ```bash
 kubectl port-forward svc/asserts-ui 8080
 ```
+
 
 And opening your browser to [http://localhost:8080](http://localhost:8080)
 
