@@ -14,8 +14,17 @@ data:
             expr: sum by (asserts_env, asserts_site, namespace)
                     (asserts:request:rate5m{job="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~"/v1/.*"}) > 0
             labels:
-              job: {{.Release.Name}}-ui
-              dst_job: {{.Release.Name}}-server
+              workload: {{.Release.Name}}-ui
+              dst_workload: {{.Release.Name}}-server
+              dst_namespace: {{.Release.Namespace}}
+
+          # asserts-server -> postgres
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace, job)
+                    (asserts:request:rate5m{job="{{.Release.Name}}-postgres-metrics", namespace="{{.Release.Namespace}}", asserts_request_context="records_written"}) > 0
+            labels:
+              job: {{.Release.Name}}-server
+              dst_job: {{.Values.postgres.fullnameOverride}}
               dst_namespace: {{.Release.Namespace}}
 
           # asserts-server -> redisearch
@@ -47,8 +56,8 @@ data:
             expr: sum by (asserts_env, asserts_site, namespace)
                     (asserts:request:rate5m{job="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context="/v4/prometheus/rules"}) > 0
             labels:
-              job: {{.Release.Name}}-knowledge-sensor
-              dst_job: {{.Release.Name}}-server
+              workload: {{.Release.Name}}-knowledge-sensor
+              dst_workload: {{.Release.Name}}-server
               dst_namespace: {{.Release.Namespace}}
 
           # promxy -> tsdb-server
@@ -100,4 +109,38 @@ data:
             labels:
               dst_job: {{.Release.Name}}-promxy
               dst_namespace: {{.Release.Namespace}}
+
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace, job)
+                    (rate(asserts:request:total{job="{{.Release.Name}}-promxy", asserts_request_context="/query"}[5m]))
+            labels:
+              dst_job: kube-prometheus-stack-prometheus
+              dst_namespace: default
+
+          - record: asserts:relation:calls
+            expr: 1
+            labels:
+              asserts_env: dev
+              workload: kube-prometheus-stack-operator
+              namespace: default
+              dst_workload: prometheus-kube-prometheus-stack-prometheus
+              dst_namespace: default
+
+          - record: asserts:relation:calls
+            expr: 1
+            labels:
+              asserts_env: dev
+              workload: kube-prometheus-stack-kube-state-metrics
+              namespace: default
+              dst_workload: apiserver
+              dst_namespace: default
+
+          - record: asserts:relation:calls
+            expr: 1
+            labels:
+              asserts_env: dev
+              workload: prometheus-kube-prometheus-stack-prometheus
+              namespace: default
+              dst_job: kube-prometheus-stack-prometheus-node-exporter
+              dst_namespace: default
 {{- end }}
