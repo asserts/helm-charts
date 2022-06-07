@@ -618,6 +618,9 @@ redisearch:
     configuration: |
       loadmodule /opt/bitnami/redis/modules/redisearch.so
 
+  sentinel:
+    enabled: false
+
   # TODO: since we are scraping from the tsdb, may want to disable
   #       the annotation -> prometheus.io/scrape: true
   #       so that there isn't a double scrape from another prom
