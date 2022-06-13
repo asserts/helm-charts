@@ -210,7 +210,13 @@ data:
           password: ${store.user.datasource.password}
           bootstrap_enabled: "true"
           tenant_graph_server: {{.Values.redisgraph.fullnameOverride}}-master.{{include "domain" .}}
+          tenant_graph_sentinel_mode: {{ ternary "'1'" "'0'" (.Values.redisgraph.sentinel.enabled)}}
+          tenant_graph_master_name: mymaster
+          tenant_graph_sentinels: {{ include "asserts.graphSentinelHosts" . }}
           tenant_search_server: {{.Values.redisearch.fullnameOverride}}-master.{{include "domain" .}}
+          tenant_search_sentinel_mode: {{ ternary "'1'" "'0'" (.Values.redisearch.sentinel.enabled)}}
+          tenant_search_master_name: mymaster
+          tenant_search_sentinels: {{ include "asserts.searchSentinelHosts" . }}
           tenant_tsdb_url: http://{{.Release.Name}}-promxy.{{include "domain" .}}:8082
           tenant_grafana_url: http://{{.Release.Name}}-grafana.{{include "domain" .}}:{{.Values.grafana.service.port}}
           tenant_grafana_admin_password: "${GRAFANA_ADMIN_PASSWORD}"
