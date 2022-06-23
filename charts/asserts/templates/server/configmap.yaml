@@ -230,6 +230,9 @@ data:
       rules:
         provider: local
         root: file:///opt/asserts/prometheus/
+        record:
+          metric:
+            regex: ".*"
 
     assertion:
       metric:
