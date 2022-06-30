@@ -123,7 +123,7 @@ server:
     repository: asserts/platform
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.2.192
+    tag: v0.2.212
 
   initContainers:
     - name: wait-for-postgres
@@ -297,7 +297,7 @@ grafana:
     repository: asserts/grafana
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v1.0.97
+    tag: v1.0.104
 
   imagePullSecrets: []
 
@@ -653,6 +653,10 @@ alertmanager:
 ## ref: https://github.com/asserts/helm-charts/blob/master/charts/promxy/values.yaml
 promxy:
   enabled: true
+  image:
+    repository: asserts/promxy
+    tag: v0.1.0
+
   serviceAccount:
     create: false
     name: asserts
