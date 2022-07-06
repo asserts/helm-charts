@@ -19,6 +19,55 @@ entries:
     version: 0.14.0
   asserts:
   - apiVersion: v2
+    created: "2022-07-06T21:50:09.128708673Z"
+    dependencies:
+    - condition: knowledge-sensor.enabled
+      name: knowledge-sensor
+      repository: https://asserts.github.io/helm-charts
+      version: 0.1.0
+    - alias: tsdb
+      condition: tsdb.enabled
+      name: victoria-metrics-single
+      repository: https://asserts.github.io/helm-charts
+      version: 0.8.12
+    - condition: alertmanager.enabled
+      name: alertmanager
+      repository: https://asserts.github.io/helm-charts
+      version: 0.14.0
+    - condition: promxy.enabled
+      name: promxy
+      repository: https://asserts.github.io/helm-charts
+      version: 0.6.0
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    - alias: redisgraph
+      condition: redisgraph.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.8.7
+    - alias: redisearch
+      condition: redisearch.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.8.7
+    - alias: postgres
+      condition: postgres.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.1.23
+    description: Asserts Helm Chart to configure entire asserts stack
+    digest: 67e0242fb56c58ea8a1e68100af8541f233552c0548cc25af33d5c72ec371aa6
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: asserts
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/asserts-0.16.0/asserts-0.16.0.tgz
+    version: 0.16.0
+  - apiVersion: v2
     created: "2022-06-23T18:01:01.195050227Z"
     dependencies:
     - condition: knowledge-sensor.enabled
@@ -1386,4 +1435,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2022-06-23T18:01:01.195206027Z"
+generated: "2022-07-06T21:50:09.128883073Z"
