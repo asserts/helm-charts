@@ -62,6 +62,10 @@ data:
               - {{.Release.Name}}-tsdb-server.{{ include "domain" . }}:8428
     remote_write:
       - url: http://{{.Release.Name}}-tsdb-server.{{ include "domain" . }}:8428/api/v1/write
+        queue_config:
+          capacity: 20000
+          max_samples_per_send: 10000
+          max_shards: 30
     rule_files:
       - /opt/asserts/rules/*.yml
       - /opt/asserts/extra-rules/*.yml
