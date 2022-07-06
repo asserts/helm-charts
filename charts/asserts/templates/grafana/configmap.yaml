@@ -9,6 +9,7 @@ metadata:
   {{- end }}
 data:
   datasource.yml: |
+    apiVersion: 1
     {{- if .Values.grafana.datasources }}
     {{ include "common.tplvalues.render" ( dict "value" .Values.grafana.datasources "context" $) | nindent 4 }}
     {{- end }}
