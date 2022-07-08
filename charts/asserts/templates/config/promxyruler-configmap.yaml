@@ -1,8 +1,8 @@
-{{- if .Values.promxy.existingConfigMap }}
+{{- if .Values.promxyruler.existingConfigMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.promxy.existingConfigMap }}
+  name: {{ .Values.promxyruler.existingConfigMap }}
   labels: {{- include "asserts.labels" . | nindent 4 }}
 data:
   # ref: https://github.com/jacksontj/promxy/blob/master/cmd/promxy/config.yaml
