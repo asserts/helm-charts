@@ -4,7 +4,7 @@ description: Asserts Helm Chart to configure entire asserts stack
 icon: https://www.asserts.ai/favicon.png
 type: application
 
-version: 0.16.0
+version: 0.17.0
 
 dependencies:
   ## asserts charts ##
@@ -25,7 +25,13 @@ dependencies:
   - name: promxy
     repository: https://asserts.github.io/helm-charts
     version: 0.6.0
-    condition: promxy.enabled
+    alias: promxyruler
+    condition: promxyruler.enabled
+  - name: promxy
+    repository: https://asserts.github.io/helm-charts
+    version: 0.6.0
+    alias: promxyuser
+    condition: promxyuser.enabled
   ### external charts ###
   - name: common
     repository: https://charts.bitnami.com/bitnami

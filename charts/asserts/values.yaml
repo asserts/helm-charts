@@ -123,7 +123,7 @@ server:
     repository: asserts/platform
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.2.214
+    tag: v0.2.217
 
   initContainers:
     - name: wait-for-postgres
@@ -209,7 +209,7 @@ ui:
     repository: asserts/asserts-ui
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.1.976
+    tag: v0.1.985
 
   imagePullSecrets: []
 
@@ -297,7 +297,7 @@ grafana:
     repository: asserts/grafana
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v1.0.106
+    tag: v1.0.110
 
   imagePullSecrets: []
 
@@ -389,7 +389,7 @@ grafana:
   datasources:
     datasources:
       - name: Prometheus
-        url: http://{{.Release.Name}}-promxy.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8082
+        url: http://{{.Release.Name}}-promxyuser.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8082
         isDefault: true
         orgId: 1
         access: proxy
@@ -656,9 +656,9 @@ alertmanager:
   configmapReload:
     enabled: true
 
-## Promxy configuration
+## Promxy ruler configuration
 ## ref: https://github.com/asserts/helm-charts/blob/master/charts/promxy/values.yaml
-promxy:
+promxyruler:
   enabled: true
   image:
     repository: asserts/promxy
@@ -668,7 +668,7 @@ promxy:
     create: false
     name: asserts
 
-  existingConfigMap: asserts-promxy
+  existingConfigMap: asserts-promxyruler
 
   initContainers:
     - name: wait-for-tsdb
@@ -712,6 +712,21 @@ promxy:
         items:
           - key: asserts-k8s-calls.yml
             path: asserts-k8s-calls.yml
+
+
+## Promxy user configuration
+## ref: https://github.com/asserts/helm-charts/blob/master/charts/promxy/values.yaml
+promxyuser:
+  enabled: true
+  image:
+    repository: asserts/promxy
+    tag: v0.1.0
+
+  serviceAccount:
+    create: false
+    name: asserts
+
+  existingConfigMap: asserts-promxyuser
 
 
 ## Postgres configuration

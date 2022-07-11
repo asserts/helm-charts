@@ -1,4 +1,3 @@
-{{- if .Values.promxy.existingConfigMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -65,14 +64,14 @@ data:
             expr: sum by (asserts_env, asserts_site, namespace, job)
                     (asserts:request:rate5m{job="{{.Release.Name}}-tsdb-server", asserts_request_context="/api/v1/write"}) > 0
             labels:
-              job: {{.Release.Name}}-promxy
+              job: {{.Release.Name}}-promxyruler
               dst_job: {{.Release.Name}}-tsdb-server
               dst_namespace: {{.Release.Namespace}}
 
           # promxy -> alertmanager
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace, container, job, asserts_request_type, asserts_request_context)
-                    (rate(asserts:request:total{job="asserts-promxy", alertmanager=~".*/api/v2/alerts"}[5m])) > 0
+                    (rate(asserts:request:total{job="asserts-promxyruler", alertmanager=~".*/api/v2/alerts"}[5m])) > 0
             labels:
               dst_job: {{.Release.Name}}-alertmanager
               dst_namespace: {{.Release.Namespace}}
@@ -102,11 +101,10 @@ data:
               dst_job: {{.Release.Name}}-tsdb-server
               dst_namespace: {{.Release.Namespace}}
 
-          # grafana -> promxy
+          # grafana -> promxyuser
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace, job)
                     (asserts:request:rate5m{job="{{.Release.Name}}-grafana", asserts_request_type="proxy"}) > 0
             labels:
-              dst_job: {{.Release.Name}}-promxy
+              dst_job: {{.Release.Name}}-promxyuser
               dst_namespace: {{.Release.Namespace}}
-{{- end }}

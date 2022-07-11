@@ -1,0 +1,53 @@
+{{- if .Values.promxyuser.existingConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.promxyuser.existingConfigMap }}
+  labels: {{- include "asserts.labels" . | nindent 4 }}
+data:
+  # ref: https://github.com/jacksontj/promxy/blob/master/cmd/promxy/config.yaml
+  config.yaml: |
+    promxy:
+      server_groups:
+      # server configuration for each prometheus endpoint being queried
+      {{ range $i, $endpoint := .Values.prometheusEndpoints }}
+        - anti_affinity: 10s
+          http_client:
+            dial_timeout: 1s
+            tls_config:
+              insecure_skip_verify: true
+          ignore_error: true
+          {{- if $endpoint.env }}
+          labels:
+            asserts_env: {{ $endpoint.env }}
+            {{- if $endpoint.site }}
+            asserts_site: {{ $endpoint.site }}
+            {{- end }}
+          {{- end }}
+          query_params:
+            nocache: 1
+          remote_read: false
+          {{- if $endpoint.scheme }}
+          scheme: {{ $endpoint.scheme }}
+          {{- else }}
+          scheme: http
+          {{- end }}
+          static_configs:
+            - targets:
+              - {{ $endpoint.url }}
+      {{- end }}
+      # server configuration for the Asserts Tsdb
+        - anti_affinity: 10s
+          http_client:
+            dial_timeout: 1s
+            tls_config:
+              insecure_skip_verify: true
+          ignore_error: true
+          query_params:
+            nocache: 1
+          remote_read: false
+          scheme: http
+          static_configs:
+            - targets:
+              - {{.Release.Name}}-tsdb-server.{{ include "domain" . }}:8428
+{{- end }}
