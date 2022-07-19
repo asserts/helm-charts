@@ -129,6 +129,8 @@ data:
           domain: localhost
           secure: false
       security:
+        hmac:
+          currentSymmetricKey: muS5uSK2ZjexXhbaqNm18ktqaCAICI51
         oauth2:
           internal:
             enabled: false
