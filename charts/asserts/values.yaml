@@ -39,6 +39,13 @@ prometheusEndpoints: []
 #     env: stage
 #     # optional
 #     site: eu-west-1
+#   - url: prometheus-auth.domain.com
+#     scheme: https
+#     env: prod
+#     # optional username and password for basic auth
+#     username: user
+#     password: secret
+
 
 ## Asserts cluster env and site
 ## This should be set to the env and site
