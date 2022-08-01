@@ -26,6 +26,13 @@ data:
             dial_timeout: 1s
             tls_config:
               insecure_skip_verify: true
+            {{- if $endpoint.password }}
+            basic_auth:
+              {{- if $endpoint.username }}
+              username: {{ $endpoint.username }}
+              {{- end }}
+              password: {{ $endpoint.password }}
+            {{- end }}
           ignore_error: true
           {{- if $endpoint.env }}
           labels:
