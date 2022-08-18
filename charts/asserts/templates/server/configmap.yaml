@@ -93,8 +93,6 @@ data:
         reloadEnabled: 'false'
 
     asserts:
-      registration:
-        host: https://registration.dev.asserts.ai
       identityprovider:
         tenant: {{ include "asserts.tenant" . }}
       standalone:
