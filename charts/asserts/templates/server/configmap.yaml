@@ -96,6 +96,44 @@ data:
       identityprovider:
         tenant: {{ include "asserts.tenant" . }}
       standalone:
+        promxy:
+          ruler:
+            global:
+              evaluation_interval: 30s
+              # ensuring the tenant label is attached for alerting purposes
+              external_labels:
+                tenant: {{ include "asserts.tenant" . }}
+            alerting:
+              alertmanagers:
+                - static_configs:
+                    - targets:
+                        - {{.Release.Name}}-alertmanager.{{ include "domain" . }}:9093
+            remote_write:
+              - url: http://{{.Release.Name}}-tsdb-server.{{ include "domain" . }}:8428/api/v1/write
+                queue_config:
+                  capacity: 20000
+                  max_samples_per_send: 10000
+                  max_shards: 30
+            rule_files:
+              - /opt/asserts/rules/*.yml
+              - /opt/asserts/extra-rules/*.yml
+
+          shared:
+            # shared Asserts tsdb server_group config
+            serverGroupConfig:
+              anti_affinity: 10s
+              http_client:
+                dial_timeout: 1s
+                tls_config:
+                  insecure_skip_verify: true
+              ignore_error: true
+              query_params:
+                nocache: 1
+              remote_read: false
+              scheme: http
+              static_configs:
+                - targets:
+                  - {{.Release.Name}}-tsdb-server.{{ include "domain" . }}:8428
         tenant:
           enabled: 'true'
           name: Asserts Bootstrap
