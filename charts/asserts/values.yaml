@@ -787,3 +787,7 @@ postgres:
 
   metrics:
     enabled: true
+    service:
+      annotations:
+        # set to false since the Asserts TSDB is already scraping this endpoint
+        prometheus.io/scrape: "false"
