@@ -226,6 +226,7 @@ data:
           - description: Can configure own tenant's credential
             name: CONFIG_TENANT_CREDENTIAL
         roleToPermissionMap:
+          API_INTEGRATION: "{OWNER}, {KNOWLEDGE_SENSOR}"
           ASSERTS: "{OWNER}, {KNOWLEDGE_SENSOR}, RULE_GENERATOR, TENANT_MANAGER, GENERATE_SLO_RULES"
           ASSERTS_READONLY: "{VIEWER}"
           KNOWLEDGE_SENSOR: "READ_TENANT_RULES"
@@ -250,6 +251,9 @@ data:
             visibility: INTERNAL
           - description: Knowledge Sensor
             name: KNOWLEDGE_SENSOR
+            visibility: INTERNAL
+          - description: Api integration credential
+            name: API_INTEGRATION
             visibility: INTERNAL
 
     store:
