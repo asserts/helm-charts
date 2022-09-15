@@ -120,6 +120,8 @@ extraVolumes: []
 # else config values will be used
 existingConfigMap:
 
+configPath: "/etc/promxy/config.yaml"
+
 config:
   ##
   ## Regular prometheus configuration
