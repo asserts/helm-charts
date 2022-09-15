@@ -48,7 +48,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         - args:
-            - "--config=/etc/promxy/config.yaml"
+            - "--config={{ .Values.configPath }}"
             - "--web.enable-lifecycle"
             {{- range $key, $value := .Values.extraArgs }}
             - "--{{ $key }}={{ $value }}"
@@ -85,7 +85,7 @@ spec:
           volumeMounts:
             - mountPath: "/etc/promxy/"
               name: config
-              readOnly: true
+              readOnly: false
           {{- with .Values.extraVolumeMounts }}
           {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -99,7 +99,7 @@ spec:
           volumeMounts:
             - mountPath: "/etc/promxy/"
               name: config
-              readOnly: true
+              readOnly: false
           resources:
             requests:
               cpu: 0.02
