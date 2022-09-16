@@ -1,11 +1,9 @@
 apiVersion: v2
-version: 0.1.0
-appVersion: v1.1.4
+version: 1.0.0
+appVersion: v1.1.8
 description: "Asserts Knowledge Sensor Helm Chart"
 name: knowledge-sensor
 
 maintainers:
   - name: arramos84
     email: arramos@asserts.ai
-  - name: jeremyrios
-    email: rios@asserts.ai

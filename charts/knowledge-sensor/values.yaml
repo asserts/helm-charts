@@ -108,6 +108,12 @@ prometheusRulesConfigmapName: "prometheus-rules"
 prometheusRulesTargetDir: "/etc/vmagent/rules"
 prometheusRelabelRulesConfigmapName: "prometheus-relabel-rules"
 prometheusRelabelRulesTargetDir: "/etc/vmagent/relabel"
+
+promxyEnabled: false
+promxyUserConfigmapName: "asserts-promxyuser"
+promxyRulerConfigmapName: "asserts-promxyruler"
+promxyConfigTargetDir: "/etc/promxy"
+
 passwordSecret: false
 
 ## Rules concurrency configuration
