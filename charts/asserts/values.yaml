@@ -688,7 +688,6 @@ promxyuser:
     name: asserts
 
   existingConfigMap: asserts-promxyuser
-  configPath:
 
   initContainers:
     - name: wait-for-tsdb
