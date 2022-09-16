@@ -49,6 +49,14 @@ spec:
               value: "{{ .Values.prometheusRelabelRulesConfigmapName }}"
             - name: PROMETHEUS_RELABEL_RULES_TARGET_DIR
               value: "{{ .Values.prometheusRelabelRulesTargetDir }}"
+            {{- if .Values.promxyEnabled }}
+            - name: PROMXYUSER_CONFIGMAP
+              value: "{{ .Values.promxyUserConfigmapName }}"
+            - name: PROMXYRULER_CONFIGMAP
+              value: "{{ .Values.promxyRulerConfigmapName }}"
+            - name: PROMXY_CONFIG_TARGET_DIR
+              value: "{{ .Values.promxyConfigTargetDir }}"
+            {{- end }}
             {{- if .Values.passwordSecret }}
             - name: ASSERTS_PASSWORD
               valueFrom:
