@@ -1627,6 +1627,18 @@ entries:
     version: 0.1.0
   knowledge-sensor:
   - apiVersion: v2
+    appVersion: v1.1.8
+    created: "2022-09-16T20:48:45.846508038Z"
+    description: Asserts Knowledge Sensor Helm Chart
+    digest: 666d445f68d2605b0c918a221f37fefc583e4476e5d0490bc6ea7669e8418a7a
+    maintainers:
+    - email: arramos@asserts.ai
+      name: arramos84
+    name: knowledge-sensor
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/knowledge-sensor-1.0.0/knowledge-sensor-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     appVersion: v1.1.4
     created: "2022-04-30T02:02:09.868221599Z"
     description: Asserts Knowledge Sensor Helm Chart
@@ -2163,4 +2175,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2022-09-15T20:49:11.010100654Z"
+generated: "2022-09-16T20:48:45.84705784Z"
