@@ -1,7 +1,7 @@
 dependencies:
 - name: knowledge-sensor
   repository: https://asserts.github.io/helm-charts
-  version: 0.1.0
+  version: 1.0.0
 - name: victoria-metrics-single
   repository: https://asserts.github.io/helm-charts
   version: 0.8.12
@@ -10,10 +10,10 @@ dependencies:
   version: 0.14.0
 - name: promxy
   repository: https://asserts.github.io/helm-charts
-  version: 0.6.0
+  version: 0.7.0
 - name: promxy
   repository: https://asserts.github.io/helm-charts
-  version: 0.6.0
+  version: 0.7.0
 - name: common
   repository: https://charts.bitnami.com/bitnami
   version: 1.17.1
@@ -26,5 +26,5 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.1.23
-digest: sha256:de99f0d2218c4288ac9f36ff7f3d888835a139c96b27183b50a09eb85f2181b9
-generated: "2022-08-18T09:05:20.062232-07:00"
+digest: sha256:2289f73767e29eb3d50a7a224b5f4ddcda340feb2c0a0938d4c5e7a711ed8bfb
+generated: "2022-09-16T13:52:47.368838-07:00"
