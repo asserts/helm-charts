@@ -25,59 +25,10 @@ serviceAccount:
   annotations: {}
   extraLabels: {}
 
-## Assert prometheus endpoints configuration
-## This is a list of various prometheus endpoints to query
-##
-prometheusEndpoints: []
-# prometheusEndpoints:
-#   - url: prometheus-server0.default.svc.cluster.local:9090
-#     scheme: http
-#     # recommended
-#     env: dev
-#   - url: prometheus-external.domain.com
-#     scheme: http
-#     env: stage
-#     # optional
-#     site: eu-west-1
-#   - url: prometheus-auth.domain.com
-#     scheme: https
-#     env: prod
-#     # optional username and password for basic auth
-#     username: user
-#     password: secret
-
-
 ## Asserts cluster env and site
 ## This should be set to the env and site
-## of the cluster asserts is running in.
-## It should correspond to the env and site of
-## one of the configured prometheusEndpoints
-## in the above configuration. So if one of the
-## endpoints is:
-##
-# prometheusEndpoints:
-#   - url: prometheus-server0.default.svc.cluster.local:9090
-#     scheme: http
-#     env: dev
+## of the cluster asserts is being installed in.
 #
-## then you should set -> assertsClusterEnv: dev
-##
-## similarly, if connecting to multiple clusters
-## with an endpoints list like so:
-##
-# prometheusEndpoints:
-#   - url: prometheus-server0.default.svc.cluster.local:9090
-#     scheme: http
-#     env: dev
-#     site: us-west-2
-#   - url: prometheus-server1-external.domain.com
-#     scheme: http
-#     env: stage
-#     site: eu-west-1
-#
-## but your asserts installation is in the first cluster in the list
-## then you should set -> assertsClusterEnv: dev
-## and                 -> assertsClusterSite: us-west-2
 assertsClusterEnv: ""
 assertsClusterSite: ""
 
@@ -130,7 +81,7 @@ server:
     repository: asserts/platform
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.2.290
+    tag: v0.2.318
 
   initContainers:
     - name: wait-for-postgres
@@ -139,7 +90,7 @@ server:
       args:
         - "{{.Values.postgres.fullnameOverride}}.{{.Release.Namespace}}.{{.Values.clusterDomain}}:5432"
         - "-t"
-        - "300"
+        - "420"
 
   imagePullSecrets: []
 
@@ -216,7 +167,7 @@ ui:
     repository: asserts/asserts-ui
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.1.1018
+    tag: v0.1.1039
 
   imagePullSecrets: []
 
@@ -304,7 +255,7 @@ grafana:
     repository: asserts/grafana
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v1.0.139
+    tag: v1.0.151
 
   imagePullSecrets: []
 
@@ -441,27 +392,27 @@ grafana:
 knowledge-sensor:
   image:
     repository: asserts/knowledge-sensor
-    tag: v1.1.7
+    tag: v1.1.8
 
   serviceAccount:
     create: false
     name: asserts
 
   initContainers:
-    - name: wait-for-rules-api
+    - name: wait-for-asserts-server
       image: asserts/wait-for:v2.2.3
       imagePullPolicy: IfNotPresent
       args:
         - "{{.Release.Name}}-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8030"
         - "-t"
-        - "300"
+        - "420"
 
-  ## tenant and asserts host knowledge sensor is retrieving rules for
+  ## tenant and asserts host knowledge sensor is retrieving configurations for
   assertsTenant: bootstrap
   assertsControllerHost: "http://{{.Release.Name}}-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8030"
 
-  ## how often the knowledge sensor will check for new rules
-  syncInterval: "60"
+  ## how often the knowledge sensor will check for configurations
+  syncInterval: "30"
 
   ## The configmap names and target directories for the rules
   ## and relabel rules the configmaps will contain
@@ -470,6 +421,9 @@ knowledge-sensor:
   prometheusRulesTargetDir: "/opt/asserts/rules"
   prometheusRelabelRulesConfigmapName: "asserts-relabel-rules"
   prometheusRelabelRulesTargetDir: /opt/asserts/relabel
+
+  # enables promxy api and bootstraps promxyruler/promxyuser configmaps
+  promxyEnabled: true
 
 
 ## Tsdb configuration
@@ -501,7 +455,7 @@ tsdb:
         args:
           - "{{.Release.Name}}-knowledge-sensor.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8080"
           - "-t"
-          - "300"
+          - "420"
       ## initially add rule files to volume on startup
       ## after the knowledge-sensor is ready. This is a
       ## way to make sure the tsdb doesn't startup with
@@ -684,10 +638,10 @@ promxyruler:
       args:
         - "{{.Release.Name}}-tsdb-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8428"
         - "-t"
-        - "300"
+        - "420"
 
   extraContainers:
-    - name: config-sidecar
+    - name: rules-config-sidecar
       image: asserts/k8s-sidecar:1.14.2
       imagePullPolicy: IfNotPresent
       env:
@@ -734,6 +688,15 @@ promxyuser:
     name: asserts
 
   existingConfigMap: asserts-promxyuser
+
+  initContainers:
+    - name: wait-for-tsdb
+      image: asserts/wait-for:v2.2.3
+      imagePullPolicy: IfNotPresent
+      args:
+        - "{{.Release.Name}}-tsdb-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8428"
+        - "-t"
+        - "420"
 
 
 ## Postgres configuration

@@ -19,32 +19,21 @@ This chart bootstraps an [Asserts](https://www.asserts.ai) deployment on a [Kube
 
 To install the chart with the release name `asserts` and Prometheus endpoint behind the service `kube-prometheus-stack-prometheus` in the `default` namespace:
 
-Create a values file, here we will call it `dev-values.yaml`:
+Create a values file, here we will call it `your-values.yaml`:
 
 ```yaml
-prometheusEndpoints:
-  - url: kube-prometheus-stack-prometheus.default.svc.cluster.local:9090
-    scheme: http
-    env: dev
-
-assertsClusterEnv: dev
-
-## OPTIONAL: if not using out of the box community edition
-##           and you have a trial or enterprise license
-server:
-  extraEnv:
-    - name: ASSERTS_LICENSE_AUTH_TOKEN
-      value: "<YOUR-AUTH-TOKEN>"
-    - name: ASSERTS_LICENSE_PRODUCT_ID
-      value: "<YOUR-PRODUCT-ID>"
-    - name: ASSERTS_LICENSE_KEY
-      value: "<YOUR-LICENSE-KEY>"
+## Asserts cluster env and site
+## This should be set to the env and site
+## of the cluster asserts is being installed in.
+assertsClusterEnv: your-env
+# optional (e.g. us-west-2)
+assertsClusterSite: ""
 ```
 
 ```bash
 helm repo add asserts https://asserts.github.io/helm-charts
 helm repo update
-helm install asserts asserts/asserts -f dev-values.yaml
+helm install asserts asserts/asserts -f your-values.yaml
 ```
 
 Once all containers are initialized and running:
@@ -61,6 +50,12 @@ kubectl port-forward svc/asserts-ui 8080
 
 
 And opening your browser to [http://localhost:8080](http://localhost:8080)
+you will be directed to the Asserts Registration page. There you can acquire
+a license as seen [here](https://docs.asserts.ai/getting-started/self-hosted/helm-chart#see-the-data)
+
+## Configuring Promethueus DataSources
+Configure your Prometheus DataSource which Asserts will connect to
+and query by following [these instructions](https://docs.asserts.ai/integrations/data-source/prometheus)
 
 ## Uninstalling the Chart
 
