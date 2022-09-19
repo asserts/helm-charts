@@ -81,7 +81,7 @@ server:
     repository: asserts/platform
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.2.318
+    tag: v0.2.320
 
   initContainers:
     - name: wait-for-postgres
@@ -255,7 +255,7 @@ grafana:
     repository: asserts/grafana
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v1.0.151
+    tag: v1.0.152
 
   imagePullSecrets: []
 
