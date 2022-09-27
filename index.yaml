@@ -2220,6 +2220,34 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/promxy-0.1.0/promxy-0.1.0.tgz
     version: 0.1.0
+  promxyruler:
+  - apiVersion: v2
+    appVersion: v0.0.75
+    created: "2022-09-27T18:46:15.163262597Z"
+    description: Helm Chart for Prometheus proxy to combine multiple prometheuses
+    digest: 5150012e737df1e6c87aab105988d11ccf52ecf82d6e4ec61d6fd45eb1f3112e
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: promxyruler
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/promxyruler-0.7.0/promxyruler-0.7.0.tgz
+    version: 0.7.0
+  promxyuser:
+  - apiVersion: v2
+    appVersion: v0.0.75
+    created: "2022-09-27T18:46:15.329353133Z"
+    description: Helm Chart for Prometheus proxy to combine multiple prometheuses
+    digest: 94686c555fcb6866ee0ca932212917d924b131bd90c8d1446d9d4651d3fd0666
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: promxyuser
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/promxyuser-0.7.0/promxyuser-0.7.0.tgz
+    version: 0.7.0
   redisearch:
   - apiVersion: v2
     appVersion: 2.0.6
@@ -2340,4 +2368,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2022-09-22T13:18:25.959820214Z"
+generated: "2022-09-27T18:46:15.330045175Z"
