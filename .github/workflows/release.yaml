@@ -3,7 +3,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - master
+      - jim/sc-13357
 
 jobs:
   release:
