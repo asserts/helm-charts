@@ -8,10 +8,10 @@ dependencies:
 - name: alertmanager
   repository: https://asserts.github.io/helm-charts
   version: 0.14.0
-- name: promxy
+- name: promxyruler
   repository: https://asserts.github.io/helm-charts
   version: 0.7.0
-- name: promxy
+- name: promxyuser
   repository: https://asserts.github.io/helm-charts
   version: 0.7.0
 - name: common
@@ -26,5 +26,5 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.1.23
-digest: sha256:2289f73767e29eb3d50a7a224b5f4ddcda340feb2c0a0938d4c5e7a711ed8bfb
-generated: "2022-09-16T13:52:47.368838-07:00"
+digest: sha256:89c7af9f9f355b471951bd11eda55d1e3e4eca2f1cf78cd44e66a0c1d80fdd73
+generated: "2022-09-29T09:32:48.592404-07:00"
