@@ -32,4 +32,10 @@ spec:
           requests:
             cpu: 100m
             memory: 256Mi
+        {{- if .Values.rabbitmq.enableExporter }}
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c","" rabbitmq-plugins", "enable", "rabbitmq_prometheus"]
+        {{- end }}
       restartPolicy: Always
