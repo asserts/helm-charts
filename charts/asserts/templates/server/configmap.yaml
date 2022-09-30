@@ -110,7 +110,7 @@ data:
                     - targets:
                         - {{.Release.Name}}-alertmanager.{{ include "domain" . }}:9093
             remote_write:
-              - url: http://{{.Release.Name}}-tsdb-server.{{ include "domain" . }}:8428/api/v1/write
+              - url: http://{{.Release.Name}}-victoria-metrics-single-server.{{ include "domain" . }}:8428/api/v1/write
                 queue_config:
                   capacity: 20000
                   max_samples_per_send: 10000
@@ -119,7 +119,7 @@ data:
               - /opt/asserts/rules/*.yml
               - /opt/asserts/extra-rules/*.yml
           shared:
-            # shared Asserts tsdb server_group config
+            # shared Asserts victoria-metrics-single server_group config
             serverGroupConfig:
               anti_affinity: 10s
               http_client:
@@ -133,7 +133,7 @@ data:
               scheme: http
               static_configs:
                 - targets:
-                  - {{.Release.Name}}-tsdb-server.{{ include "domain" . }}:8428
+                  - {{.Release.Name}}-victoria-metrics-single-server.{{ include "domain" . }}:8428
         tenant:
           enabled: 'true'
           name: Asserts Bootstrap
@@ -163,7 +163,7 @@ data:
             master_name: mymaster
             sentinels: {{ include "asserts.searchSentinelHosts" . }}
       tsdb:
-        url: http://{{.Release.Name}}-tsdb-server.{{include "domain" .}}:8428
+        url: http://{{.Release.Name}}-victoria-metrics-single-server.{{include "domain" .}}:8428
       oauth2:
         cookie:
           domain: localhost

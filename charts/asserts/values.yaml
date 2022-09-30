@@ -438,13 +438,13 @@ tsdb:
     create: false
     name: asserts
 
-  configMap: asserts-tsdb-scrapeconfig
+  configMap: asserts-victoria-metrics-single-scrapeconfig
   server:
     image:
       tag: v1.75.1
 
-    nameOverride: "tsdb"
-    fullNameOverride: "tsdb"
+    nameOverride: "victoria-metrics-single"
+    fullNameOverride: "victoria-metrics-single"
 
     initContainers:
       ## wait for the knowledge-sensor to be ready to
@@ -487,7 +487,7 @@ tsdb:
     ## scrape configuration for the tsdb in config/tsdb-scrape-configmap.yaml
     scrape:
       enabled: true
-      configMap: asserts-tsdb-scrapeconfig
+      configMap: asserts-victoria-metrics-single-scrapeconfig
 
     persistentVolume:
       size: 8Gi
@@ -632,11 +632,11 @@ promxyruler:
   existingConfigMap: asserts-promxyruler
 
   initContainers:
-    - name: wait-for-tsdb
+    - name: wait-for-victoria-metrics-single
       image: asserts/wait-for:v2.2.3
       imagePullPolicy: IfNotPresent
       args:
-        - "{{.Release.Name}}-tsdb-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8428"
+        - "{{.Release.Name}}-victoria-metrics-single-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8428"
         - "-t"
         - "420"
 
@@ -690,11 +690,11 @@ promxyuser:
   existingConfigMap: asserts-promxyuser
 
   initContainers:
-    - name: wait-for-tsdb
+    - name: wait-for-victoria-metrics-single
       image: asserts/wait-for:v2.2.3
       imagePullPolicy: IfNotPresent
       args:
-        - "{{.Release.Name}}-tsdb-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8428"
+        - "{{.Release.Name}}-victoria-metrics-single-server.{{.Release.Namespace}}.{{.Values.clusterDomain}}:8428"
         - "-t"
         - "420"
 

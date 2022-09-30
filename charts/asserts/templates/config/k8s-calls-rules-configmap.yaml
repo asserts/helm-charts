@@ -42,12 +42,12 @@ data:
               dst_job: {{.Values.redisgraph.fullnameOverride}}-metrics
               dst_namespace: {{.Release.Namespace}}
 
-          # asserts-server -> tsdb-server
+          # asserts-server -> victoria-metrics-single-server
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace, job)
                     (asserts:request:rate5m{job="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~"/api/v1/.*"}) > 0
             labels:
-              dst_job: {{.Release.Name}}-tsdb-server
+              dst_job: {{.Release.Name}}-victoria-metrics-single-server
               dst_namespace: {{.Release.Namespace}}
 
           # knowledge-sensor -> asserts-server
@@ -59,13 +59,13 @@ data:
               dst_workload: {{.Release.Name}}-server
               dst_namespace: {{.Release.Namespace}}
 
-          # promxy -> tsdb-server
+          # promxy -> victoria-metrics-single-server
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace, job)
-                    (asserts:request:rate5m{job="{{.Release.Name}}-tsdb-server", asserts_request_context="/api/v1/write"}) > 0
+                    (asserts:request:rate5m{job="{{.Release.Name}}-victoria-metrics-single-server", asserts_request_context="/api/v1/write"}) > 0
             labels:
               job: {{.Release.Name}}-promxyruler
-              dst_job: {{.Release.Name}}-tsdb-server
+              dst_job: {{.Release.Name}}-victoria-metrics-single-server
               dst_namespace: {{.Release.Namespace}}
 
           # promxy -> alertmanager
@@ -93,12 +93,12 @@ data:
               dst_job: {{.Release.Name}}-grafana
               dst_namespace: {{.Release.Namespace}}
 
-          # grafana -> tsdb-server
+          # grafana -> victoria-metrics-single-server
           - record: asserts:relation:calls
             expr: sum by (job, namespace, asserts_env, asserts_site)
                     (rate(grafana_datasource_request_total{job="{{.Release.Name}}-grafana"}[5m])) > 0
             labels:
-              dst_job: {{.Release.Name}}-tsdb-server
+              dst_job: {{.Release.Name}}-victoria-metrics-single-server
               dst_namespace: {{.Release.Namespace}}
 
           # grafana -> promxyuser
