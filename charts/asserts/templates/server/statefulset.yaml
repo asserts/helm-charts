@@ -45,7 +45,7 @@ spec:
             - name: POSTGRES_RDB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgres.fullnameOverride }}
+                  name: {{ .Values.postgresql.fullnameOverride }}
                   key: postgres-password
                   optional: false
             # set grafana admin password

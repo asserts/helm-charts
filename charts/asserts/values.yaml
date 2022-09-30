@@ -84,11 +84,11 @@ server:
     tag: v0.2.328
 
   initContainers:
-    - name: wait-for-postgres
+    - name: wait-for-postgresql
       image: asserts/wait-for:v2.2.3
       imagePullPolicy: IfNotPresent
       args:
-        - "{{.Values.postgres.fullnameOverride}}.{{.Release.Namespace}}.{{.Values.clusterDomain}}:5432"
+        - "{{.Values.postgresql.fullnameOverride}}.{{.Release.Namespace}}.{{.Values.clusterDomain}}:5432"
         - "-t"
         - "420"
 
@@ -701,7 +701,7 @@ promxyuser:
 
 ## Postgres configuration
 ## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
-postgres:
+postgresql:
   enabled: true
 
   ## Postgres password configuration
@@ -730,8 +730,8 @@ postgres:
     repository: bitnami/postgresql
     tag: 12.7.0
 
-  nameOverride: "asserts-postgres"
-  fullnameOverride: "asserts-postgres"
+  nameOverride: "asserts-postgresql"
+  fullnameOverride: "asserts-postgresql"
 
   serviceAccount:
     create: false
