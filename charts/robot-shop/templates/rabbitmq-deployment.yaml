@@ -36,6 +36,6 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c","" rabbitmq-plugins", "enable", "rabbitmq_prometheus"]
+              command: ["/bin/sh", "-c", "rabbitmq-plugins", "enable", "rabbitmq_prometheus"]
         {{- end }}
       restartPolicy: Always
