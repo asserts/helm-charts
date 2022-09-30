@@ -261,7 +261,7 @@ data:
         datasource:
           hikari:
             maximum-pool-size: 1
-          url: jdbc:postgresql://{{.Values.postgres.fullnameOverride}}.{{include "domain" .}}:5432/asserts
+          url: jdbc:postgresql://{{.Values.postgresql.fullnameOverride}}.{{include "domain" .}}:5432/asserts
           username: postgres
           password: ${POSTGRES_RDB_PASSWORD}
       user:

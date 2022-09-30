@@ -17,13 +17,13 @@ data:
               dst_workload: {{.Release.Name}}-server
               dst_namespace: {{.Release.Namespace}}
 
-          # asserts-server -> postgres
+          # asserts-server -> postgresql
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace, job)
-                    (asserts:request:rate5m{job="{{.Release.Name}}-postgres-metrics", namespace="{{.Release.Namespace}}", asserts_request_context="records_written"}) > 0
+                    (asserts:request:rate5m{job="{{.Release.Name}}-postgresql-metrics", namespace="{{.Release.Namespace}}", asserts_request_context="records_written"}) > 0
             labels:
               job: {{.Release.Name}}-server
-              dst_job: {{.Values.postgres.fullnameOverride}}
+              dst_job: {{.Values.postgresql.fullnameOverride}}
               dst_namespace: {{.Release.Namespace}}
 
           # asserts-server -> redisearch
