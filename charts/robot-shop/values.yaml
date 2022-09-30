@@ -42,3 +42,7 @@ ocCreateRoute: false
 
 rabbitmq:
   enableExporter: true
+
+loadGen:
+  enabled: false
+  host: http://robot-shop.example.com
