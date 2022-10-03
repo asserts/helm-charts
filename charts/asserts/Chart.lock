@@ -14,17 +14,17 @@ dependencies:
 - name: promxyuser
   repository: https://asserts.github.io/helm-charts
   version: 0.7.0
+- name: redisgraph
+  repository: https://asserts.github.io/helm-charts
+  version: 16.8.7
+- name: redisearch
+  repository: https://asserts.github.io/helm-charts
+  version: 16.8.7
 - name: common
   repository: https://charts.bitnami.com/bitnami
   version: 1.17.1
-- name: redis
-  repository: https://charts.bitnami.com/bitnami
-  version: 16.8.7
-- name: redis
-  repository: https://charts.bitnami.com/bitnami
-  version: 16.8.7
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.1.23
-digest: sha256:89c7af9f9f355b471951bd11eda55d1e3e4eca2f1cf78cd44e66a0c1d80fdd73
-generated: "2022-09-29T09:32:48.592404-07:00"
+digest: sha256:168a2f1190715f6d802a89da38dc59a0620c7cf2576ed10a8df095d2d65a9cf8
+generated: "2022-10-03T17:03:10.628663+02:00"
