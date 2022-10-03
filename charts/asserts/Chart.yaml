@@ -29,10 +29,6 @@ dependencies:
     repository: https://asserts.github.io/helm-charts
     version: 0.7.0
     condition: promxyuser.enabled
-  ### external charts ###
-  - name: common
-    repository: https://charts.bitnami.com/bitnami
-    version: 1.x.x
   - name: redisgraph
     repository: https://asserts.github.io/helm-charts
     version: 16.8.7
@@ -41,6 +37,10 @@ dependencies:
     repository: https://asserts.github.io/helm-charts
     version: 16.8.7
     condition: redisearch.enabled
+  ### external charts ###
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    version: 1.x.x
   - name: postgresql
     repository: https://charts.bitnami.com/bitnami
     version: 11.1.23
