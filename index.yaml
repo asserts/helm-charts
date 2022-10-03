@@ -2302,6 +2302,40 @@ entries:
     - https://github.com/asserts/helm-charts/releases/download/promxyuser-0.7.0/promxyuser-0.7.0.tgz
     version: 0.7.0
   redisearch:
+  - annotations:
+      category: Database
+    apiVersion: v2
+    appVersion: 6.2.6
+    created: "2022-10-03T14:22:20.082574461Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 1.x.x
+    description: Redis(TM) is an open source, advanced key-value store. It is often
+      referred to as a data structure server since keys can contain strings, hashes,
+      lists, sets and sorted sets.
+    digest: 4a864099fb258477cf19725841ca8bbfb032c0c8cdac0402621b0fa47d4542bc
+    home: https://github.com/bitnami/charts/tree/master/bitnami/redis
+    icon: https://bitnami.com/assets/stacks/redis/img/redis-stack-220x234.png
+    keywords:
+    - redis
+    - keyvalue
+    - database
+    maintainers:
+    - email: containers@bitnami.com
+      name: Bitnami
+    - email: cedric@desaintmartin.fr
+      name: desaintmartin
+    - name: Asserts
+      url: https://github.com/asserts
+    name: redisearch
+    sources:
+    - https://github.com/bitnami/bitnami-docker-redis
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/redisearch-16.8.7/redisearch-16.8.7.tgz
+    version: 16.8.7
   - apiVersion: v2
     appVersion: 2.0.6
     created: "2022-04-20T21:54:20.088270187Z"
@@ -2345,6 +2379,40 @@ entries:
     - https://github.com/asserts/helm-charts/releases/download/redisearch-0.1.0/redisearch-0.1.0.tgz
     version: 0.1.0
   redisgraph:
+  - annotations:
+      category: Database
+    apiVersion: v2
+    appVersion: 6.2.6
+    created: "2022-10-03T14:22:20.400021217Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 1.x.x
+    description: Redis(TM) is an open source, advanced key-value store. It is often
+      referred to as a data structure server since keys can contain strings, hashes,
+      lists, sets and sorted sets.
+    digest: 66b285a7972ba5115c76e6f18954b6cb8da524767cf73c9bb20faf733add17e7
+    home: https://github.com/bitnami/charts/tree/master/bitnami/redis
+    icon: https://bitnami.com/assets/stacks/redis/img/redis-stack-220x234.png
+    keywords:
+    - redis
+    - keyvalue
+    - database
+    maintainers:
+    - email: containers@bitnami.com
+      name: Bitnami
+    - email: cedric@desaintmartin.fr
+      name: desaintmartin
+    - name: Asserts
+      url: https://github.com/asserts
+    name: redisgraph
+    sources:
+    - https://github.com/bitnami/bitnami-docker-redis
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/redisgraph-16.8.7/redisgraph-16.8.7.tgz
+    version: 16.8.7
   - apiVersion: v2
     appVersion: 2.4.12
     created: "2022-04-20T21:54:20.299400969Z"
@@ -2421,4 +2489,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2022-09-29T16:34:57.770024919Z"
+generated: "2022-10-03T14:22:20.400810321Z"
