@@ -16,8 +16,7 @@ dependencies:
   - name: victoria-metrics-single
     repository: https://asserts.github.io/helm-charts
     version: 0.8.12
-    alias: tsdb
-    condition: tsdb.enabled
+    condition: victoria-metrics-single.enabled
   - name: alertmanager
     repository: https://asserts.github.io/helm-charts
     version: 0.14.0
@@ -30,25 +29,22 @@ dependencies:
     repository: https://asserts.github.io/helm-charts
     version: 0.7.0
     condition: promxyuser.enabled
+  - name: redisgraph
+    repository: https://asserts.github.io/helm-charts
+    version: 16.8.7
+    condition: redisgraph.enabled
+  - name: redisearch
+    repository: https://asserts.github.io/helm-charts
+    version: 16.8.7
+    condition: redisearch.enabled
   ### external charts ###
   - name: common
     repository: https://charts.bitnami.com/bitnami
     version: 1.x.x
-  - name: redis
-    repository: https://charts.bitnami.com/bitnami
-    version: 16.8.7
-    alias: redisgraph
-    condition: redisgraph.enabled
-  - name: redis
-    repository: https://charts.bitnami.com/bitnami
-    version: 16.8.7
-    alias: redisearch
-    condition: redisearch.enabled
   - name: postgresql
     repository: https://charts.bitnami.com/bitnami
     version: 11.1.23
-    alias: postgres
-    condition: postgres.enabled
+    condition: postgresql.enabled
 
 maintainers:
   - name: Asserts
