@@ -426,9 +426,9 @@ knowledge-sensor:
   promxyEnabled: true
 
 
-## Tsdb configuration
+## victoria-metrics-single configuration
 ## ref: https://github.com/asserts/helm-charts/blob/master/charts/victoria-metrics-single/values.yaml
-tsdb:
+victoria-metrics-single:
   enabled: true
   rbac:
     create: false
