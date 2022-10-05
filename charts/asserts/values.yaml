@@ -484,7 +484,7 @@ victoria-metrics-single:
       search.latencyOffset: 15s
       memory.allowedPercent: 50
 
-    ## scrape configuration for the tsdb in config/tsdb-scrape-configmap.yaml
+    ## scrape configuration for the tsdb in config/victoria-metrics-single-scrape-configmap.yaml
     scrape:
       enabled: true
       configMap: asserts-victoria-metrics-single-scrapeconfig
