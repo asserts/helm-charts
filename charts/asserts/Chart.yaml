@@ -4,7 +4,7 @@ description: Asserts Helm Chart to configure entire asserts stack
 icon: https://www.asserts.ai/favicon.png
 type: application
 
-version: 1.6.0
+version: 1.7.0
 
 dependencies:
   ## asserts charts ##
@@ -15,7 +15,7 @@ dependencies:
     condition: knowledge-sensor.enabled
   - name: victoria-metrics-single
     repository: https://asserts.github.io/helm-charts
-    version: 0.8.12
+    version: 1.0.0
     alias: tsdb
     condition: tsdb.enabled
   - name: alertmanager
