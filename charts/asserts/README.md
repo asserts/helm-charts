@@ -27,8 +27,6 @@ helm install asserts asserts/asserts
 
 ### You ARE NOT running Prometheus-Operator in the same cluster as where Asserts is installed
 
-To install the chart with the release name `asserts`:
-
 Create a values file, here we will call it `your-values.yaml`:
 
 ```yaml
