@@ -53,7 +53,7 @@ spec:
             - {{ printf "%s=%s" "--retentionPeriod" (toString .Values.server.retentionPeriod) | quote}}
             - {{ printf "%s=%s" "--storageDataPath" .Values.server.persistentVolume.mountPath | quote}}
           {{- if .Values.server.scrape.enabled }}
-            - -promscrape.config={{ .Values.scrape.configPath }}
+            - -promscrape.config={{ .Values.server.scrape.configPath }}
           {{- end }}
           {{- range $key, $value := .Values.server.extraArgs }}
             - --{{ $key }}={{ $value }}
