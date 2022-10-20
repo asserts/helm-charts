@@ -25,10 +25,50 @@ serviceAccount:
   annotations: {}
   extraLabels: {}
 
+## If Prometheus-Operator is used (detected by checking "monitoring.coreos.com/v1" api existence)
+## Then they will be created, else the Asserts Tsdb will scrape the services
+##
+serviceMonitor:
+  enabled: true
+  # endpoints and appropriate relabelings
+  # relabelings used to avoid duplicates
+  # this allows us to avoid errors and keep everything in one
+  # ServiceMonitor
+  endpoints:
+    - port: http
+      path: /api-server/actuator/prometheus
+      relabelings:
+        - sourceLabels: [job]
+          regex: "{{.Release.Name}}-server"
+          action: keep
+    - port: http
+      path: /metrics
+      relabelings:
+        - sourceLabels: [job]
+          regex: "{{.Release.Name}}-server"
+          action: drop
+        - sourceLabels: [job]
+          regex: "{{.Release.Name}}-ui"
+          action: drop
+        - sourceLabels: [job]
+          regex: "{{.Release.Name}}-alertmanager-headless"
+          action: drop
+    - port: http-metrics
+      path: /metrics
+  # Use if you need to add a label that matches
+  # your prometheus-operator serviceMonitorSelector (e.g. release: kube-prometheus-stack)
+  extraLabels: {}
+
 ## Asserts cluster env and site
-## This should be set to the env and site
+##
+## IGNORE IF RUNNING Promtheus-Operator!!!
+##
+## This is required in order for Asserts to scrape a
+## and monitor itself. This should be set to the env and site
 ## of the cluster asserts is being installed in.
-#
+## This means that the env and site of the datasource
+## for this cluster (set in the Asserts UI), should
+## match these values.
 assertsClusterEnv: ""
 assertsClusterSite: ""
 
@@ -752,5 +792,6 @@ postgres:
     enabled: true
     service:
       annotations:
-        # set to false since the Asserts TSDB is already scraping this endpoint
+        # set to false since this chart is handling scraping for this service
+        # the Asserts ServiceMonitor is used or the Asserts TSDB is already scraping this endpoint
         prometheus.io/scrape: "false"
