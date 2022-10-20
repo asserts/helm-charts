@@ -432,7 +432,7 @@ grafana:
 knowledge-sensor:
   image:
     repository: asserts/knowledge-sensor
-    tag: v1.1.8
+    tag: v1.1.9
 
   serviceAccount:
     create: false
