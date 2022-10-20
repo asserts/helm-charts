@@ -19,6 +19,61 @@ entries:
     version: 0.14.0
   asserts:
   - apiVersion: v2
+    created: "2022-10-20T20:12:23.95666337Z"
+    dependencies:
+    - condition: knowledge-sensor.enabled
+      name: knowledge-sensor
+      repository: https://asserts.github.io/helm-charts
+      version: 1.0.0
+    - alias: tsdb
+      condition: tsdb.enabled
+      name: victoria-metrics-single
+      repository: https://asserts.github.io/helm-charts
+      version: 0.8.12
+    - condition: alertmanager.enabled
+      name: alertmanager
+      repository: https://asserts.github.io/helm-charts
+      version: 0.14.0
+    - alias: promxyruler
+      condition: promxyruler.enabled
+      name: promxy
+      repository: https://asserts.github.io/helm-charts
+      version: 0.7.0
+    - alias: promxyuser
+      condition: promxyuser.enabled
+      name: promxy
+      repository: https://asserts.github.io/helm-charts
+      version: 0.7.0
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    - alias: redisgraph
+      condition: redisgraph.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.8.7
+    - alias: redisearch
+      condition: redisearch.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.8.7
+    - alias: postgres
+      condition: postgres.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.1.23
+    description: Asserts Helm Chart to configure entire asserts stack
+    digest: 06223e69edcbe724c81557a285d6ec0fe0fe6298729c34bc3c06f9814e192b9c
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: asserts
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/asserts-1.6.0/asserts-1.6.0.tgz
+    version: 1.6.0
+  - apiVersion: v2
     created: "2022-10-20T15:20:38.919926347Z"
     dependencies:
     - condition: knowledge-sensor.enabled
@@ -2654,4 +2709,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2022-10-20T15:20:38.923986867Z"
+generated: "2022-10-20T20:12:23.957779115Z"
