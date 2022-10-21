@@ -4,7 +4,7 @@ dependencies:
   version: 1.0.0
 - name: victoria-metrics-single
   repository: https://asserts.github.io/helm-charts
-  version: 0.8.12
+  version: 1.0.0
 - name: alertmanager
   repository: https://asserts.github.io/helm-charts
   version: 0.14.0
@@ -26,5 +26,5 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.1.23
-digest: sha256:2289f73767e29eb3d50a7a224b5f4ddcda340feb2c0a0938d4c5e7a711ed8bfb
-generated: "2022-09-16T13:52:47.368838-07:00"
+digest: sha256:b3c1b799a418364aaa1fcea3c839945d761bc848e310047dc440765f9dc51d23
+generated: "2022-10-20T14:24:17.474167-07:00"

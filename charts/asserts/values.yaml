@@ -514,6 +514,22 @@ tsdb:
         volumeMounts:
           - name: relabel-config
             mountPath: /opt/asserts/relabel
+      ## initially add scrape config to volume on startup
+      ## This is a way to make sure the tsdb doesn't startup with
+      ## an empty scrape config as it will crash in that scenario
+      - name: init-add-scrape-config
+        image: asserts/k8s-sidecar:1.14.2
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: LABEL
+            value: bootstrap-scrape-config
+          - name: FOLDER
+            value: /opt/asserts/scrape
+          - name: METHOD
+            value: LIST
+        volumeMounts:
+          - name: scrape-config
+            mountPath: /opt/asserts/scrape
 
     extraArgs:
       loggerFormat: default
@@ -527,7 +543,11 @@ tsdb:
     ## scrape configuration for the tsdb in config/tsdb-scrape-configmap.yaml
     scrape:
       enabled: true
+      configDir: /opt/asserts/scrape
+      configPath: /opt/asserts/scrape/scrape.yml
       configMap: asserts-tsdb-scrapeconfig
+      extraLabels:
+        bootstrap-scrape-config: "1"
 
     persistentVolume:
       size: 8Gi
@@ -535,11 +555,7 @@ tsdb:
     resources: {}
 
     extraContainers:
-      ## TODO: config-sidecar takes care of hot loading relabeling rules
-      ##       at the moment, the scrapeconfig is not currently hot loaded.
-      ##       The scrapeconfig shouldn't need to be overridden in the values
-      ##       file but can be reloaded by triggering the the REQ_URL below
-      - name: config-sidecar
+      - name: relabel-config-sidecar
         image: asserts/k8s-sidecar:1.14.2
         imagePullPolicy: IfNotPresent
         env:
@@ -552,13 +568,30 @@ tsdb:
         volumeMounts:
           - name: relabel-config
             mountPath: /opt/asserts/relabel
+      - name: scrape-config-sidecar
+        image: asserts/k8s-sidecar:1.14.2
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: LABEL
+            value: bootstrap-scrape-config
+          - name: FOLDER
+            value: /opt/asserts/scrape
+          - name: REQ_URL
+            value: http://localhost:8428/-/reload
+        volumeMounts:
+          - name: scrape-config
+            mountPath: /opt/asserts/scrape
 
     extraVolumeMounts:
       - name: relabel-config
         mountPath: /opt/asserts/relabel
+      - name: scrape-config
+        mountPath: /opt/asserts/scrape
 
     extraVolumes:
       - name: relabel-config
+        emptyDir: {}
+      - name: scrape-config
         emptyDir: {}
 
 

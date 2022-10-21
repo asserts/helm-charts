@@ -17,14 +17,28 @@ This chart bootstraps an [Asserts](https://www.asserts.ai) deployment on a [Kube
 
 ## Installing the Chart
 
-To install the chart with the release name `asserts` and Prometheus endpoint behind the service `kube-prometheus-stack-prometheus` in the `default` namespace:
+### You ARE running Prometheus-Operator in the same cluster you are installing Asserts
+
+```bash
+helm repo add asserts https://asserts.github.io/helm-charts
+helm repo update
+helm install asserts asserts/asserts
+```
+
+### You ARE NOT running Prometheus-Operator in the same cluster as where Asserts is installed
 
 Create a values file, here we will call it `your-values.yaml`:
 
 ```yaml
 ## Asserts cluster env and site
-## This should be set to the env and site
+##
+## IGNORE IF RUNNING Promtheus-Operator!!!
+##
+## This is required in order for Asserts to scrape a
+## and monitor itself. This should be set to the env and site
 ## of the cluster asserts is being installed in.
+## This means that the env and site of the datasource
+## for this cluster (set in the Asserts UI after installing)
 assertsClusterEnv: your-env
 # optional (e.g. us-west-2)
 assertsClusterSite: ""
@@ -35,6 +49,8 @@ helm repo add asserts https://asserts.github.io/helm-charts
 helm repo update
 helm install asserts asserts/asserts -f your-values.yaml
 ```
+
+## Verify and Access
 
 Once all containers are initialized and running:
 
@@ -47,7 +63,6 @@ You can then login to the asserts-ui by running:
 ```bash
 kubectl port-forward svc/asserts-ui 8080
 ```
-
 
 And opening your browser to [http://localhost:8080](http://localhost:8080)
 you will be directed to the Asserts Registration page. There you can acquire

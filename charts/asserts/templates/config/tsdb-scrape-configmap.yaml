@@ -4,6 +4,11 @@ kind: ConfigMap
 metadata:
   name: asserts-tsdb-scrapeconfig
   labels: {{- include "asserts.labels" . | nindent 4 }}
+    {{- with .Values.tsdb.server.scrape.extraLabels }}
+    {{- toYaml . | nindent 4 -}}
+    {{- end }}
+  annotations:
+    k8s-sidecar-target-directory: {{ .Values.tsdb.server.scrape.configDir }}
 data:
   scrape.yml: |
     global:
