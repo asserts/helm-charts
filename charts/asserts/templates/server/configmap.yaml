@@ -299,6 +299,9 @@ data:
           password: ${store.user.datasource.password}
           bootstrap_enabled: "true"
 
+    springdoc:
+      pathsToMatch: "/v*/**"        
+
     prometheus:
       client:
         timeout: 30s
