@@ -264,9 +264,6 @@ data:
           - description: Owner
             name: OWNER
             visibility: PUBLIC
-          - description: Modifier
-            name: MODIFIER
-            visibility: PUBLIC
           - description: Editor
             name: EDITOR
             visibility: PUBLIC
