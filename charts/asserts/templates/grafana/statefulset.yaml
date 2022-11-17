@@ -83,6 +83,9 @@ spec:
               subPath: datasource.yml
             - name: data
               mountPath: {{ .Values.grafana.dataPath }}
+          {{- with .Values.grafana.extraVolumeMounts }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
       {{- with .Values.grafana.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -105,6 +108,9 @@ spec:
             items:
               - key: datasource.yml
                 path: datasource.yml
+        {{- with .Values.grafana.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
   {{- if not .Values.grafana.persistence.enabled }}
         - name: data
           emptyDir: {}
