@@ -360,6 +360,10 @@ grafana:
 
   affinity: {}
 
+  extraVolumeMounts: []
+
+  extraVolumes: []
+
   ## Grafana admin password configuration
   ##
   ## If left with password: "" and existingSecret: ""

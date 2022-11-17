@@ -91,7 +91,7 @@ spec:
             items:
               - key: application.yml
                 path: application.yml
-        {{- with .Values.extraVolumes }}
+        {{- with .Values.server.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
   {{- if not .Values.server.persistence.enabled }}
