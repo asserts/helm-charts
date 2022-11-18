@@ -121,7 +121,7 @@ server:
     repository: asserts/platform
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.2.394
+    tag: v0.2.397
 
   initContainers:
     - name: wait-for-postgres
