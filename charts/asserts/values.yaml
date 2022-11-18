@@ -360,6 +360,10 @@ grafana:
 
   affinity: {}
 
+  extraVolumeMounts: []
+
+  extraVolumes: []
+
   ## Grafana admin password configuration
   ##
   ## If left with password: "" and existingSecret: ""
@@ -502,7 +506,7 @@ tsdb:
       ## empty rules as it will crash or run with an empty
       ## set.
       - name: init-add-rule-files
-        image: asserts/k8s-sidecar:1.14.2
+        image: kiwigrid/k8s-sidecar:1.21.0
         imagePullPolicy: IfNotPresent
         env:
           - name: LABEL
@@ -518,7 +522,7 @@ tsdb:
       ## This is a way to make sure the tsdb doesn't startup with
       ## an empty scrape config as it will crash in that scenario
       - name: init-add-scrape-config
-        image: asserts/k8s-sidecar:1.14.2
+        image: kiwigrid/k8s-sidecar:1.21.0
         imagePullPolicy: IfNotPresent
         env:
           - name: LABEL
@@ -556,7 +560,7 @@ tsdb:
 
     extraContainers:
       - name: relabel-config-sidecar
-        image: asserts/k8s-sidecar:1.14.2
+        image: kiwigrid/k8s-sidecar:1.21.0
         imagePullPolicy: IfNotPresent
         env:
           - name: LABEL
@@ -569,7 +573,7 @@ tsdb:
           - name: relabel-config
             mountPath: /opt/asserts/relabel
       - name: scrape-config-sidecar
-        image: asserts/k8s-sidecar:1.14.2
+        image: kiwigrid/k8s-sidecar:1.21.0
         imagePullPolicy: IfNotPresent
         env:
           - name: LABEL
@@ -715,7 +719,7 @@ promxyruler:
 
   extraContainers:
     - name: rules-config-sidecar
-      image: asserts/k8s-sidecar:1.14.2
+      image: kiwigrid/k8s-sidecar:1.21.0
       imagePullPolicy: IfNotPresent
       env:
         - name: LABEL
