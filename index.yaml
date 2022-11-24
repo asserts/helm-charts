@@ -3083,6 +3083,18 @@ entries:
   victoria-metrics-cluster:
   - apiVersion: v1
     appVersion: 1.79.5
+    created: "2022-11-24T11:50:52.332607937Z"
+    description: Victoria Metrics Cluster version - high-performance, cost-effective
+      and scalable TSDB, long-term remote storage for Prometheus
+    digest: eaf5dc2ddad70d4fd44e567460269a8d1dc787ffaa6ede530982f3ceb59f1986
+    name: victoria-metrics-cluster
+    sources:
+    - https://github.com/VictoriaMetrics/helm-charts
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-cluster-1.0.1/victoria-metrics-cluster-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v1
+    appVersion: 1.79.5
     created: "2022-11-24T03:22:04.909077135Z"
     description: Victoria Metrics Cluster version - high-performance, cost-effective
       and scalable TSDB, long-term remote storage for Prometheus
@@ -3120,4 +3132,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2022-11-24T03:22:04.909885167Z"
+generated: "2022-11-24T11:50:52.33296384Z"
