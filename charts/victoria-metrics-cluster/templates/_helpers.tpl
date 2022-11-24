@@ -70,8 +70,18 @@ app: {{ .Values.vmstorage.name }}
 {{ include "victoria-metrics.common.metaLabels" . }}
 {{- end -}}
 
+{{- define "victoria-metrics.vmselect_user.labels" -}}
+{{ include "victoria-metrics.vmselect_user.matchLabels" . }}
+{{ include "victoria-metrics.common.metaLabels" . }}
+{{- end -}}
+
 {{- define "victoria-metrics.vmselect.matchLabels" -}}
 app: {{ .Values.vmselect.name }}
+{{ include "victoria-metrics.common.matchLabels" . }}
+{{- end -}}
+
+{{- define "victoria-metrics.vmselect_user.matchLabels" -}}
+app: {{ .Values.vmselect_user.name }}
 {{ include "victoria-metrics.common.matchLabels" . }}
 {{- end -}}
 
@@ -120,7 +130,24 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Create a fully qualified vmselect name.
+Create a fully qualified vmselect-user name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "victoria-metrics.vmselect_user.fullname" -}}
+{{- if .Values.vmselect_user.fullnameOverride -}}
+{{- .Values.vmselect_user.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-%s" .Release.Name .Values.vmselect_user.name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-%s" .Release.Name $name .Values.vmselect_user.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create a fully qualified vminsert name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "victoria-metrics.vminsert.fullname" -}}
@@ -162,6 +189,26 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $namespace := .Release.Namespace -}}
 {{- $dnsSuffix := .Values.clusterDomainSuffix -}}
 {{- range $i := until (.Values.vmselect.replicaCount | int) -}}
+{{- printf "- --selectNode=%s-%d.%s.%s.svc.%s:8481\n" $pod $i $svc $namespace $dnsSuffix -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "victoria-metrics.vmselect_user.vmstorage-pod-fqdn" -}}
+{{- $pod := include "victoria-metrics.vmstorage.fullname" . -}}
+{{- $svc := include "victoria-metrics.vmstorage.fullname" . -}}
+{{- $namespace := .Release.Namespace -}}
+{{- $dnsSuffix := .Values.clusterDomainSuffix -}}
+{{- range $i := until (.Values.vmstorage.replicaCount | int) -}}
+{{- printf "- --storageNode=%s-%d.%s.%s.svc.%s:8401\n" $pod $i $svc $namespace $dnsSuffix -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "victoria-metrics.vmselect_user.vmselect_user-pod-fqdn" -}}
+{{- $pod := include "victoria-metrics.vmselect_user.fullname" . -}}
+{{- $svc := include "victoria-metrics.vmselect_user.fullname" . -}}
+{{- $namespace := .Release.Namespace -}}
+{{- $dnsSuffix := .Values.clusterDomainSuffix -}}
+{{- range $i := until (.Values.vmselect_user.replicaCount | int) -}}
 {{- printf "- --selectNode=%s-%d.%s.%s.svc.%s:8481\n" $pod $i $svc $namespace $dnsSuffix -}}
 {{- end -}}
 {{- end -}}
