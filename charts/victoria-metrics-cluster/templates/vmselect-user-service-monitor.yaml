@@ -1,0 +1,44 @@
+{{- if and .Values.vmselect_user.enabled .Values.vmselect_user.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  {{- if .Values.vmselect_user.serviceMonitor.annotations }}
+  annotations:
+{{ toYaml .Values.vmselect_user.serviceMonitor.annotations | indent 4 }}
+  {{- end }}
+  labels:
+  {{- include "victoria-metrics.vmselect_user.labels" . | nindent 4 }}
+  {{- if .Values.vmselect_user.serviceMonitor.extraLabels }}
+{{ toYaml .Values.vmselect_user.serviceMonitor.extraLabels | indent 4 }}
+  {{- end }}
+  name: {{ template "victoria-metrics.vmselect_user.fullname" . }}
+  {{- if .Values.vmselect_user.serviceMonitor.namespace }}
+  namespace: {{ .Values.vmselect_user.serviceMonitor.namespace }}
+  {{- end }}
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "victoria-metrics.vmselect_user.matchLabels" . | nindent 6 }}
+  endpoints:
+    - port: http
+      {{- if .Values.vmselect_user.serviceMonitor.scheme }}
+      scheme: {{ .Values.vmselect_user.serviceMonitor.scheme }}
+      {{- end }}
+      {{- if .Values.vmselect_user.serviceMonitor.interval }}
+      interval: {{ .Values.vmselect_user.serviceMonitor.interval }}
+      {{- end }}
+      {{- if .Values.vmselect_user.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.vmselect_user.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      {{- with .Values.vmselect_user.serviceMonitor.tlsConfig }}
+      tlsConfig:
+          {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.vmselect_user.serviceMonitor.relabelings }}
+      relabelings:
+          {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- end }}

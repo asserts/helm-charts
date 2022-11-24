@@ -1,0 +1,50 @@
+{{- if and .Values.vmselect_user.enabled .Values.vmselect_user.ingress.enabled  }}
+{{- $ingressApiIsStable := eq (include "victoria-metrics.ingress.isStable" .) "true" -}}
+{{- $ingressSupportsIngressClassName := eq (include "victoria-metrics.ingress.supportsIngressClassName" .) "true" -}}
+{{- $ingressSupportsPathType := eq (include "victoria-metrics.ingress.supportsPathType" .) "true" -}}
+{{- $servicePort := .Values.vmselect_user.service.servicePort -}}
+{{- $ingressPathType := .Values.vmselect_user.ingress.pathType -}}
+apiVersion: {{ include "victoria-metrics.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+{{- if .Values.vmselect_user.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.vmselect_user.ingress.annotations | indent 4 }}
+{{- end }}
+  labels:
+  {{- include "victoria-metrics.vmselect_user.labels" . | nindent 4 }}
+  {{ if .Values.vmselect_user.ingress.extraLabels }}
+{{ toYaml .Values.vmselect_user.ingress.extraLabels | indent 4 }}
+  {{ end }}
+  name: {{ template "victoria-metrics.vmselect_user.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{- if and $ingressSupportsIngressClassName .Values.vmselect_user.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.vmselect_user.ingress.ingressClassName }}
+  {{- end }}
+  rules:
+  {{- $serviceName := include "victoria-metrics.vmselect_user.fullname" . }}
+  {{- range .Values.vmselect_user.ingress.hosts }}
+  - host: {{ .name }}
+    http:
+      paths:
+        - path: {{ .path }}
+          {{- if $ingressSupportsPathType }}
+          pathType: {{ $ingressPathType }}
+          {{- end }}
+          backend:
+            {{- if $ingressApiIsStable }}
+            service:
+              name: {{ $serviceName }}
+              port:
+                number: {{ $servicePort }}
+            {{- else }}
+            serviceName: {{ $serviceName }}
+            servicePort: {{ .port | default "http"}}
+            {{- end }}
+  {{- end -}}
+{{- if .Values.vmselect_user.ingress.tls }}
+  tls:
+{{ toYaml .Values.vmselect_user.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end -}}

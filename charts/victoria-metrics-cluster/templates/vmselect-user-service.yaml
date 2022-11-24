@@ -1,0 +1,47 @@
+{{- if and .Values.vmselect_user.enabled (not .Values.vmselect_user.statefulSet.enabled) -}}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.vmselect_user.service.annotations }}
+  annotations:
+{{ toYaml .Values.vmselect_user.service.annotations | indent 4}}
+{{- end }}
+  labels:
+    {{- include "victoria-metrics.vmselect_user.labels" . | nindent 4 }}
+{{- if .Values.vmselect_user.service.labels }}
+{{ toYaml .Values.vmselect_user.service.labels | indent 4}}
+{{- end }}
+  name: {{ template "victoria-metrics.vmselect_user.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+{{- if .Values.vmselect_user.service.clusterIP }}
+  clusterIP: {{ .Values.vmselect_user.service.clusterIP }}
+{{- end }}
+{{- if .Values.vmselect_user.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.vmselect_user.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.vmselect_user.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.vmselect_user.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.vmselect_user.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.vmselect_user.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+  ports:
+    - name: http
+      port: {{ .Values.vmselect_user.service.servicePort }}
+      protocol: TCP
+      targetPort: http
+  {{- if .Values.vmselect_user.extraArgs.clusternativeListenAddr }}
+    - name: cluster-tcp
+      protocol: TCP
+      port: {{ include "split-host-port" .Values.vmselect_user.extraArgs.clusternativeListenAddr }}
+      targetPort: cluster-tcp
+  {{- end }}
+  selector:
+    {{- include "victoria-metrics.vmselect_user.matchLabels" . | nindent 4 }}
+  type: "{{ .Values.vmselect_user.service.type }}"
+{{- end }}
