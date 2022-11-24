@@ -3080,6 +3080,19 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/spot-termination-exporter-0.0.11/spot-termination-exporter-0.0.11.tgz
     version: 0.0.11
+  victoria-metrics-cluster:
+  - apiVersion: v1
+    appVersion: 1.79.5
+    created: "2022-11-24T03:22:04.909077135Z"
+    description: Victoria Metrics Cluster version - high-performance, cost-effective
+      and scalable TSDB, long-term remote storage for Prometheus
+    digest: 93d8142b962e12d83e9adf81dde5fd21da043c7c48aef8d555fd5214ae72b817
+    name: victoria-metrics-cluster
+    sources:
+    - https://github.com/VictoriaMetrics/helm-charts
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-cluster-1.0.0/victoria-metrics-cluster-1.0.0.tgz
+    version: 1.0.0
   victoria-metrics-single:
   - apiVersion: v1
     appVersion: 1.69.0
@@ -3107,4 +3120,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2022-11-18T22:15:01.766438638Z"
+generated: "2022-11-24T03:22:04.909885167Z"
