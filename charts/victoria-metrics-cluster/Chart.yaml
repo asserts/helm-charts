@@ -5,4 +5,4 @@ description: Victoria Metrics Cluster version - high-performance, cost-effective
 name: victoria-metrics-cluster
 sources:
 - https://github.com/VictoriaMetrics/helm-charts
-version: 1.0.1
+version: 1.0.2
