@@ -114,5 +114,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.server.persistence.size | quote }}
-        {{ include "asserts.storageClass"  . }}
+        {{ include "common.storage.class" (dict "persistence" .Values.server.persistence "global" .Values.global) }}
   {{- end }}

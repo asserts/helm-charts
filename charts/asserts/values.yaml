@@ -1,3 +1,12 @@
+## Global parameters
+##
+## This will override any available parameters in this chart
+## as well as dependent charts
+##
+## Current available global parameters: storageClass
+global:
+  storageClass: ""
+
 nameOverride: ""
 fullnameOverride: ""
 clusterDomain: svc.cluster.local

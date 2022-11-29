@@ -58,23 +58,6 @@ asserts
 {{- end }}
 
 {{/*
-Return  the proper Storage Class
-{{ include "asserts.storageClass"  . }}
-*/}}
-{{- define "asserts.storageClass" -}}
-
-{{- $storageClass := .Values.server.persistence.storageClass -}}
-{{- if $storageClass -}}
-  {{- if (eq "-" $storageClass) -}}
-      {{- printf "storageClassName: \"\"" -}}
-  {{- else }}
-      {{- printf "storageClassName: %s" $storageClass -}}
-  {{- end -}}
-{{- end -}}
-
-{{- end -}}
-
-{{/*
 The asserts tenant name
 {{ include "asserts.tenant"  . }}
 */}}
