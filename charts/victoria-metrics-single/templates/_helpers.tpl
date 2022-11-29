@@ -145,3 +145,27 @@ Usage:
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
 {{- end -}}
+
+{{/*
+Return  the proper Storage Class
+{{ include "victoria-metrics.storage.class" ( dict "persistentVolume" .Values.path.to.the.persistentVolume "global" $) }}
+*/}}
+{{- define "victoria-metrics.storage.class" -}}
+
+{{- $persistentVolume := .server.persistentVolume }}
+{{- $storageClass := $persistentVolume.storageClass -}}
+{{- if .global -}}
+    {{- if .global.storageClass -}}
+        {{- $storageClass = .global.storageClass -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if $storageClass -}}
+  {{- if (eq "-" $storageClass) -}}
+      {{- printf "storageClassName: \"\"" -}}
+  {{- else }}
+      {{- printf "storageClassName: %s" $storageClass -}}
+  {{- end -}}
+{{- end -}}
+
+{{- end -}}
