@@ -131,5 +131,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.grafana.persistence.size | quote }}
-        {{ include "asserts.storageClass"  . }}
+        {{ include "common.storage.class" (dict "persistence" .Values.grafana.persistence "global" .Values.global) }}
   {{- end }}
