@@ -22,12 +22,12 @@ This chart bootstraps an [Asserts](https://www.asserts.ai) deployment on a [Kube
 ```bash
 helm repo add asserts https://asserts.github.io/helm-charts
 helm repo update
-helm install asserts asserts/asserts
+helm install asserts asserts/asserts -n asserts --create-namespace
 ```
 
 ### You ARE NOT running Prometheus-Operator in the same cluster as where Asserts is installed
 
-Create a values file, here we will call it `your-values.yaml`:
+Create a values file, here we will call it `values.yaml`:
 
 ```yaml
 ## Asserts cluster env and site
@@ -39,15 +39,19 @@ Create a values file, here we will call it `your-values.yaml`:
 ## of the cluster asserts is being installed in.
 ## This means that the env and site of the datasource
 ## for this cluster (set in the Asserts UI after installing)
-assertsClusterEnv: your-env
+assertsClusterEnv: <your-env>
 # optional (e.g. us-west-2)
 assertsClusterSite: ""
+
+# Set since not running Prometheus-Operator (default is true)
+serviceMonitor:
+  enabled: false
 ```
 
 ```bash
 helm repo add asserts https://asserts.github.io/helm-charts
 helm repo update
-helm install asserts asserts/asserts -f your-values.yaml
+helm install asserts asserts/asserts -n asserts -f values.yaml --create-namespace
 ```
 
 ## Verify and Access
@@ -69,6 +73,7 @@ you will be directed to the Asserts Registration page. There you can acquire
 a license as seen [here](https://docs.asserts.ai/getting-started/self-hosted/helm-chart#see-the-data)
 
 ## Configuring Promethueus DataSources
+
 Configure your Prometheus DataSource which Asserts will connect to
 and query by following [these instructions](https://docs.asserts.ai/integrations/data-source/prometheus)
 
@@ -89,5 +94,3 @@ kubectl delete pvc -l app.kubernetes.io/instance=asserts
 ```
 
 > **Note**: Deleting the PVC's will delete all asserts related data as well.
-
-
