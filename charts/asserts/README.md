@@ -59,13 +59,13 @@ helm install asserts asserts/asserts -n asserts -f values.yaml --create-namespac
 Once all containers are initialized and running:
 
 ```bash
-kubectl get pods -l app.kubernetes.io/instance=asserts
+kubectl get pods -l app.kubernetes.io/instance=asserts -n asserts
 ```
 
 You can then login to the asserts-ui by running:
 
 ```bash
-kubectl port-forward svc/asserts-ui 8080
+kubectl port-forward svc/asserts-ui 8080 -n asserts
 ```
 
 And opening your browser to [http://localhost:8080](http://localhost:8080)
@@ -82,7 +82,7 @@ and query by following [these instructions](https://docs.asserts.ai/integrations
 To uninstall/delete the `asserts` deployment:
 
 ```console
-helm delete asserts
+helm delete asserts -n asserts
 ```
 
 The command removes all the Kubernetes components but PVC's associated with the chart and deletes the release.
@@ -90,7 +90,7 @@ The command removes all the Kubernetes components but PVC's associated with the 
 To delete the PVC's associated with `asserts`:
 
 ```bash
-kubectl delete pvc -l app.kubernetes.io/instance=asserts
+kubectl delete pvc -l app.kubernetes.io/instance=asserts -n asserts
 ```
 
 > **Note**: Deleting the PVC's will delete all asserts related data as well.
