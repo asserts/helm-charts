@@ -435,7 +435,7 @@ grafana:
         folder: Custom
         type: file
         updateIntervalSeconds: 30
-        disableDeletion: true
+        disableDeletion: false
         allowUiUpdates: false
         editable: false
         options:
