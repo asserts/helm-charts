@@ -788,7 +788,7 @@ postgres:
 
   ## Postgres password configuration
   ##
-  ## If left with password: "" and existingSecret: ""
+  ## If left with postgresPassword: "" and existingSecret: ""
   ## a random alpha numeric password will be generated on
   ## first run. Upon upgrading the release, the credentials
   ## stored in the secret will be retrieved, secret handling
