@@ -638,6 +638,19 @@ redisgraph:
           name: redisgraph-merged-start-scripts
           defaultMode: 0755
 
+  replica:
+    args:
+      - -c
+      - /opt/bitnami/scripts/merged-start-scripts/start-replica.sh
+    extraVolumeMounts:
+      - name: merged-start-scripts
+        mountPath: /opt/bitnami/scripts/merged-start-scripts
+    extraVolumes:
+      - name: merged-start-scripts
+        configMap:
+          name: redisgraph-merged-start-scripts
+          defaultMode: 0755
+
   extraDeploy:
     - apiVersion: v1
       kind: ConfigMap
@@ -670,6 +683,53 @@ redisgraph:
           --include "/opt/bitnami/redis/etc/redis.conf" \
           --include "/opt/bitnami/redis/etc/master.conf" \
           --loadmodule /opt/redis-stack/lib/redisgraph.so ${REDISGRAPH_ARGS}
+        start-replica.sh: |
+          #!/usr/bin/dumb-init /bin/bash
+          BASEDIR=/opt/redis-stack
+          cd ${BASEDIR}
+          CMD=${BASEDIR}/bin/redis-server
+          get_port() {
+              hostname="$1"
+              type="$2"
+              port_var=$(echo "${hostname^^}_SERVICE_PORT_${type}" | sed "s/-/_/g")
+              port=${!port_var}
+              if [ -z "$port" ]; then
+                  case $type in
+                      "SENTINEL")
+                          echo 26379
+                          ;;
+                      "REDIS")
+                          echo 6379
+                          ;;
+                  esac
+              else
+                  echo $port
+              fi
+          }
+          get_full_hostname() {
+              hostname="$1"
+              echo "${hostname}.${HEADLESS_SERVICE}"
+          }
+          REDISPORT=$(get_port "$HOSTNAME" "REDIS")
+          [[ -f $REDIS_PASSWORD_FILE ]] && export REDIS_PASSWORD="$(< "${REDIS_PASSWORD_FILE}")"
+          [[ -f $REDIS_MASTER_PASSWORD_FILE ]] && export REDIS_MASTER_PASSWORD="$(< "${REDIS_MASTER_PASSWORD_FILE}")"
+          if [[ -f /opt/bitnami/redis/mounted-etc/replica.conf ]];then
+              cp /opt/bitnami/redis/mounted-etc/replica.conf /opt/bitnami/redis/etc/replica.conf
+          fi
+          if [[ -f /opt/bitnami/redis/mounted-etc/redis.conf ]];then
+              cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
+          fi
+          echo "" >> /opt/bitnami/redis/etc/replica.conf
+          echo "replica-announce-port $REDISPORT" >> /opt/bitnami/redis/etc/replica.conf
+          echo "replica-announce-ip $(get_full_hostname "$HOSTNAME")" >> /opt/bitnami/redis/etc/replica.conf
+          ${CMD} \
+          --port "${REDIS_PORT}" \
+          --requirepass "${REDIS_PASSWORD}" \
+          --masterauth "${REDIS_PASSWORD}" \
+          --include "/opt/bitnami/redis/etc/redis.conf" \
+          --include "/opt/bitnami/redis/etc/replica.conf" \
+          --loadmodule /opt/redis-stack/lib/redisgraph.so ${REDISGRAPH_ARGS}
+
 
   sentinel:
     enabled: false
@@ -714,6 +774,19 @@ redisearch:
           name: redisearch-merged-start-scripts
           defaultMode: 0755
 
+  replica:
+    args:
+      - -c
+      - /opt/bitnami/scripts/merged-start-scripts/start-replica.sh
+    extraVolumeMounts:
+      - name: merged-start-scripts
+        mountPath: /opt/bitnami/scripts/merged-start-scripts
+    extraVolumes:
+      - name: merged-start-scripts
+        configMap:
+          name: redisearch-merged-start-scripts
+          defaultMode: 0755
+
   extraDeploy:
     - apiVersion: v1
       kind: ConfigMap
@@ -743,6 +816,52 @@ redisearch:
           --include "/opt/bitnami/redis/etc/redis.conf" \
           --include "/opt/bitnami/redis/etc/master.conf" \
           --loadmodule /opt/redis-stack/lib/redisearch.so ${REDISEARCH_ARGS}
+        start-replica.sh: |
+          #!/usr/bin/dumb-init /bin/bash
+          BASEDIR=/opt/redis-stack
+          cd ${BASEDIR}
+          CMD=${BASEDIR}/bin/redis-server
+          get_port() {
+              hostname="$1"
+              type="$2"
+              port_var=$(echo "${hostname^^}_SERVICE_PORT_${type}" | sed "s/-/_/g")
+              port=${!port_var}
+              if [ -z "$port" ]; then
+                  case $type in
+                      "SENTINEL")
+                          echo 26379
+                          ;;
+                      "REDIS")
+                          echo 6379
+                          ;;
+                  esac
+              else
+                  echo $port
+              fi
+          }
+          get_full_hostname() {
+              hostname="$1"
+              echo "${hostname}.${HEADLESS_SERVICE}"
+          }
+          REDISPORT=$(get_port "$HOSTNAME" "REDIS")
+          [[ -f $REDIS_PASSWORD_FILE ]] && export REDIS_PASSWORD="$(< "${REDIS_PASSWORD_FILE}")"
+          [[ -f $REDIS_MASTER_PASSWORD_FILE ]] && export REDIS_MASTER_PASSWORD="$(< "${REDIS_MASTER_PASSWORD_FILE}")"
+          if [[ -f /opt/bitnami/redis/mounted-etc/replica.conf ]];then
+              cp /opt/bitnami/redis/mounted-etc/replica.conf /opt/bitnami/redis/etc/replica.conf
+          fi
+          if [[ -f /opt/bitnami/redis/mounted-etc/redis.conf ]];then
+              cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
+          fi
+          echo "" >> /opt/bitnami/redis/etc/replica.conf
+          echo "replica-announce-port $REDISPORT" >> /opt/bitnami/redis/etc/replica.conf
+          echo "replica-announce-ip $(get_full_hostname "$HOSTNAME")" >> /opt/bitnami/redis/etc/replica.conf
+          ${CMD} \
+          --port "${REDIS_PORT}" \
+          --requirepass "${REDIS_PASSWORD}" \
+          --masterauth "${REDIS_PASSWORD}" \
+          --include "/opt/bitnami/redis/etc/redis.conf" \
+          --include "/opt/bitnami/redis/etc/replica.conf" \
+          --loadmodule /opt/redis-stack/lib/redisgraph.so ${REDISEARCH_ARGS}
 
   sentinel:
     enabled: false
