@@ -40,20 +40,29 @@ spec:
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
           env:
-            # set POSTGRES_RDB_PASSWORD generated from
-            # postgres subchart for consumption by the Asserts server
             - name: POSTGRES_RDB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgres.fullnameOverride }}
                   key: postgres-password
                   optional: false
-            # set grafana admin password
             - name: GRAFANA_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "asserts.grafanaFullname" . }}
                   key: grafana-admin-password
+                  optional: false
+            - name: REDISGRAPH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisgraph.fullnameOverride }}
+                  key: redis-password
+                  optional: false
+            - name: REDISEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisearch.fullnameOverride }}
+                  key: redis-password
                   optional: false
           {{- with .Values.server.extraEnv }}
           {{- toYaml . | nindent 12 }}

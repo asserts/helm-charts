@@ -153,12 +153,14 @@ data:
           graph:
             server: {{.Values.redisgraph.fullnameOverride}}-master.{{include "domain" .}}
             port: '6379'
+            password: "${REDISGRAPH_PASSWORD}"
             sentinel_mode: {{ ternary "'1'" "'0'" (.Values.redisgraph.sentinel.enabled)}}
             master_name: mymaster
             sentinels: {{ include "asserts.graphSentinelHosts" . }}
           search:
             server: {{.Values.redisearch.fullnameOverride}}-master.{{include "domain" .}}
             port: '6379'
+            password: "${REDISEARCH_PASSWORD}"
             sentinel_mode: {{ ternary "'1'" "'0'" (.Values.redisearch.sentinel.enabled)}}
             master_name: mymaster
             sentinels: {{ include "asserts.searchSentinelHosts" . }}
@@ -327,7 +329,7 @@ data:
           bootstrap_enabled: "true"
 
     springdoc:
-      pathsToMatch: "/v*/**"        
+      pathsToMatch: "/v*/**"
 
     prometheus:
       client:
