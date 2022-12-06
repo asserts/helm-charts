@@ -134,6 +134,8 @@ server:
   nameOverride: ""
   fullnameOverride: ""
 
+  replicaCount: 1
+
   image:
     repository: asserts/asserts-server
     pullPolicy: IfNotPresent
@@ -219,6 +221,8 @@ authorization:
   nameOverride: ""
   fullnameOverride: ""
 
+  replicaCount: 1
+
   image:
     repository: asserts/authorization
     pullPolicy: IfNotPresent
@@ -275,6 +279,8 @@ authorization:
 ui:
   nameOverride: ""
   fullnameOverride: ""
+
+  replicaCount: 1
 
   image:
     repository: asserts/asserts-ui
