@@ -54,6 +54,9 @@ helm repo update
 helm upgrade --install asserts asserts/asserts -n asserts -f values.yaml --create-namespace
 ```
 
+When Asserts is spinning up for the first time, it usually takes about 3-4 minutes
+but could take longer depending on the hardware resources allocated (e.g. a kind cluster).
+
 ## Verify and Access
 
 Once all containers are initialized and running:
