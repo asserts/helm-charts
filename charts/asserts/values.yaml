@@ -525,7 +525,7 @@ grafana:
 knowledge-sensor:
   image:
     repository: asserts/knowledge-sensor
-    tag: v1.1.9
+    tag: v1.1.11
 
   serviceAccount:
     create: false
