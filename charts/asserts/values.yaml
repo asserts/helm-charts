@@ -36,8 +36,11 @@ serviceAccount:
   annotations: {}
   extraLabels: {}
 
+## ServiceMonitor configuration
+##
 ## If Prometheus-Operator is used (detected by checking "monitoring.coreos.com/v1" api existence)
-## Then they will be created, else the Asserts Tsdb will scrape the services
+## Then this ServiceMonitor will be created and it is expected that Asserts will be scraped by
+## the Prometheus running in the cluster Asserts is installed in.
 ##
 serviceMonitor:
   enabled: true
@@ -76,18 +79,24 @@ serviceMonitor:
   # your prometheus-operator serviceMonitorSelector (e.g. release: kube-prometheus-stack)
   extraLabels: {}
 
-## Asserts cluster env and site
+## Self scrape configuration
 ##
-## IGNORE IF RUNNING Promtheus-Operator!!!
+## When this is set to true, the Asserts Tsdb will scrape
+## all of the Asserts Services.
 ##
-## This is required in order for Asserts to scrape a
-## and monitor itself. This should be set to the env and site
-## of the cluster asserts is being installed in.
-## This means that the env and site of the datasource
-## for this cluster (set in the Asserts UI), should
-## match these values.
-assertsClusterEnv: ""
-assertsClusterSite: ""
+## This should only be set to true if
+## the following cases are met:
+##
+## 1. You are not running Prometheus-Operator where Asserts is being installed
+## 2. You are not running vanilla Prometheus with annotation based
+##    based service discovery (e.g. prometheus.io/scrape: "true") where Asserts
+##    is being installed.
+## 3. You are installing Asserts in a test cluster (kind, k3d) or solo cluster not
+##    running Prometheus/Prometheus-Operator and intend to connect to a remote
+##    Prometheus.
+##
+## If these cases are met, then set to true.
+selfScrape: false
 
 ## Asserts Url
 ##
@@ -174,6 +183,10 @@ server:
   service:
     type: ClusterIP
     port: 8030
+    annotations:
+      prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+      prometheus.io/port: "{{.Values.server.service.port}}"
+      prometheus.io/path: "/api-server/actuator/prometheus"
 
   resources: {}
 
@@ -261,6 +274,10 @@ authorization:
   service:
     type: ClusterIP
     port: 8070
+    annotations:
+      prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+      prometheus.io/port: "{{.Values.authorization.service.port}}"
+      prometheus.io/path: "/authorization/actuator/prometheus"
 
   resources: {}
 
@@ -399,8 +416,10 @@ grafana:
   service:
     type: ClusterIP
     port: 3000
-    annotations: {}
     clusterIP: ""
+    annotations:
+      prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+      prometheus.io/port: "{{.Values.grafana.service.port}}"
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -579,6 +598,11 @@ tsdb:
     nameOverride: "tsdb"
     fullNameOverride: "tsdb"
 
+    service:
+      annotations:
+        prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+        prometheus.io/port: "8428"
+
     initContainers:
       ## wait for the knowledge-sensor to be ready to
       ## serve up the rules
@@ -718,9 +742,6 @@ redisgraph:
   sentinel:
     enabled: false
 
-  ## TODO: since we are scraping from the tsdb, may want to disable
-  ##       the annotation -> prometheus.io/scrape: true
-  ##       so that there isn't a double scrape from another prom
   metrics:
     enabled: true
 
@@ -734,7 +755,7 @@ redisearch:
   ## ref: https://hub.docker.com/repository/docker/asserts/redismod
   image:
     repository: asserts/redismod
-    tag: 6.26
+    tag: 6.2.7-rg-v2.8.20-rs-v2.14.6
 
   nameOverride: asserts-redisearch
   fullnameOverride: asserts-redisearch
@@ -755,9 +776,6 @@ redisearch:
   sentinel:
     enabled: false
 
-  # TODO: since we are scraping from the tsdb, may want to disable
-  #       the annotation -> prometheus.io/scrape: true
-  #       so that there isn't a double scrape from another prom
   metrics:
     enabled: true
 
@@ -771,6 +789,11 @@ alertmanager:
   serviceAccount:
     create: false
     name: asserts
+
+  service:
+    annotations:
+      prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+      prometheus.io/port: "9093"
 
   persistence:
     enabled: true
@@ -912,8 +935,3 @@ postgres:
 
   metrics:
     enabled: true
-    service:
-      annotations:
-        # set to false since this chart is handling scraping for this service
-        # the Asserts ServiceMonitor is used or the Asserts TSDB is already scraping this endpoint
-        prometheus.io/scrape: "false"

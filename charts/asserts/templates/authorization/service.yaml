@@ -6,9 +6,8 @@ metadata:
     {{- with .Values.authorization.extraLabels }}
     {{- toYaml . | nindent 4 -}}
     {{- end }}
-  {{- if .Values.authorization.annotations }}
-  annotations:
-  {{- toYaml .Values.authorization.annotations | nindent 4 -}}
+  {{- if .Values.authorization.service.annotations }}
+  annotations: {{ include "common.tplvalues.render" ( dict "value" .Values.authorization.service.annotations "context" $) | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.authorization.service.type }}

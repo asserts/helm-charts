@@ -3,8 +3,8 @@ kind: Service
 metadata:
   name: {{ include "asserts.grafanaFullname" . }}
   labels: {{- include "asserts.grafanaLabels" . | nindent 4 }}
-  {{- with .Values.grafana.service.annotations }}
-  annotations: {{- toYaml . | nindent 4 -}}
+  {{- if .Values.grafana.service.annotations }}
+  annotations: {{ include "common.tplvalues.render" ( dict "value" .Values.grafana.service.annotations "context" $) | nindent 4 }}
   {{- end }}
 spec:
 {{- if .Values.grafana.service.clusterIP }}
