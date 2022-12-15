@@ -4,6 +4,7 @@
 ## as well as dependent charts
 ##
 ## Current available global parameters: storageClass, secureCookie
+##
 global:
   storageClass: ""
   # set to true if oauth is configured on Asserts and exclusively using https
@@ -17,7 +18,7 @@ rbac:
   ## Namespaced role and rolebinding
   ## to allow for get/list/watch of
   ## pod, endpoints, and services in the
-  ## installed {{ .Release.Namespace }}
+  ## installed {{.Release.Namespace}}
   create: true
   annotations: {}
   extraLabels: {}
@@ -38,16 +39,17 @@ serviceAccount:
 
 ## ServiceMonitor configuration
 ##
-## If Prometheus-Operator is used (detected by checking "monitoring.coreos.com/v1" api existence)
-## Then this ServiceMonitor will be created and it is expected that Asserts will be scraped by
-## the Prometheus running in the cluster Asserts is installed in.
+## If Asserts is being installed in the same cluster you are running Prometheus-Operator
+## set this to true and .Values.selfScrape: false
+##
+## Information on configuring Asserts to monitor Asserts
+## can be seen at: TODO: ADD DOC LINK
 ##
 serviceMonitor:
-  enabled: true
+  enabled: false
   # endpoints and appropriate relabelings
-  # relabelings used to avoid duplicates
-  # this allows us to avoid errors and keep everything in one
-  # ServiceMonitor
+  # used to avoid duplicates this allows us to
+  # avoid errors and keep everything in one ServiceMonitor
   endpoints:
     - port: http
       path: /api-server/actuator/prometheus
@@ -82,24 +84,15 @@ serviceMonitor:
   # your prometheus-operator serviceMonitorSelector (e.g. release: kube-prometheus-stack)
   extraLabels: {}
 
-## Self scrape configuration
+## Asserts self scrape
 ##
 ## When this is set to true, the Asserts Tsdb will scrape
-## all of the Asserts Services.
+## all of the Asserts Services independent of your Prometheus.
 ##
-## This should only be set to true if
-## the following cases are met:
+## Information on configuring Asserts to monitor Asserts
+## can be seen at: TODO: ADD DOC LINK
 ##
-## 1. You are not running Prometheus-Operator where Asserts is being installed
-## 2. You are not running vanilla Prometheus with annotation based
-##    based service discovery (e.g. prometheus.io/scrape: "true") where Asserts
-##    is being installed.
-## 3. You are installing Asserts in a management or test cluster (kind, k3d) not
-##    running Prometheus/Prometheus-Operator and intend to connect to a remote
-##    Prometheus.
-##
-## If these cases are met, then set to true.
-selfScrape: false
+selfScrape: true
 
 ## Asserts Url
 ##
@@ -111,11 +104,13 @@ selfScrape: false
 ##
 ## If unset, leave the url like this as opposed to empty
 ## as it will work when using port-forwarding.
+##
 assertsUrl: http://localhost:8080
 
 ## Receiver configuration
 ## the notification receiver (e.g. slack, pagerduty, etc..)
 ## wait times/intervals
+##
 receiver:
   group_wait: 1m
   group_interval: 15m
