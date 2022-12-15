@@ -135,16 +135,3 @@ Return the domain to use
 {{- define "domain" -}}
 {{ .Release.Namespace }}.{{ .Values.clusterDomain }}
 {{- end -}}
-
-{{/*
-Add prometheus scrape annotation and set appropriately if prometheus-operator
-ServiceMonitor crd is not supported and Asserts is set to selfScrape.
-Values can be "true" or "false".
-*/}}
-{{- define "promScrapeAnnotation" -}}
-{{- if and (not (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1")) (not (.Values.selfScrape)) }}
- {{- true -}}
-{{- else }}
- {{- false -}}
-{{- end -}}
-{{- end -}}

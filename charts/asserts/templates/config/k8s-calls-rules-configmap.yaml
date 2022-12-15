@@ -4,6 +4,7 @@ metadata:
   name: asserts-k8s-calls-rules
   labels: {{- include "asserts.labels" . | nindent 4 }}
 data:
+  {{- if and (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") (.Values.serviceMonitor.enabled) }}
   asserts-k8s-calls.yml: |
     groups:
       - name: asserts-k8s-calls.rules
@@ -15,6 +16,15 @@ data:
             labels:
               workload: {{.Release.Name}}-ui
               dst_workload: {{.Release.Name}}-server
+              dst_namespace: {{.Release.Namespace}}
+
+          # asserts-ui -> authorization
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{job="{{.Release}}-authorization", asserts_request_type="inbound"}}) > 0
+            labels:
+              workload: {{.Release.Name}}-ui
+              dst_workload: {{.Release.Name}}-authorization
               dst_namespace: {{.Release.Namespace}}
 
           # asserts-server -> postgres
@@ -108,3 +118,125 @@ data:
             labels:
               dst_job: {{.Release.Name}}-promxyuser
               dst_namespace: {{.Release.Namespace}}
+  {{- else }}
+  asserts-k8s-calls.yml: |
+    groups:
+      - name: asserts-k8s-calls.rules
+        rules:
+          # asserts-ui -> asserts-server
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{service="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~"/v1/.*"}) > 0
+            labels:
+              workload: {{.Release.Name}}-ui
+              dst_workload: {{.Release.Name}}-server
+              dst_namespace: {{.Release.Namespace}}
+
+          # asserts-ui -> authorization
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{service="{{.Release}}-authorization", asserts_request_type="inbound"}}) > 0
+            labels:
+              workload: {{.Release.Name}}-ui
+              dst_workload: {{.Release.Name}}-authorization
+              dst_namespace: {{.Release.Namespace}}
+
+          # asserts-server -> postgres
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{service="{{.Release.Name}}-postgres-metrics", namespace="{{.Release.Namespace}}", asserts_request_context="records_written"}) > 0
+            labels:
+              workload: {{.Release.Name}}-server
+              dst_workload: {{.Values.postgres.fullnameOverride}}
+              dst_namespace: {{.Release.Namespace}}
+
+          # asserts-server -> redisearch
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{service="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~".*Search.*"}) > 0
+            labels:
+              workload: {{.Release.Name}}-server
+              dst_workload: {{.Values.redisearch.fullnameOverride}}-metrics
+              dst_namespace: {{.Release.Namespace}}
+
+          # asserts-server -> redisgraph
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+              (asserts:request:rate5m{service="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~".*Graph.*"}) > 0
+            labels:
+              workload: {{.Release.Name}}-server
+              dst_workload: {{.Values.redisgraph.fullnameOverride}}-metrics
+              dst_namespace: {{.Release.Namespace}}
+
+          # asserts-server -> tsdb-server
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{service="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~"/api/v1/.*"}) > 0
+            labels:
+              workload: {{.Release.Name}}-server
+              dst_workload: {{.Release.Name}}-tsdb-server
+              dst_namespace: {{.Release.Namespace}}
+
+          # knowledge-sensor -> asserts-server
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{job="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context="/v4/prometheus/rules"}) > 0
+            labels:
+              workload: {{.Release.Name}}-knowledge-sensor
+              dst_workload: {{.Release.Name}}-server
+              dst_namespace: {{.Release.Namespace}}
+
+          # promxy -> tsdb-server
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{service="{{.Release.Name}}-tsdb-server", asserts_request_context="/api/v1/write"}) > 0
+            labels:
+              workload: {{.Release.Name}}-promxyruler
+              dst_workload: {{.Release.Name}}-tsdb-server
+              dst_namespace: {{.Release.Namespace}}
+
+          # promxy -> alertmanager
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace, container, job, asserts_request_type, asserts_request_context)
+                    (rate(asserts:request:total{service="asserts-promxyruler", alertmanager=~".*/api/v2/alerts"}[5m])) > 0
+            labels:
+              workload: {{.Release.Name}}-promxyruler
+              dst_workload: {{.Release.Name}}-alertmanager
+              dst_namespace: {{.Release.Namespace}}
+
+          # alertmanager -> asserts-server
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (asserts:request:rate5m{service="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~".*prometheus-alerts.*"}) > 0
+            labels:
+              workload: {{.Release.Name}}-alertmanager
+              dst_workload: {{.Release.Name}}-server
+              dst_namespace: {{.Release.Namespace}}
+
+          # asserts-server -> grafana
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (rate(http_server_requests_seconds_count{service="{{.Release.Name}}-server", uri="root"}[5m])) > 0
+            labels:
+              workload: {{.Release.Name}}-server
+              dst_workload: {{.Release.Name}}-grafana
+              dst_namespace: {{.Release.Namespace}}
+
+          # grafana -> tsdb-server
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace)
+                    (rate(grafana_datasource_request_total{service="{{.Release.Name}}-grafana"}[5m])) > 0
+            labels:
+              workload: {{.Release.Name}}-grafana
+              dst_workload: {{.Release.Name}}-tsdb-server
+              dst_namespace: {{.Release.Namespace}}
+
+          # grafana -> promxyuser
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace, job)
+                    (asserts:request:rate5m{service="{{.Release.Name}}-grafana", asserts_request_type="proxy"}) > 0
+            labels:
+              workload: {{.Release.Name}}-grafana
+              dst_workload: {{.Release.Name}}-promxyuser
+              dst_namespace: {{.Release.Namespace}}
+{{- end }}

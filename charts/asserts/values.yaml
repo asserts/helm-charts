@@ -68,6 +68,9 @@ serviceMonitor:
           regex: "{{.Release.Name}}-server"
           action: drop
         - sourceLabels: [job]
+          regex: "{{.Release.Name}}-authorization"
+          action: drop
+        - sourceLabels: [job]
           regex: "{{.Release.Name}}-ui"
           action: drop
         - sourceLabels: [job]
@@ -91,7 +94,7 @@ serviceMonitor:
 ## 2. You are not running vanilla Prometheus with annotation based
 ##    based service discovery (e.g. prometheus.io/scrape: "true") where Asserts
 ##    is being installed.
-## 3. You are installing Asserts in a test cluster (kind, k3d) or solo cluster not
+## 3. You are installing Asserts in a management or test cluster (kind, k3d) not
 ##    running Prometheus/Prometheus-Operator and intend to connect to a remote
 ##    Prometheus.
 ##
@@ -136,6 +139,7 @@ pagerduty:
   enabled: false
   # routing_key: <your-events-api-v2-integration-key>
   # url: https://events.pagerduty.com/v2/enqueue
+
 
 ## Asserts server configuration
 ##
@@ -184,7 +188,7 @@ server:
     type: ClusterIP
     port: 8030
     annotations:
-      prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+      prometheus.io/scrape: "true"
       prometheus.io/port: "{{.Values.server.service.port}}"
       prometheus.io/path: "/api-server/actuator/prometheus"
 
@@ -275,7 +279,7 @@ authorization:
     type: ClusterIP
     port: 8070
     annotations:
-      prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+      prometheus.io/scrape: "true"
       prometheus.io/port: "{{.Values.authorization.service.port}}"
       prometheus.io/path: "/authorization/actuator/prometheus"
 
@@ -418,7 +422,7 @@ grafana:
     port: 3000
     clusterIP: ""
     annotations:
-      prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+      prometheus.io/scrape: "true"
       prometheus.io/port: "{{.Values.grafana.service.port}}"
 
     ## List of IP addresses at which the Prometheus server service is available
@@ -600,7 +604,7 @@ tsdb:
 
     service:
       annotations:
-        prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+        prometheus.io/scrape: "true"
         prometheus.io/port: "8428"
 
     initContainers:
@@ -792,7 +796,7 @@ alertmanager:
 
   service:
     annotations:
-      prometheus.io/scrape: "{{include \"promScrapeAnnotation\" .}}"
+      prometheus.io/scrape: "true"
       prometheus.io/port: "9093"
 
   persistence:
@@ -817,6 +821,11 @@ promxyruler:
   serviceAccount:
     create: false
     name: asserts
+
+  service:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8082"
 
   existingConfigMap: asserts-promxyruler
 
@@ -875,6 +884,11 @@ promxyuser:
   serviceAccount:
     create: false
     name: asserts
+
+  service:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8082"
 
   existingConfigMap: asserts-promxyuser
 
