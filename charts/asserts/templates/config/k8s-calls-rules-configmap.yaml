@@ -4,7 +4,7 @@ metadata:
   name: asserts-k8s-calls-rules
   labels: {{- include "asserts.labels" . | nindent 4 }}
 data:
-  {{- if and (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") (.Values.serviceMonitor.enabled) }}
+  {{- if or (and (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") (.Values.serviceMonitor.enabled)) (.Values.selfScrape) }}
   asserts-k8s-calls.yml: |
     groups:
       - name: asserts-k8s-calls.rules
@@ -21,7 +21,7 @@ data:
           # asserts-ui -> authorization
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace)
-                    (asserts:request:rate5m{job="{{.Release.Name}}-authorization", asserts_request_type="inbound"}}) > 0
+                    (asserts:request:rate5m{job="{{.Release.Name}}-authorization", asserts_request_type="inbound"}) > 0
             labels:
               workload: {{.Release.Name}}-ui
               dst_workload: {{.Release.Name}}-authorization
@@ -111,14 +111,72 @@ data:
               dst_job: {{.Release.Name}}-tsdb-server
               dst_namespace: {{.Release.Namespace}}
 
+          # asserts-server -> grafana
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace, job)
+                    (asserts:request:rate5m{job="{{.Release.Name}}-grafana", asserts_request_type=~"page|api"}) > 0
+            labels:
+              job: {{.Release.Name}}-server
+              dst_job: {{.Release.Name}}-grafana
+              dst_namespace: {{.Release.Namespace}}
+
           # grafana -> promxyuser
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace, job)
-                    (asserts:request:rate5m{job="{{.Release.Name}}-grafana", asserts_request_type="proxy"}) > 0
+                    (asserts:request:rate5m{job="{{.Release.Name}}-grafana", asserts_request_type=~"page|api"}) > 0
             labels:
               dst_job: {{.Release.Name}}-promxyuser
               dst_namespace: {{.Release.Namespace}}
-  {{- else }}
+
+          # if self scraping, then we assume there are no kube-state-metrics
+          # we generate synthetic metrics for discovery from the RED (Request Error Duration) metrics
+          # scraped directly from the Asserts services.
+          {{- if .Values.selfScrape }}
+          - record: asserts:mixin_pod_workload
+            expr: |-
+              group by (asserts_env, namespace, pod, workload)(
+                label_replace(
+                  up{asserts_env="asserts"},
+                  "workload", "$1$2$4",
+                  "pod",
+                  "([a-z0-9-]+)-[0-9]{1,4}|([a-z0-9-]+)-([a-z0-9]{6,})?-[a-z0-9]{5}?|([a-z0-9-]+)-[a-z0-9]{5}?"
+                )
+              )
+            labels:
+              asserts_source: synthetic
+
+          - record: node_uname_info
+            expr: |-
+              label_replace(
+                group by (asserts_env, node)(up{asserts_env="asserts"}),
+                "nodename",
+                "$1",
+                "node",
+                "(.*)"
+              )
+            labels:
+              asserts_source: synthetic
+
+          - record: kube_node_labels
+            expr: |-
+              group by (asserts_env, node)(up{asserts_env="asserts"})
+            labels:
+              asserts_source: synthetic
+
+          - record: kube_pod_info
+            expr: |-
+              group by (asserts_env, namespace, pod, pod_ip, node, created_by_kind, workload)(
+                label_replace(
+                  up{asserts_env="asserts"},
+                  "workload", "$1$2$4",
+                  "pod",
+                  "([a-z0-9-]+)-[0-9]{1,4}|([a-z0-9-]+)-([a-z0-9]{6,})?-[a-z0-9]{5}?|([a-z0-9-]+)-[a-z0-9]{5}?"
+                )
+              )
+            labels:
+              asserts_source: synthetic
+          {{- end }}
+  {{ else }}
   asserts-k8s-calls.yml: |
     groups:
       - name: asserts-k8s-calls.rules
@@ -135,7 +193,7 @@ data:
           # asserts-ui -> authorization
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace)
-                    (asserts:request:rate5m{service="{{.Release.Name}}-authorization", asserts_request_type="inbound"}}) > 0
+                    (asserts:request:rate5m{service="{{.Release.Name}}-authorization", asserts_request_type="inbound"}) > 0
             labels:
               workload: {{.Release.Name}}-ui
               dst_workload: {{.Release.Name}}-authorization
@@ -156,7 +214,7 @@ data:
                     (asserts:request:rate5m{service="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~".*Search.*"}) > 0
             labels:
               workload: {{.Release.Name}}-server
-              dst_workload: {{.Values.redisearch.fullnameOverride}}-metrics
+              dst_workload: {{.Values.redisearch.fullnameOverride}}-master
               dst_namespace: {{.Release.Namespace}}
 
           # asserts-server -> redisgraph
@@ -165,7 +223,7 @@ data:
               (asserts:request:rate5m{service="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context=~".*Graph.*"}) > 0
             labels:
               workload: {{.Release.Name}}-server
-              dst_workload: {{.Values.redisgraph.fullnameOverride}}-metrics
+              dst_workload: {{.Values.redisgraph.fullnameOverride}}-master
               dst_namespace: {{.Release.Namespace}}
 
           # asserts-server -> tsdb-server
@@ -180,7 +238,7 @@ data:
           # knowledge-sensor -> asserts-server
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace)
-                    (asserts:request:rate5m{job="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context="/v4/prometheus/rules"}) > 0
+                    (asserts:request:rate5m{service="{{.Release.Name}}-server", namespace="{{.Release.Namespace}}", asserts_request_context="/v4/prometheus/rules"}) > 0
             labels:
               workload: {{.Release.Name}}-knowledge-sensor
               dst_workload: {{.Release.Name}}-server
@@ -231,10 +289,19 @@ data:
               dst_workload: {{.Release.Name}}-tsdb-server
               dst_namespace: {{.Release.Namespace}}
 
+          # asserts-server -> grafana
+          - record: asserts:relation:calls
+            expr: sum by (asserts_env, asserts_site, namespace, job)
+                    (asserts:request:rate5m{service="{{.Release.Name}}-grafana", asserts_request_type=~"page|api"}) > 0
+            labels:
+              workload: {{.Release.Name}}-server
+              dst_workload: {{.Release.Name}}-grafana
+              dst_namespace: {{.Release.Namespace}}
+
           # grafana -> promxyuser
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace, job)
-                    (asserts:request:rate5m{service="{{.Release.Name}}-grafana", asserts_request_type="proxy"}) > 0
+                    (asserts:request:rate5m{service="{{.Release.Name}}-grafana", asserts_request_type=~"page|api"}) > 0
             labels:
               workload: {{.Release.Name}}-grafana
               dst_workload: {{.Release.Name}}-promxyuser

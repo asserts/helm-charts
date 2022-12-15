@@ -153,17 +153,24 @@ data:
         regex: http
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -246,17 +253,24 @@ data:
         regex: http
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -341,17 +355,24 @@ data:
         regex: http
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -431,17 +452,24 @@ data:
         regex: http
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -521,17 +549,24 @@ data:
         regex: http
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -616,17 +651,24 @@ data:
         regex: http-metrics
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -701,17 +743,24 @@ data:
         regex: {{ .Release.Name }}
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -786,17 +835,24 @@ data:
         regex: {{ .Release.Name }}
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -881,17 +937,24 @@ data:
         regex: http-metrics
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
@@ -976,17 +1039,24 @@ data:
         regex: http-metrics
         replacement: $1
         action: keep
-      - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
-        separator: ;
-        regex: Node;(.*)
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        regex: (.*)
         target_label: node
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_controller_kind]
+        regex: (.*)
+        target_label: created_by_kind
         action: replace
       - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
         separator: ;
         regex: Pod;(.*)
         target_label: pod
         replacement: ${1}
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_ip]
+        regex: (.*)
+        target_label: pod_ip
         action: replace
       - source_labels: [__meta_kubernetes_namespace]
         separator: ;
