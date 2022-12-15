@@ -21,7 +21,7 @@ data:
           # asserts-ui -> authorization
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace)
-                    (asserts:request:rate5m{job="{{.Release}}-authorization", asserts_request_type="inbound"}}) > 0
+                    (asserts:request:rate5m{job="{{.Release.Name}}-authorization", asserts_request_type="inbound"}}) > 0
             labels:
               workload: {{.Release.Name}}-ui
               dst_workload: {{.Release.Name}}-authorization
@@ -135,7 +135,7 @@ data:
           # asserts-ui -> authorization
           - record: asserts:relation:calls
             expr: sum by (asserts_env, asserts_site, namespace)
-                    (asserts:request:rate5m{service="{{.Release}}-authorization", asserts_request_type="inbound"}}) > 0
+                    (asserts:request:rate5m{service="{{.Release.Name}}-authorization", asserts_request_type="inbound"}}) > 0
             labels:
               workload: {{.Release.Name}}-ui
               dst_workload: {{.Release.Name}}-authorization
@@ -239,4 +239,4 @@ data:
               workload: {{.Release.Name}}-grafana
               dst_workload: {{.Release.Name}}-promxyuser
               dst_namespace: {{.Release.Namespace}}
-{{- end }}
+ {{- end }}
