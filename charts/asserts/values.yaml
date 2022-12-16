@@ -42,9 +42,6 @@ serviceAccount:
 ## If Asserts is being installed in the same cluster you are running Prometheus-Operator
 ## set this to true and .Values.selfScrape: false
 ##
-## Information on configuring Asserts to monitor Asserts
-## can be seen at: TODO: ADD DOC LINK
-##
 serviceMonitor:
   enabled: false
   # endpoints and appropriate relabelings
@@ -88,9 +85,6 @@ serviceMonitor:
 ##
 ## When this is set to true, the Asserts Tsdb will scrape
 ## all of the Asserts Services independent of your Prometheus.
-##
-## Information on configuring Asserts to monitor Asserts
-## can be seen at: TODO: ADD DOC LINK
 ##
 selfScrape: true
 
