@@ -43,12 +43,15 @@ You can then login to the asserts-ui by running:
 kubectl port-forward svc/asserts-ui 8080 -n asserts
 ```
 
-And opening your browser to [http://localhost:8080](http://localhost:8080), where you will be directed to the Asserts Registration page. There you can acquire a license as seen [here](https://docs.asserts.ai/getting-started/self-hosted/helm-chart#acquire-a-license)
+And opening your browser to [http://localhost:8080](http://localhost:8080), where you will be directed to the Asserts Registration page. There you can acquire a license.
 
-## Configuring Promethueus DataSources
+## Acquire a License
 
-Configure your Prometheus DataSource which Asserts will connect to
-and query by following [these instructions](https://docs.asserts.ai/integrations/data-source/prometheus)
+Acquire a trial license by following [these steps](https://docs.asserts.ai/getting-started/self-hosted/helm-chart#acquire-a-license)
+
+## Configuring a Prometheus DataSource
+
+Configure your Prometheus DataSource which Asserts will connect to and query by following [these instructions](https://docs.asserts.ai/integrations/data-source/prometheus). Once you're connected, you can see the data and start observing!
 
 ## Upgrading the Chart
 
