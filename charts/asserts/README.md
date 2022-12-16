@@ -43,7 +43,7 @@ You can then login to the asserts-ui by running:
 kubectl port-forward svc/asserts-ui 8080 -n asserts
 ```
 
-And opening your browser to http://localhost:8080, where you will be directed to the Asserts Registration page. There you can acquire a license as seen [here](https://docs.asserts.ai/getting-started/self-hosted/helm-chart#acquire-a-license)
+And opening your browser to [http://localhost:8080](http://localhost:8080), where you will be directed to the Asserts Registration page. There you can acquire a license as seen [here](https://docs.asserts.ai/getting-started/self-hosted/helm-chart#acquire-a-license)
 
 ## Configuring Promethueus DataSources
 
