@@ -11,9 +11,7 @@ This chart bootstraps an [Asserts](https://www.asserts.ai) deployment on a [Kube
 - Kubernetes 1.17+
 - Helm 3.2.0+
 - PV provisioner support for the underlying infrastructure
-- A Prometheus compatible endpoint to query
-- [kube-state-metrics](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics) (metrics from the Prometheus endpoint)
-- [node-exporter](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter) (metrics from the Prometheus endpoint)
+- A Prometheus compatible endpoint with [kube-state-metrics](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics) and [node-exporter](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter)
 
 ## Installing the Chart
 
