@@ -484,9 +484,10 @@ grafana:
     password: ""
     existingSecret: ""
 
-  # scrape interval for grafana datasource
+  # lowest interval/step value that should be used for the Prometheus data source
+  # should optimally be at least 2x your scrapeInterval in Prometheus
   # set in .Values.grafana.datasources[0].jsonData.timeInterval
-  scrapeInterval: 30s
+  timeInterval: 60s
 
   # ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
   datasources:
@@ -498,7 +499,7 @@ grafana:
         access: proxy
         type: prometheus
         jsonData:
-          timeInterval: "{{.Values.grafana.scrapeInterval}}"
+          timeInterval: "{{.Values.grafana.timeInterval}}"
 
   dataPath: /var/lib/grafana/data
 
