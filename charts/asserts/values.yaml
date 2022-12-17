@@ -484,7 +484,7 @@ grafana:
     password: ""
     existingSecret: ""
 
-  # set to at least 2x the scrapeInterval of your Prometheus
+  # set to the scrapeInterval of your Prometheus
   scrapeInterval: 60s
 
   # ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
