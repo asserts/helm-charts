@@ -485,7 +485,8 @@ grafana:
     existingSecret: ""
 
   # set to the scrapeInterval of your Prometheus
-  scrapeInterval: 60s
+  # but never smaller than 30s (default)
+  scrapeInterval: 30s
 
   # ref: https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
   datasources:
