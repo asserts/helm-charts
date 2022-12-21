@@ -38,17 +38,17 @@ dependencies:
     version: 1.x.x
   - name: redis
     repository: https://charts.bitnami.com/bitnami
-    version: 16.8.7
+    version: 16.13.2
     alias: redisgraph
     condition: redisgraph.enabled
   - name: redis
     repository: https://charts.bitnami.com/bitnami
-    version: 16.8.7
+    version: 16.13.2
     alias: redisearch
     condition: redisearch.enabled
   - name: postgresql
     repository: https://charts.bitnami.com/bitnami
-    version: 11.1.23
+    version: 11.9.13
     alias: postgres
     condition: postgres.enabled
 
