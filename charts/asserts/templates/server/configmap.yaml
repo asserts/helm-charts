@@ -63,6 +63,10 @@ data:
       pattern: model_rules/**/*.yml
       provider: local
 
+    stats:
+      initialDelay: 8640000000
+      fixedDelay: 8640000000
+
     search:
       definition:
         path: "file:///opt/asserts/search-definitions/*.yml"
