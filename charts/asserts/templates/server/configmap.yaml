@@ -340,6 +340,11 @@ data:
       stats:
         initialDelay: 8640000000
         fixedDelay: 8640000000
+    graph:
+      trimming:
+        enable: true
+        retentionDays:
+          default: 30        
 
     prometheus:
       client:
