@@ -586,10 +586,12 @@ tsdb:
   configMap: asserts-tsdb-scrapeconfig
   server:
     image:
-      tag: v1.75.1
+      tag: v1.79.5
 
     nameOverride: "tsdb"
     fullNameOverride: "tsdb"
+
+    retentionPeriod: 30d
 
     service:
       annotations:
@@ -645,7 +647,6 @@ tsdb:
       loggerFormat: default
       relabelConfig: /opt/asserts/relabel/bootstrap.yml
       maxLabelsPerTimeseries: 60
-      retentionPeriod: 30d
       search.maxStalenessInterval: 60s
       search.latencyOffset: 15s
       memory.allowedPercent: 50
