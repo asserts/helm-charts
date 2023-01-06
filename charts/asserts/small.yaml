@@ -1,4 +1,5 @@
 server:
+  graphRetentionDays: 90
   resources:
     limits:
       memory: 1.5Gi

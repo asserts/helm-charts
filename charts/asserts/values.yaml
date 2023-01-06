@@ -214,6 +214,7 @@ server:
 
   extraVolumes: []
 
+  graphRetentionDays: 30
   dataPath: /opt/asserts/data
 
   persistence:
