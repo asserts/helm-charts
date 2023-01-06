@@ -60,7 +60,7 @@ helm upgrade --install asserts asserts/asserts -n asserts
 
 ## Sizing Values
 
-The default Helm chart values in the [values.yaml](https://github.com/asserts/helm-charts/blob/master/charts/asserts/values.yaml) file are configured to allow you to quickly get Asserts up and running. Sample values files for sizing resources according to the total number of raw metrics
+The default Helm chart values in the [values.yaml](https://github.com/asserts/helm-charts/blob/master/charts/asserts/values.yaml) file are configured to allow you to quickly get Asserts up and running. Here are some sample values files for sizing resources according to the total number of raw metrics
 at the source Prometheus endpoints:
 
 [small](https://github.com/asserts/helm-charts/blob/master/charts/asserts/small.yaml): Up to 1 million metrics
