@@ -11,7 +11,7 @@ rbac:
 image:
   repository: asserts/ebpf-probe
   pullPolicy: IfNotPresent
-  tag: 0.2.0
+  tag: 0.3.0
 
 serviceAccount:
   create: true
@@ -29,8 +29,8 @@ resources:
     cpu: 150m
     memory: 300Mi
   requests:
-    cpu: 10m
-    memory: 50Mi
+    cpu: 50m
+    memory: 100Mi
 
 podAnnotations: {}
 
