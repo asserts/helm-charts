@@ -4,3 +4,7 @@ appVersion: 0.3.0
 name: ebpf-probe
 description: A helm chart for Asserts eBPF probe.
 type: application
+
+maintainers:
+  - name: Asserts
+    url: https://github.com/asserts
