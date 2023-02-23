@@ -3399,6 +3399,20 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/aws-autoscalinggroup-activity-exporter-0.1.0/aws-autoscalinggroup-activity-exporter-0.1.0.tgz
     version: 0.1.0
+  ebpf-probe:
+  - apiVersion: v2
+    appVersion: 0.3.0
+    created: "2023-02-23T19:04:41.618005924Z"
+    description: A helm chart for Asserts eBPF probe.
+    digest: ac8cd24f4cc467ab33c98c52ff563d00b8909db7e3d4b4e5a442edef461b0fee
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: ebpf-probe
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/ebpf-probe-0.1.0/ebpf-probe-0.1.0.tgz
+    version: 0.1.0
   knowledge-sensor:
   - apiVersion: v2
     appVersion: v1.1.11
@@ -4120,4 +4134,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-02-10T00:08:14.663470305Z"
+generated: "2023-02-23T19:04:41.618561423Z"
