@@ -34,8 +34,9 @@ dependencies:
     condition: promxyuser.enabled
   - name: ebpf-probe
     repository: https://asserts.github.io/helm-charts
-    version: 0.1.0
-    condition: ebpf-probe.enabled
+    version: 0.2.0
+    alias: ebpfProbe
+    condition: ebpfProbe.enabled
   ### external charts ###
   - name: common
     repository: https://charts.bitnami.com/bitnami
