@@ -24,7 +24,7 @@ helm upgrade asserts asserts/asserts \
     --create-namespace
 ```
 
-Asserts uses metric label informaton to build the Entity Graph, it will use labels from services meshes (istio, Linkerd) or from the Asserts eBPF Probe. By default the probe is not enabled, it can be enabled via a values file or from the Helm command line.
+Asserts uses metric label informaton to build the Entity Graph, it will use labels from service meshes (Istio, Linkerd) or from the Asserts eBPF Probe. By default the probe is not enabled, it can be enabled via a values file or from the Helm command line.
 
 ```bash
 helm upgrade asserts asserts/asserts \
