@@ -35,6 +35,66 @@ entries:
     version: 0.14.0
   asserts:
   - apiVersion: v2
+    created: "2023-03-09T17:05:57.176754596Z"
+    dependencies:
+    - condition: knowledge-sensor.enabled
+      name: knowledge-sensor
+      repository: https://asserts.github.io/helm-charts
+      version: 1.1.0
+    - alias: tsdb
+      condition: tsdb.enabled
+      name: victoria-metrics-single
+      repository: https://asserts.github.io/helm-charts
+      version: 1.1.0
+    - condition: alertmanager.enabled
+      name: alertmanager
+      repository: https://asserts.github.io/helm-charts
+      version: 1.0.0
+    - alias: promxyruler
+      condition: promxyruler.enabled
+      name: promxy
+      repository: https://asserts.github.io/helm-charts
+      version: 0.7.0
+    - alias: promxyuser
+      condition: promxyuser.enabled
+      name: promxy
+      repository: https://asserts.github.io/helm-charts
+      version: 0.7.0
+    - alias: ebpfProbe
+      condition: ebpfProbe.enabled
+      name: ebpf-probe
+      repository: https://asserts.github.io/helm-charts
+      version: 0.3.0
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    - alias: redisgraph
+      condition: redisgraph.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.13.2
+    - alias: redisearch
+      condition: redisearch.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.13.2
+    - alias: postgres
+      condition: postgres.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.9.13
+    description: Asserts Helm Chart to configure entire asserts stack
+    digest: d6a3e5c05ab83d6188128599ef292ef0ea596a17ef8e71c960d9ed1727f6c368
+    icon: https://www.asserts.ai/favicon.png
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: asserts
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/asserts-1.34.0/asserts-1.34.0.tgz
+    version: 1.34.0
+  - apiVersion: v2
     created: "2023-03-03T23:35:21.814879211Z"
     dependencies:
     - condition: knowledge-sensor.enabled
@@ -3521,6 +3581,19 @@ entries:
   ebpf-probe:
   - apiVersion: v2
     appVersion: 0.3.0
+    created: "2023-03-09T17:05:57.379146007Z"
+    description: A helm chart for Asserts eBPF probe.
+    digest: dad2de8247d27aeb0a8696cb467308d0706c0082451af40b988a63d0832ea441
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: ebpf-probe
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/ebpf-probe-0.4.0/ebpf-probe-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 0.3.0
     created: "2023-03-09T16:57:47.099762258Z"
     description: A helm chart for Asserts eBPF probe.
     digest: 7fcbd66eba9bed2bb42d9daccbd43f1984581915e8cc58fa60f4f0b5c50c8919
@@ -4279,4 +4352,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-03-09T16:57:47.100380264Z"
+generated: "2023-03-09T17:05:57.380385016Z"
