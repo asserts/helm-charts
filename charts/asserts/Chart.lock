@@ -16,7 +16,7 @@ dependencies:
   version: 0.7.0
 - name: ebpf-probe
   repository: https://asserts.github.io/helm-charts
-  version: 0.2.0
+  version: 0.3.0
 - name: common
   repository: https://charts.bitnami.com/bitnami
   version: 1.17.1
@@ -29,5 +29,5 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.9.13
-digest: sha256:6fdf6e958b0c737439f67528fc89404adf4f6c5ace1ad28907d3734da3e48480
-generated: "2023-03-03T12:03:06.977818-08:00"
+digest: sha256:be4289156cf9c9d666185e3a18909e7cf96f3b0b3261f85c4eede8b17d451c40
+generated: "2023-03-09T08:59:35.827547-08:00"
