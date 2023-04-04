@@ -1,0 +1,13 @@
+# server image
+server:
+  image:
+    tag: jim-test1
+
+global:
+  postgresql:
+    auth:
+      postgresPassword: oQWk8BBmSW
+
+grafana:
+  auth:
+    password: oiTUNhR598
