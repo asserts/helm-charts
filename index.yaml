@@ -3751,6 +3751,42 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/ebpf-probe-0.1.0/ebpf-probe-0.1.0.tgz
     version: 0.1.0
+  keycloak:
+  - annotations:
+      category: DeveloperTools
+      licenses: Apache-2.0
+    apiVersion: v2
+    appVersion: 20.0.5
+    created: "2023-04-12T22:16:01.887787554Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.x.x
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.x.x
+    description: Keycloak is a high performance Java-based identity and access management
+      solution. It lets developers add an authentication layer to their applications
+      with minimum effort.
+    digest: 33275e0a62bb444c787cab7b9b70f91bc0ac169ea732449d8d31a25c5f45dd31
+    home: https://www.keycloak.org
+    icon: https://bitnami.com/assets/stacks/keycloak/img/keycloak-stack-220x234.png
+    keywords:
+    - keycloak
+    - access-management
+    maintainers:
+    - name: Bitnami
+      url: https://github.com/bitnami/charts
+    name: keycloak
+    sources:
+    - https://github.com/bitnami/containers/tree/main/bitnami/keycloak
+    - https://github.com/keycloak/keycloak
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/keycloak-13.3.0/keycloak-13.3.0.tgz
+    version: 13.3.0
   knowledge-sensor:
   - apiVersion: v2
     appVersion: v1.1.11
@@ -4472,4 +4508,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-04-12T20:57:57.235824377Z"
+generated: "2023-04-12T22:16:01.888144365Z"
