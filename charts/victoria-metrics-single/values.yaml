@@ -31,6 +31,8 @@ podDisruptionBudget:
   #  maxUnavailable: 1
   extraLabels: {}
 
+replicaCount: 1
+
 server:
   # -- Enable deployment of server component. Deployed as StatefulSet
   enabled: true
