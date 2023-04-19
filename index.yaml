@@ -4471,6 +4471,19 @@ entries:
   victoria-metrics-single:
   - apiVersion: v1
     appVersion: 1.69.0
+    created: "2023-04-19T01:22:42.780210752Z"
+    description: Victoria Metrics Single version - high-performance, cost-effective
+      and scalable TSDB, long-term remote storage for Prometheus
+    digest: 1db9a30aafa864e47cc79448a5a9543c83ef0549ecaca5e35daee3f9a33e7dc2
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: victoria-metrics-single
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-1.2.0/victoria-metrics-single-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v1
+    appVersion: 1.69.0
     created: "2022-11-29T17:17:18.819494118Z"
     description: Victoria Metrics Single version - high-performance, cost-effective
       and scalable TSDB, long-term remote storage for Prometheus
@@ -4508,4 +4521,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-04-12T22:16:01.888144365Z"
+generated: "2023-04-19T01:22:42.780705458Z"
