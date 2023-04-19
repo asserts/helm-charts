@@ -18,7 +18,7 @@ spec:
   selector:
     matchLabels:
       {{- include "victoria-metrics.server.matchLabels" . | nindent 6 }}
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   podManagementPolicy: {{ .Values.server.podManagementPolicy }}
   template:
     metadata:
