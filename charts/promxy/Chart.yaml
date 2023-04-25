@@ -4,8 +4,8 @@ description: Helm Chart for Prometheus proxy to combine multiple prometheuses
 
 type: application
 
-version: 0.7.0
-appVersion: v0.0.75
+version: 0.8.0
+appVersion: v0.3.0
 
 maintainers:
   - name: Asserts
