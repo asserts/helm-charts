@@ -3701,6 +3701,19 @@ entries:
   ebpf-probe:
   - apiVersion: v2
     appVersion: v0.4.0
+    created: "2023-04-26T00:34:41.060868818Z"
+    description: A helm chart for Asserts eBPF probe.
+    digest: de58d6fb3cb61002932aafa2166cba42b2fb003bf9598801f663e9fa966e4fa0
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: ebpf-probe
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/ebpf-probe-0.6.0/ebpf-probe-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: v0.4.0
     created: "2023-04-25T22:19:21.185636269Z"
     description: A helm chart for Asserts eBPF probe.
     digest: d2099d942fc537431ddda30f2ba66dda601aa01774ed510f5cf6a34ddd44a50b
@@ -4547,4 +4560,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-04-25T22:19:21.186038774Z"
+generated: "2023-04-26T00:34:41.061753921Z"
