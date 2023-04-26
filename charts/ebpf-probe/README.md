@@ -17,13 +17,13 @@ This chart bootstraps an Asserts eBPF Probe Daemonset on a [Kubernetes](https://
 ```bash
 helm repo add asserts https://asserts.github.io/helm-charts
 helm repo update
-helm upgrade asserts asserts/ebpf-probe \
+helm upgrade ebpf-probe asserts/ebpf-probe \
     --install \
     --namespace asserts \
     --create-namespace
 ```
 
-Note that the podMonitor is enabled by default. This will allow a Prometheus instance installed using Prometheus-Operator to scrape the metrics emitted by the service. You may need to set `podMonitor.extraLabels` depending on your setup.
+Note that the podMonitor is enabled by default. This will allow a Prometheus instance installed using Prometheus-Operator to scrape the metrics emitted by the service. You may need to set `podMonitor.extraLabels` as shown in `values.yaml` depending on your Prometheus-Operator setup.
 
 ## Upgrading the Chart
 
