@@ -10,6 +10,7 @@ This chart bootstraps an Asserts eBPF Probe Daemonset on a [Kubernetes](https://
 
 - Kubernetes 1.17+
 - Helm 3.2.0+
+- Linux kernel version >= 4.16
 
 ## Installing the Chart
 
