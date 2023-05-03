@@ -83,4 +83,4 @@ podMonitor:
 includeOnly:
 
 # include calls to external services
-includeExternal: true
+includeExternal: false
