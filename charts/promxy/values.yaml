@@ -35,6 +35,15 @@ service:
   loadBalancerSourceRanges: []
   annotations: {}
 
+serviceMonitor:
+  enabled: false
+  endpoints:
+    - port: http
+      path: /metrics
+  # Use if you need to add a label that matches
+  # your prometheus-operator serviceMonitorSelector (e.g. release: kube-prometheus-stack)
+  extraLabels: {}
+
 ingress:
   enabled: false
 
