@@ -4,7 +4,7 @@ description: Asserts Helm Chart to configure entire asserts stack
 icon: https://www.asserts.ai/favicon.png
 type: application
 
-version: 1.38.0
+version: 1.39.0
 
 dependencies:
   ### asserts charts ###
@@ -34,7 +34,7 @@ dependencies:
     condition: promxyuser.enabled
   - name: ebpf-probe
     repository: https://asserts.github.io/helm-charts
-    version: 0.6.0
+    version: 0.7.0
     alias: ebpfProbe
     condition: ebpfProbe.enabled
   ### external charts ###
