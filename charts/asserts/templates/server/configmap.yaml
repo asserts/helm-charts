@@ -362,6 +362,9 @@ data:
           default: {{ .Values.server.graphRetentionDays }}
 
     prometheus:
+      alertmanager:
+        template:
+          url: {{ "http://asserts-server.asserts.svc.cluster.local:8030/api-server/v4/prometheus-alerts?tenant={{ tenantId }}" }}
       client:
         timeout: 30s
       metric:
