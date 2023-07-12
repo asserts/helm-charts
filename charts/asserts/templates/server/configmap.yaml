@@ -385,5 +385,11 @@ data:
         config:
           root: file:///opt/asserts/api-server/conf/
 
-
+    aws_exporter:
+      tenant_mode: multi-tenant
+      deployment_mode: multi-tenant-single-instance
+      enabled: false
+    
+    hekate:
+      enable: false
 
