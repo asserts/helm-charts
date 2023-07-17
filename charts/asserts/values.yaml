@@ -239,6 +239,8 @@ server:
     ## When set, will use the existing PVC for persistence
     existingClaim: ""
 
+  awsExporterEnabled: false
+
 ## Asserts authorization server configuration
 ##
 authorization:

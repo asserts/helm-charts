@@ -388,7 +388,7 @@ data:
     aws_exporter:
       tenant_mode: multi-tenant
       deployment_mode: multi-tenant-single-instance
-      enabled: false
+      enabled: {{ .Values.server.awsExporterEnabled | default "false"}}
     
     hekate:
       enable: false
