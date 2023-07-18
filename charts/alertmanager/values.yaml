@@ -49,6 +49,12 @@ securityContext:
 
 additionalPeers: []
 
+extraContainers: []
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
 service:
   annotations: {}
   type: ClusterIP
