@@ -121,6 +121,10 @@ spec:
               mountPath: /etc/alertmanager
             - name: storage
               mountPath: /alertmanager
+            {{- if and .Values.separateTemplateConfig (.Values.templates) }}
+            - name: template-config
+              mountPath: /etc/alertmanager-templates
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -131,6 +135,11 @@ spec:
         - name: config
           configMap:
             name: {{ include "alertmanager.configName" .}}
+        {{- if and .Values.separateTemplateConfig (.Values.templates) }}
+        - name: template-config
+          configMap:
+            name: {{ include "alertmanager.configName" .}}-template
+        {{- end }}
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}

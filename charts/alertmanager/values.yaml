@@ -169,5 +169,7 @@ configmapReload:
   ##
   resources: {}
 
+separateTemplateConfig: false
+
 templates: {}
 #   alertmanager.tmpl: |-
