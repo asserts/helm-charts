@@ -185,3 +185,12 @@ configFileLocation: /etc/alertmanager/alertmanager.yml
 
 templates: {}
 #   alertmanager.tmpl: |-
+
+serviceMonitor:
+  enabled: false
+  endpoints:
+    - port: http
+      path: /metrics
+  # Use if you need to add a label that matches
+  # your prometheus-operator serviceMonitorSelector (e.g. release: kube-prometheus-stack)
+  extraLabels: {}
