@@ -35,6 +35,6 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ include "alertmanager.fullname" . }}}
+      app.kubernetes.io/instance: {{ include "alertmanager.fullname" . }}
       app.kubernetes.io/name: alertmanager
 {{- end }}
