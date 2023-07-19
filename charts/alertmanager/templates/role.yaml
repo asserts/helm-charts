@@ -14,11 +14,13 @@ rules:
   - apiGroups:
       - ""
     resources:
-      - pods
-      - endpoints
-      - services
+      - configmaps
     verbs:
       - get
       - list
       - watch
+      - create
+      - update
+      - patch
+      - delete
 {{- end }}
