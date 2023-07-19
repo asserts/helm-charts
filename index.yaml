@@ -3,6 +3,22 @@ entries:
   alertmanager:
   - apiVersion: v2
     appVersion: v0.23.0
+    created: "2023-07-19T20:17:13.258107315Z"
+    description: The Alertmanager handles alerts sent by client applications such
+      as the
+    digest: 2c48288c5791943346419488e9511e4a1144a081f4292a15ac29ac1dc86f2131
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: alertmanager
+    sources:
+    - https://github.com/prometheus/alertmanager
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/alertmanager-1.4.0/alertmanager-1.4.0.tgz
+    version: 1.4.0
+  - apiVersion: v2
+    appVersion: v0.23.0
     created: "2023-07-19T19:39:20.491718353Z"
     description: The Alertmanager handles alerts sent by client applications such
       as the
@@ -5174,4 +5190,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-07-19T19:39:20.491948051Z"
+generated: "2023-07-19T20:17:13.258377117Z"
