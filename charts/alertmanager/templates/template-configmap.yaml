@@ -1,17 +1,13 @@
-{{- if not .Values.existingConfigMap }}
+{{- if and .Values.separateTemplateConfig (.Values.templates) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "alertmanager.fullname" . }}
+  name: {{ include "alertmanager.configName" . }}-template
   labels:
     {{- include "alertmanager.labels" . | nindent 4 }}
 data:
-  alertmanager.yml: |
-    {{- toYaml .Values.config | default "{}" | nindent 4 }}
-  {{- if not .Values.separateTemplateConfig }}
   {{- range $key, $value := .Values.templates }}
   {{ $key }}: |-
     {{- $value | nindent 4 }}
-  {{- end }}
   {{- end }}
 {{- end }}
