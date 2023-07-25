@@ -4,7 +4,7 @@ description: Asserts Helm Chart to configure entire asserts stack
 icon: https://www.asserts.ai/favicon.png
 type: application
 
-version: 1.45.0
+version: 1.47.0
 
 dependencies:
   ### asserts charts ###
