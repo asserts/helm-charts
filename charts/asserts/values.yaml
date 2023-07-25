@@ -154,7 +154,7 @@ server:
     repository: asserts/asserts-server
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.2.675
+    tag: v0.2.709
 
   resources:
     requests:
@@ -263,7 +263,7 @@ authorization:
     repository: asserts/authorization
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.2.675
+    tag: v0.2.708
 
   resources:
     requests:
@@ -329,7 +329,7 @@ ui:
     repository: asserts/asserts-ui
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v0.1.1254
+    tag: v0.1.1271
 
   imagePullSecrets: []
 
@@ -420,7 +420,7 @@ grafana:
     repository: asserts/grafana
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v1.0.230
+    tag: v1.0.231
 
   resources:
     requests:
