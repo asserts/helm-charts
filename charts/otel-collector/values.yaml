@@ -45,14 +45,14 @@ ingress:
 
 env:
   TRACE_STORE: "OTLP-HTTP"
-  OTLP_ENDPOINT: ""
+  OTLP_ENDPOINT: "http://jaeger:4317"
   ASSERTS_SERVER_API_ENDPOINT: ""
   ASSERTS_SERVER_USERNAME: ""
   ASSERTS_SERVER_PASSWORD: ""
-  ASSERTS_ENV: ""
-  ASSERTS_SITE: ""
-  ASSERTS_TENANT: ""
-  LOG_LEVEL: ""
+  ASSERTS_ENV: "dev"
+  ASSERTS_SITE: "dev"
+  ASSERTS_TENANT: "teant"
+  LOG_LEVEL: "Info"
 
 serviceMonitor:
   enabled: false
