@@ -11,8 +11,8 @@ spec:
     - port: {{ .Values.service.collector.port }}
       targetPort: {{ .Values.service.collector.port }}
       name: collector
-    - port: { { .Values.service.metric.port } }
-      targetPort: { { .Values.service.metric.port } }
+    - port: {{ .Values.service.metric.port }}
+      targetPort: {{ .Values.service.metric.port }}
       name: metric
   selector:
     {{- include "otel-collector.selectorLabels" . | nindent 4 }}
