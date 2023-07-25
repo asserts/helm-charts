@@ -1,0 +1,10 @@
+apiVersion: v2
+type: application
+name: otel-collector
+description: Helm Chart for Asserts Otel-Collector
+version: 0.1.0
+appVersion: v0.0.92-all-exporters
+icon: https://www.asserts.ai/favicon.png
+maintainers:
+  - name: Asserts
+    url: https://github.com/asserts
