@@ -30,11 +30,6 @@ logLevel: info
 
 ## Asserts configuration
 ##
-assertsApiEndpoint: "http://asserts-server.asserts.svc.cluster.local:8030/api-server"
-assertsUser: "bootstrap"
-assertsPassword: ""
-assertsEnv: "asserts"
-assertsSite: ""
 # assertsApiEndpoint: ""
 # assertsUser: ""
 # assertsPassword: ""
