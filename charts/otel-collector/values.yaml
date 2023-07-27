@@ -126,4 +126,3 @@ jaeger:
   cassandra:
     config:
       cluster_size: 1
-
