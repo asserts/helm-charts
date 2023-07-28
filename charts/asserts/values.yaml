@@ -50,6 +50,7 @@ serviceMonitor:
   endpoints:
     - port: http
       path: /api-server/actuator/prometheus
+      honorLabels: true
       relabelings:
         - sourceLabels: [job]
           regex: "{{.Release.Name}}-server"
