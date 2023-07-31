@@ -24,7 +24,7 @@ serviceAccount:
 ## OTLP-HTTP
 ## AWS-XRAY
 ## GOOGLE-CLOUDTRACE
-traceStore: OLTP
+traceStore: OTLP
 
 logLevel: info
 

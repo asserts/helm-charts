@@ -54,7 +54,7 @@ spec:
             {{- end }}
             - name: ASSERTS_TENANT
               value: {{ .Values.assertsUser }}
-            {{- if or (eq .Values.traceStore "OLTP") (eq .Values.traceStore "OLTP-HTTP") }}
+            {{- if or (eq .Values.traceStore "OTLP") (eq .Values.traceStore "OTLP-HTTP") }}
             - name: OTLP_ENDPOINT
             {{- if .Values.jaeger.enabled }}
               value: http://{{.Chart.Name}}-jaeger-collector.{{.Release.Namespace}}.svc.cluster.local:4317
