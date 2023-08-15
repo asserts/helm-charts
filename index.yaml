@@ -5394,6 +5394,25 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/kube-prometheus-stack-0.1.0/kube-prometheus-stack-0.1.0.tgz
     version: 0.1.0
+  otel-collector:
+  - apiVersion: v2
+    appVersion: v0.0.92-all-exporters
+    created: "2023-08-15T20:43:09.725663377Z"
+    dependencies:
+    - condition: jaeger.enabled
+      name: jaeger
+      repository: https://jaegertracing.github.io/helm-charts
+      version: 0.71.3
+    description: Asserts Opentelemetry Collector
+    digest: d84b01de3d4cb1665ddff0a72818a418564122dbc0dd4fb3bfe8e235a2f39917
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: otel-collector
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/otel-collector-0.1.0/otel-collector-0.1.0.tgz
+    version: 0.1.0
   postgres:
   - apiVersion: v2
     appVersion: v0.1.6
@@ -5819,4 +5838,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-08-15T17:39:12.251632798Z"
+generated: "2023-08-15T20:43:09.726163481Z"
