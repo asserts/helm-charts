@@ -9,4 +9,5 @@ chart-repos:
   - prometheus-community=https://prometheus-community.github.io/helm-charts
   - banzaicloud-stable=https://kubernetes-charts.banzaicloud.com
   - bitnami=https://charts.bitnami.com/bitnami
+  - jaeger=https://jaegertracing.github.io/helm-charts
 helm-extra-args: --timeout 600s

@@ -45,6 +45,9 @@ jobs:
           if [[ "${changed}" =~ "knowledge-sensor" ]]; then
             echo "skipping knowledge-sensor test..."
             echo "::set-output name=changed::false"
+          elif [[ "${changed}" =~ "otel-collector" ]]; then
+            echo "skipping asserts test..."
+            echo "::set-output name=changed::false"
           elif [[ "${changed}" =~ "asserts" ]]; then
             echo "skipping asserts test..."
             echo "::set-output name=changed::false"
