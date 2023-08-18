@@ -42,6 +42,8 @@ podSecurityContext: {}
   # fsGroup: 2000
 
 securityContext: {}
+  # enabled: false
+  # allowPrivilegeEscalation: false
   # capabilities:
   #   drop:
   #   - ALL
@@ -55,6 +57,27 @@ service:
   # type: LoadBalancer
   # loadBalancerIP: 1.2.3.4
   # loadBalancerSourceRanges: []
+
+## ServiceMonitor configuration
+##
+serviceMonitor:
+  enabled: false
+  endpoints:
+    - port: otel-metrics
+      path: /metrics
+      honorLabels: true
+    - port: prom-metrics
+      path: /metrics
+      honorLabels: true
+    - port: http-metrics
+      path: /metrics
+      honorLabels: true
+  # Use if you need to add a label that matches
+  # your prometheus-operator serviceMonitorSelector (e.g. release: kube-prometheus-stack)
+  extraLabels: {}
+
+command: []
+args: []
 
 resources: {}
   # limits:
