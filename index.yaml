@@ -5456,6 +5456,24 @@ entries:
     version: 0.1.0
   otel-collector:
   - apiVersion: v2
+    appVersion: v0.0.93-all-exporters
+    created: "2023-08-24T17:29:13.25936463Z"
+    dependencies:
+    - condition: jaeger.enabled
+      name: jaeger
+      repository: https://jaegertracing.github.io/helm-charts
+      version: 0.71.3
+    description: Asserts Opentelemetry Collector
+    digest: 24bb2e62738541d72944025b584892ff7e2327a83520c2242e17a0ce71f9c893
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: otel-collector
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/otel-collector-0.2.0/otel-collector-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: v0.0.92-all-exporters
     created: "2023-08-15T20:43:09.725663377Z"
     dependencies:
@@ -5898,4 +5916,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-08-18T19:21:23.49842782Z"
+generated: "2023-08-24T17:29:13.259767237Z"
