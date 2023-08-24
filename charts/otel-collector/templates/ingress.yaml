@@ -3,7 +3,7 @@
 {{- $ingressSupportsIngressClassName := eq (include "ingress.supportsIngressClassName" .) "true" -}}
 {{- $ingressSupportsPathType := eq (include "ingress.supportsPathType" .) "true" -}}
 {{- $serviceName := include "otel-collector.fullname" . }}
-{{- $servicePort := .Values.ports.oltp.servicePort -}}
+{{- $servicePort := .Values.ports.otlp.servicePort -}}
 {{- $ingressPath := .Values.ingress.path -}}
 {{- $ingressPathType := .Values.ingress.pathType -}}
 {{- $extraPaths := .Values.ingress.extraPaths -}}
