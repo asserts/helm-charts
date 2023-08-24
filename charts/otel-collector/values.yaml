@@ -42,6 +42,8 @@ podSecurityContext: {}
   # fsGroup: 2000
 
 securityContext: {}
+  # enabled: false
+  # allowPrivilegeEscalation: false
   # capabilities:
   #   drop:
   #   - ALL
@@ -55,6 +57,58 @@ service:
   # type: LoadBalancer
   # loadBalancerIP: 1.2.3.4
   # loadBalancerSourceRanges: []
+
+ingress:
+  enabled: false
+
+  ## For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+  ## See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+  # ingressClassName: nginx
+
+  annotations: {}
+
+  extraLabels: {}
+
+  hosts: []
+  #   - asserts-otel-collector.domain.com
+
+  path: /
+
+  ## pathType is only for k8s >= 1.18
+  pathType: Prefix
+
+  ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+  extraPaths: []
+  # - path: /
+  #   backend:
+  #     serviceName: ssl-redirect
+  #     servicePort: use-annotation
+
+  tls: []
+  #   - secretName: asserts-otel-collector-tls
+  #     hosts:
+  #       - asserts-otel-collector.domain.com
+
+## ServiceMonitor configuration
+##
+serviceMonitor:
+  enabled: false
+  endpoints:
+    - port: otel-metrics
+      path: /metrics
+      honorLabels: true
+    - port: prom-metrics
+      path: /metrics
+      honorLabels: true
+    - port: http-metrics
+      path: /metrics
+      honorLabels: true
+  # Use if you need to add a label that matches
+  # your prometheus-operator serviceMonitorSelector (e.g. release: kube-prometheus-stack)
+  extraLabels: {}
+
+command: []
+args: []
 
 resources: {}
   # limits:

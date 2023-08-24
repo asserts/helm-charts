@@ -31,6 +31,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.command }}
+          command: {{- include "render-values" (dict "value" .Values.command "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.args }}
+          args: {{- include "render-values" (dict "value" .Values.args "context" $) | nindent 12 }}
+          {{- end }}
           env:
             - name: TRACE_STORE
               value: {{ .Values.traceStore }}
