@@ -918,6 +918,11 @@ alertmanager:
   extraArgs:
     cluster.listen-address: null
 
+  # When it is desired to use a custom Alertmanager configmap
+  # set useAssertsDefaultConfig to false and existinConfigmap to
+  # the name of the configmap to be used. Leaving the default values
+  # will use the templated configuration seen in templates/config/alertmanager-configmap.yaml
+  useAssertsDefaultConfig: true
   existingConfigMap: asserts-alertmanager
 
   configmapReload:
