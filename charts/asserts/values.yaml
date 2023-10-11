@@ -425,7 +425,7 @@ grafana:
     repository: asserts/grafana
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
-    tag: v1.0.231
+    tag: v1.0.235
 
   resources:
     requests:
@@ -914,6 +914,9 @@ alertmanager:
     accessModes:
       - ReadWriteOnce
     size: 100Mi
+
+  securityContext:
+    allowPrivilegeEscalation: false
 
   extraArgs:
     cluster.listen-address: null
