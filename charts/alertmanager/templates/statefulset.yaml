@@ -55,6 +55,8 @@ spec:
       containers:
         {{- if and (.Values.configmapReload.enabled) (.Values.config) }}
         - name: {{ .Chart.Name }}-{{ .Values.configmapReload.name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
