@@ -2,8 +2,8 @@ apiVersion: v2
 name: otel-collector
 description: Asserts Opentelemetry Collector
 type: application
-version: 0.2.0
-appVersion: v0.0.93-all-exporters
+version: 0.3.0
+appVersion: v0.0.94-all-exporters
 
 maintainers:
   - name: Asserts
