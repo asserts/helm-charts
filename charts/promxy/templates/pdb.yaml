@@ -7,5 +7,5 @@ metadata:
 spec:
   maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
   selector:
-    matchLabels: {{- include "promxy.labels" . | nindent 6 }}
+    matchLabels: {{- include "promxy.selectorLabels" . | nindent 6 }}
 {{- end }}
