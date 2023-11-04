@@ -5723,6 +5723,19 @@ entries:
   promxy:
   - apiVersion: v2
     appVersion: v0.3.0
+    created: "2023-11-04T18:19:23.931818022Z"
+    description: Helm Chart for Prometheus proxy to combine multiple prometheuses
+    digest: 1977450e88d5ae08debaf17713a9f34c58f7bcab86952d5f574e90e69ba7be86
+    maintainers:
+    - name: Asserts
+      url: https://github.com/asserts
+    name: promxy
+    type: application
+    urls:
+    - https://github.com/asserts/helm-charts/releases/download/promxy-0.10.0/promxy-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: v0.3.0
     created: "2023-05-05T00:47:27.86048711Z"
     description: Helm Chart for Prometheus proxy to combine multiple prometheuses
     digest: 4bb84e9b4b14b90b3a51d11e20ed40e22034837f806b8b1e633c59563cc9d377
@@ -6130,4 +6143,4 @@ entries:
     urls:
     - https://github.com/asserts/helm-charts/releases/download/victoria-metrics-single-0.8.12/victoria-metrics-single-0.8.12.tgz
     version: 0.8.12
-generated: "2023-10-12T04:52:25.317940121Z"
+generated: "2023-11-04T18:19:23.932169328Z"
